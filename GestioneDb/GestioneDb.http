@@ -1,6 +1,6 @@
 @GestioneDb_HostAddress = http://localhost:5211
 
-GET {{GestioneDb_HostAddress}}/weatherforecast/
+GET {{GestioneDb_HostAddress}}/api/Passwords
 Accept: application/json
 
 ###
