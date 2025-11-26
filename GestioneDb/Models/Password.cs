@@ -4,6 +4,6 @@
     {
         public int Id { get; set; }
         public string? App { get; set; }
-        public byte[]? CryptedPassword { get; set; }
+        public byte[]? EncryptedPassword { get; set; }
     }
 }
