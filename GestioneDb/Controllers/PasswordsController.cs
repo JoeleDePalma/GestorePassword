@@ -68,7 +68,7 @@ namespace GestioneDb.Controllers
             if (password == null) return NotFound();
 
             password.App = ModifiedPassword.App;
-            password.CryptedPassword = ModifiedPassword.CryptedPassword;
+            password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
 
             await _context.SaveChangesAsync();
 
@@ -85,7 +85,7 @@ namespace GestioneDb.Controllers
             if (password == null) return NotFound();
 
             password.App = ModifiedPassword.App;
-            password.CryptedPassword = ModifiedPassword.CryptedPassword;
+            password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
 
             await _context.SaveChangesAsync();
 
