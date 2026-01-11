@@ -23,6 +23,7 @@ namespace GestorePassword
         public MainWindow()
         {
             InitializeComponent();
+            MainContent.Content = new MenuInterface();
         }
     }
 }
