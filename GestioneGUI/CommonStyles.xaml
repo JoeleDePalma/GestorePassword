@@ -77,10 +77,10 @@
         <Setter Property="Height" Value="40"/>
         <Setter Property="Width" Value="200"/>
         <Setter Property="Foreground" Value="White"/>
-        <Setter Property="Background" Value="Blue"/>
+        <Setter Property="Background" Value="#007BFF"/>
         <Setter Property="FontFamily" Value = "Arial"/>
-        <Setter Property="FontSize" Value="17"/>
-        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Medium"/>
         <Setter Property="BorderThickness" Value="0"/>
 
         <Setter Property="Template">
@@ -126,6 +126,55 @@
         </Setter>
         
                 
+    </Style>
+
+    <Style
+        x:Key="Password-Username_TextInputStyle"
+        TargetType="TextBox"
+        >
+
+        <Setter Property="Background" Value="#EFEFEF"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontFamily" Value = "Arial"/>
+        <Setter Property="FontSize" Value="15"/>
+        <Setter Property="FontWeight" Value="Normal"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="Width" Value="200"/> 
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Margin" Value="0, 0, 0, 5"/>
+        <Setter Property="IsReadOnly" Value="False"/>
+        <Setter Property="IsEnabled" Value="True"/>
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+
+                <ControlTemplate TargetType="TextBox">
+
+                    <Border x:Name="border"
+                            CornerRadius="5"
+                            Background="{TemplateBinding Background}"
+                            BorderBrush="{TemplateBinding BorderBrush}"
+                            BorderThickness="{TemplateBinding BorderThickness}"
+                            Padding="{TemplateBinding Padding}">
+                        
+                        <ScrollViewer x:Name="PART_ContentHost"
+                                      HorizontalAlignment="Left"
+                                      VerticalAlignment="Center"
+                                      Margin="5,0,0,0"
+                                      VerticalScrollBarVisibility="Hidden"
+                                      HorizontalScrollBarVisibility="Hidden"
+                                      />
+                        
+                    </Border>
+                    
+                </ControlTemplate>
+
+            </Setter.Value>
+            
+        </Setter>
+
     </Style>
     
 </ResourceDictionary>

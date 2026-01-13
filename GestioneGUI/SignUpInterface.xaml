@@ -5,7 +5,85 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:local="clr-namespace:GestorePassword"
              mc:Ignorable="d"
-             d:DesignHeight="450" d:DesignWidth="800"
+             d:DesignHeight="500" d:DesignWidth="800"
              Background="White">
-    <Grid />
+
+    <Grid>
+
+        <!-- rounded background panel on the left, non-interactive -->
+        <Border
+            Background="#FF89CFF0"
+            CornerRadius="200"
+            Width="700"
+            Height="500"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Stretch"
+            IsHitTestVisible="False"
+            Margin="0, 0, -250, 0"
+            Panel.ZIndex="0" 
+            />
+
+        <StackPanel
+            Orientation="Vertical"
+            HorizontalAlignment="Left"
+            VerticalAlignment="Top"
+            Width="200"
+            Height="70"
+            Margin="100,71,0,0"
+            >
+
+            <TextBlock
+                Text="Registrati"
+                FontSize="30"
+                FontFamily="Cambria"
+                FontWeight="Light"
+                Width="150"
+                Height="40"
+                VerticalAlignment="Top"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"
+                />
+            
+            <TextBlock
+                Text="Registrati per salvare &#x0A; le tue password in sicurezza"
+                FontSize="12"
+                FontFamily="Cambria"
+                FontWeight="Light"
+                Foreground="#444444"
+                Width="200"
+                Height="30"
+                VerticalAlignment="Bottom"
+                HorizontalAlignment="Center"
+                TextAlignment="Center"
+                />
+
+        </StackPanel>
+
+        <StackPanel
+            Orientation="Vertical"            
+            HorizontalAlignment="Left"     
+            VerticalAlignment="Bottom"
+            Width="200"
+            Margin="100, 0, 0, 140"
+            >
+
+            <TextBox
+                Style="{StaticResource Password-Username_TextInputStyle}"
+                />
+            
+            <TextBox
+                Style="{StaticResource Password-Username_TextInputStyle}"
+                />
+
+            <Button
+                Style="{StaticResource Sign_up-in_ButtonStyle}"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Bottom"
+                Margin="0,10,0,0"
+                Content="Registrati"
+                />
+
+        </StackPanel>
+
+    </Grid>
 </UserControl>
