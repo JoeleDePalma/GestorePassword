@@ -16,14 +16,13 @@ using System.Windows.Shapes;
 namespace GestorePassword
 {
     /// <summary>
-    /// Logica di interazione per MainWindow.xaml
+    /// Logica di interazione per SignInInterface.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class SignInInterface : UserControl
     {
-        public MainWindow()
+        public SignInInterface()
         {
             InitializeComponent();
-            MainContent.Content = new SignUpInterface();
         }
     }
 }

@@ -40,7 +40,7 @@ namespace HTTPRequestsLibrary
 
             if (Response.StatusCode == System.Net.HttpStatusCode.NotFound) return null;
 
-            Password? password = JsonSerializer.Deserialize<Password>(await Response.Content.ReadAsStringAsync(), DeserializationOptions);
+            var password = JsonSerializer.Deserialize<Password>(await Response.Content.ReadAsStringAsync(), DeserializationOptions);
             return password;
         }
 

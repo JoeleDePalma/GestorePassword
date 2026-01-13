@@ -4,10 +4,10 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{3AC0466F-3356-4127-858E-A810B39B8370}</ProjectGuid>
+    <ProjectGuid>{84983021-9596-419C-80F9-951E3CA0E925}</ProjectGuid>
     <OutputType>WinExe</OutputType>
-    <RootNamespace>GestorePassword</RootNamespace>
-    <AssemblyName>GestorePassword</AssemblyName>
+    <RootNamespace>GestioneGUI</RootNamespace>
+    <AssemblyName>GestioneGUI</AssemblyName>
     <TargetFrameworkVersion>v4.7.2</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <ProjectTypeGuids>{60dc8134-eba5-43b8-bcc9-bb4bc16c2548};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
@@ -51,12 +51,16 @@
     <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
-	<ApplicationDefinition Include="App.xaml">
-		<Generator>MSBuild:Compile</Generator>
-	</ApplicationDefinition>
-    <Page Include="CommonStyles.xaml">
-      <SubType>Designer</SubType>
+    <ApplicationDefinition Include="App.xaml">
       <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Compile Include="SignUpInterface.xaml.cs">
+      <DependentUpon>SignUpInterface.xaml</DependentUpon>
+    </Compile>
+    <Page Include="CommonStyles.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="MainWindow.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -64,12 +68,21 @@
     </Page>
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
+      <SubType>Code</SubType>
     </Compile>
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
       <SubType>Code</SubType>
     </Compile>
     <Page Include="MenuInterface.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="SingInInterface.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="SignUpInterface.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
@@ -77,6 +90,9 @@
   <ItemGroup>
     <Compile Include="MenuInterface.xaml.cs">
       <DependentUpon>MenuInterface.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="SingInInterface.xaml.cs">
+      <DependentUpon>SingInInterface.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
@@ -102,6 +118,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Libreria\Libreria.csproj">
+      <Project>{ce7dd11c-d997-4772-ab95-8414a181b793}</Project>
+      <Name>Libreria</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

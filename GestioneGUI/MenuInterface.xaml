@@ -27,30 +27,57 @@
             Orientation = "Horizontal"
             VerticalAlignment = "Center"
             HorizontalAlignment = "Center" 
-            Height="80"
-            Width = "530" 
+            Height="105"
+            Width = "350" 
             >
 
             <StackPanel.Resources>
-                <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+
+                <Style TargetType="StackPanel">
                     <Setter Property="Margin" Value="0,0,10,0"/>
                 </Style>
+                
             </StackPanel.Resources>
 
-            <Button
-                Content="Cerca password"
-                Background="Green"
-            />
+                <StackPanel>
 
-            <Button
+                <StackPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                        <Setter Property="Margin" Value="0,0,0,5"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Button
+                    Content="Cerca password"
+                    Background="LightGoldenrodYellow"
+                />
+
+                <Button
+                    Content="Modifica password"
+                    Background="Blue"
+                />
+
+            </StackPanel>
+
+            <StackPanel>
+
+                <StackPanel.Resources>
+                    <Style TargetType="Button" BasedOn="{StaticResource MenuButtonStyle}">
+                        <Setter Property="Margin" Value="0,0,0,5"/>
+                    </Style>
+                </StackPanel.Resources>
+
+                <Button
+                Content="Crea password"
+                Background="Green"
+                />
+
+                <Button
                 Content="Elimina password"
                 Background="Red"
-            />
+                 />
 
-            <Button
-                Content="Modifica password"
-                Background="Blue"
-            />
+            </StackPanel>
 
         </StackPanel>
 

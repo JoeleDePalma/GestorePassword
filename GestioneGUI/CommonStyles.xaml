@@ -67,5 +67,65 @@
 
 
     </Style>
+
+
+    <Style
+        x:Key="Sign_up-in_ButtonStyle"
+        TargetType="Button"
+        >
+        
+        <Setter Property="Height" Value="40"/>
+        <Setter Property="Width" Value="200"/>
+        <Setter Property="Foreground" Value="White"/>
+        <Setter Property="Background" Value="Blue"/>
+        <Setter Property="FontFamily" Value = "Arial"/>
+        <Setter Property="FontSize" Value="17"/>
+        <Setter Property="FontWeight" Value="Bold"/>
+        <Setter Property="BorderThickness" Value="0"/>
+
+        <Setter Property="Template">
+
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <ControlTemplate.Resources>
+                        
+                        <!-- DataTemplate per stringhe: genera un TextBlock che eredita le proprietà del Button -->
+                        <DataTemplate DataType="{x:Type sys:String}">
+                            <TextBlock 
+                                Text="{Binding}"
+                                Foreground="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=Foreground}"
+                                FontFamily="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontFamily}"
+                                FontSize="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontSize}"
+                                FontWeight="{Binding RelativeSource={RelativeSource AncestorType=Button}, Path=FontWeight}"
+                                TextAlignment="Center"
+                                VerticalAlignment="Center"
+                                HorizontalAlignment="Center"
+                                />
+
+                        </DataTemplate>
+
+                    </ControlTemplate.Resources>
+
+                    <Border x:Name="border"
+                        CornerRadius="15"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        Padding="{TemplateBinding Padding}">
+
+                    <ContentPresenter HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                                VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                                Content="{TemplateBinding Content}"
+                                ContentTemplate="{TemplateBinding ContentTemplate}"
+                                RecognizesAccessKey="True"/>
+                        
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+                
+    </Style>
     
 </ResourceDictionary>
