@@ -29,7 +29,7 @@
             VerticalAlignment="Top"
             Width="200"
             Height="70"
-            Margin="100,71,0,0"
+            Margin="80,71,0,0"
             >
 
             <TextBlock
@@ -64,16 +64,49 @@
             HorizontalAlignment="Left"     
             VerticalAlignment="Bottom"
             Width="200"
-            Margin="100, 0, 0, 140"
+            Margin="80, 0, 0, 110"
             >
+
+            <TextBlock
+                Text="Nome Utente"
+                FontSize="12"
+                FontFamily="Cambria"
+                FontWeight="Light"
+                Foreground="#444444"
+                Margin="0,5,0,5"
+                />
 
             <TextBox
                 Style="{StaticResource Password-Username_TextInputStyle}"
                 />
-            
-            <TextBox
-                Style="{StaticResource Password-Username_TextInputStyle}"
+
+            <TextBlock
+                Text="Password"
+                FontSize="12"
+                FontFamily="Cambria"
+                FontWeight="Light"
+                Foreground="#444444"
+                Margin="0,5,0,5"
                 />
+            
+            <StackPanel
+                Orientation="Horizontal"
+                >
+
+                <TextBox
+                    Style="{StaticResource Password-Username_TextInputStyle}"
+                    Width="160"
+                    HorizontalAlignment="Left"
+                    />
+
+                <Image 
+                    Source="/Images/closed_eye.png" 
+                    Width="40" 
+                    Height="40" 
+                    Stretch="Uniform" 
+                    />
+
+            </StackPanel>
 
             <Button
                 Style="{StaticResource Sign_up-in_ButtonStyle}"

@@ -125,5 +125,12 @@
       <Name>Libreria</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
+  <ItemGroup>
+    <Resource Include="Images\closed_eye.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <Resource Include="Images\opened_eye.png" />
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
