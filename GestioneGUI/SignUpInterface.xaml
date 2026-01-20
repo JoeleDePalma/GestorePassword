@@ -10,7 +10,6 @@
 
     <Grid>
 
-        <!-- rounded background panel on the left, non-interactive -->
         <Border
             Background="#FF89CFF0"
             CornerRadius="200"
@@ -21,7 +20,33 @@
             IsHitTestVisible="False"
             Margin="0, 0, -250, 0"
             Panel.ZIndex="0" 
-            />
+            >
+
+            <Grid>
+                
+            <TextBlock
+                x:Name="Welcome_Text"
+                FontFamily="Segoe UI"
+                FontWeight="DemiBold"
+                FontSize="16"
+                Foreground="Black"
+                HorizontalAlignment="Left"
+                VerticalAlignment="Top"
+                Panel.ZIndex="1"
+                />
+
+                <Button
+                    Width="50"
+                    Height="20"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    Margin="0,0,360,10"
+                    >
+                    Accedi
+                </Button>
+            </Grid>
+
+        </Border>
 
         <StackPanel
             Orientation="Vertical"
@@ -43,7 +68,7 @@
                 HorizontalAlignment="Center"
                 TextAlignment="Center"
                 />
-            
+
             <TextBlock
                 Text="Registrati per salvare &#x0A; le tue password in sicurezza"
                 FontSize="12"
@@ -88,30 +113,49 @@
                 Foreground="#444444"
                 Margin="0,5,0,5"
                 />
-            
+
             <StackPanel
                 Orientation="Horizontal"
+                Height="45"
+                Width="200"
                 >
 
-                <TextBox
-                    Style="{StaticResource Password-Username_TextInputStyle}"
+                <PasswordBox
+                    x:Name="PasswordBox_Input"
+                    Style="{StaticResource Password_HiddenTextInputStyle}"
                     Width="160"
                     HorizontalAlignment="Left"
                     />
 
-                <Image 
-                    Source="/Images/closed_eye.png" 
-                    Width="40" 
-                    Height="40" 
-                    Stretch="Uniform" 
+                <TextBox
+                    x:Name="TextBox_Input"
+                    Style="{StaticResource Password-Username_TextInputStyle}"
+                    Width="160"
+                    HorizontalAlignment="Left"
+                    Visibility="Collapsed"
                     />
+
+                <Button 
+                    x:Name="Show_Hide_PasswordButton"
+                    Click="SwapPasswordStackPanel"
+                    Style="{StaticResource PasswordButton_Style}"
+                    >
+
+                    <Image 
+                    x:Name="Image_PasswordState"
+                    Source="/Images/closed_eye.png" 
+                    Width="30" 
+                    Height="20" 
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    />
+
+                </Button>
 
             </StackPanel>
 
             <Button
                 Style="{StaticResource Sign_up-in_ButtonStyle}"
-                HorizontalAlignment="Left"
-                VerticalAlignment="Bottom"
                 Margin="0,10,0,0"
                 Content="Registrati"
                 />
