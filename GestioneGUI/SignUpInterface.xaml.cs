@@ -35,7 +35,6 @@ namespace GestorePassword
   per permettere a tutti di comprendere 
   e sfruttare tutte le funzionalità presenti!
   Inizia subito creando il tuo account!
-  Sei già registrato?
 ";
         }
 
@@ -63,6 +62,12 @@ namespace GestorePassword
             }
         }
 
+        public void SwapToSignInInterface(object sender, RoutedEventArgs e)
+        {
+            // Find the MainWindow and set its MainContent to SignInInterface
+            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            main.MainContent.Content = new SignInInterface();
+        }   
     }
 }
 

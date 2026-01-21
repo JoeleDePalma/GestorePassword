@@ -23,8 +23,8 @@
             >
 
             <Grid>
-                
-            <TextBlock
+
+                <TextBlock
                 x:Name="Welcome_Text"
                 FontFamily="Segoe UI"
                 FontWeight="DemiBold"
@@ -34,16 +34,7 @@
                 VerticalAlignment="Top"
                 Panel.ZIndex="1"
                 />
-
-                <Button
-                    Width="50"
-                    Height="20"
-                    HorizontalAlignment="Center"
-                    VerticalAlignment="Center"
-                    Margin="0,0,360,10"
-                    >
-                    Accedi
-                </Button>
+                
             </Grid>
 
         </Border>
@@ -54,7 +45,7 @@
             VerticalAlignment="Top"
             Width="200"
             Height="70"
-            Margin="80,71,0,0"
+            Margin="80,60,0,0"
             >
 
             <TextBlock
@@ -89,7 +80,7 @@
             HorizontalAlignment="Left"     
             VerticalAlignment="Bottom"
             Width="200"
-            Margin="80, 0, 0, 110"
+            Margin="80, 0, 0, 80"
             >
 
             <TextBlock
@@ -160,6 +151,26 @@
                 Content="Registrati"
                 />
 
+            <StackPanel
+                Margin="0, 10, 0, 0"
+                Orientation="Horizontal"
+                Width="140"
+                >
+
+                <TextBlock
+                    Text="Sei già registrato?"
+                    FontSize="12"
+                    VerticalAlignment="Center"
+                    />
+                
+                <Button
+                    Style="{StaticResource SwapAccessInterfaceLink_ButtonStyle}"
+                    Width="45"
+                    Content="Accedi"
+                    Click="SwapToSignInInterface"
+                    />
+
+            </StackPanel>
         </StackPanel>
 
     </Grid>

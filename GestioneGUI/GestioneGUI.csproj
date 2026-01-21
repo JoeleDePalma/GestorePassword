@@ -55,6 +55,9 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="SignInInterface.xaml.cs">
+      <DependentUpon>SignInInterface.xaml</DependentUpon>
+    </Compile>
     <Compile Include="SignUpInterface.xaml.cs">
       <DependentUpon>SignUpInterface.xaml</DependentUpon>
     </Compile>
@@ -78,8 +81,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </Page>
-    <Page Include="SingInInterface.xaml">
-      <SubType>Designer</SubType>
+    <Page Include="SignInInterface.xaml">
       <Generator>MSBuild:Compile</Generator>
     </Page>
     <Page Include="SignUpInterface.xaml">
@@ -90,9 +92,6 @@
   <ItemGroup>
     <Compile Include="MenuInterface.xaml.cs">
       <DependentUpon>MenuInterface.xaml</DependentUpon>
-    </Compile>
-    <Compile Include="SingInInterface.xaml.cs">
-      <DependentUpon>SingInInterface.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs">
       <SubType>Code</SubType>
