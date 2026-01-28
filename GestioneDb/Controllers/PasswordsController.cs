@@ -36,7 +36,7 @@ namespace GestioneDb.Controllers
         [HttpGet("ByApp/{app}")]
         public async Task<ActionResult<Password>> GetPasswordByApp(string app)
         {
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.App == app);
+            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
 
             if (password == null)
                 return NotFound();
@@ -47,14 +47,14 @@ namespace GestioneDb.Controllers
         [HttpPost]
         public async Task<ActionResult<Password>> CreatePassword(Password NewPassword)
         {
-            var PasswordIn = await _context.Passwords.FirstOrDefaultAsync(p => p.App == NewPassword.App);
+            var PasswordIn = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == NewPassword.AppName);
             
             if (NewPassword == null || PasswordIn != null)
                 return BadRequest();
 
             _context.Passwords.Add(NewPassword);
             await _context.SaveChangesAsync();
-            return CreatedAtAction(nameof(CreatePassword), new { id = NewPassword.Id}, NewPassword);
+            return CreatedAtAction(nameof(CreatePassword), new { id = NewPassword.CredentialID}, NewPassword);
         }
 
         [HttpPut("ById/{id}")]
@@ -67,7 +67,7 @@ namespace GestioneDb.Controllers
 
             if (password == null) return NotFound();
 
-            password.App = ModifiedPassword.App;
+            password.AppName = ModifiedPassword.AppName;
             password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
 
             await _context.SaveChangesAsync();
@@ -80,11 +80,11 @@ namespace GestioneDb.Controllers
         {
             if (ModifiedPassword == null) return BadRequest();
 
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.App == app);
+            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
 
             if (password == null) return NotFound();
 
-            password.App = ModifiedPassword.App;
+            password.AppName = ModifiedPassword.AppName;
             password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
 
             await _context.SaveChangesAsync();
@@ -108,7 +108,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("ByApp/{app}")]
         public async Task<IActionResult> DeletePasswordByApp(string app)
         {
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.App == app);
+            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
 
             if (password == null) return NotFound();
 
