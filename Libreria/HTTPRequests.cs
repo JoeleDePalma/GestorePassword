@@ -6,6 +6,7 @@ using System.Security.Policy;
 using System.Text;
 using System.Threading.Tasks;
 using System.Text.Json;
+using ClassesLibrary;
 
 namespace HTTPRequestsLibrary
 {
