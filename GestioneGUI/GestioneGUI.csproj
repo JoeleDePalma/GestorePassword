@@ -9,7 +9,17 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Images\closed_eye.png" />
+    <None Remove="Images\opened_eye.png" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\Libreria\Libreria.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Resource Include="Images\closed_eye.png" />
+    <Resource Include="Images\opened_eye.png" />
   </ItemGroup>
 
 </Project>
