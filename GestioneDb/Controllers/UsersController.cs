@@ -19,6 +19,7 @@ namespace GestioneDb.Controllers
             _context = context;
         }
 
+        [Authorize]
         [HttpGet("ById/{id}")]
         public async Task<ActionResult<User>> GetUserByID(int id)
         {
@@ -30,6 +31,7 @@ namespace GestioneDb.Controllers
             return (Ok(user));
         }
 
+        [Authorize]
         [HttpGet("ByUsername/{username}")]
         public async Task<ActionResult<User>> GetUserByUsername(string username)
         {
