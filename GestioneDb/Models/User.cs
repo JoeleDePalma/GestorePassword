@@ -4,8 +4,8 @@
     {
         public int? UserID { get; set; }
         public string Username { get; set; }
-        public byte[] HashedPassword { get; set; }
-        public byte[] PasswordSalt { get; set; }
+        public string HashedPassword { get; set; }
+        public string PasswordSalt { get; set; }
         public DateTime CreatedAt { get; set; }
     }
 }
