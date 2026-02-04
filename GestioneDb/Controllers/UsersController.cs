@@ -3,11 +3,12 @@ using Microsoft.EntityFrameworkCore;
 using GestioneDb.Data;
 using GestioneDb.Models;
 using Microsoft.AspNetCore.Authorization;
-using GestioneDb.DTOs;
 using Security;
+using GestioneDb.DTOs.Users;
 
 namespace GestioneDb.Controllers
 {
+    [Authorize]
     [ApiController]
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
@@ -19,30 +20,43 @@ namespace GestioneDb.Controllers
             _context = context;
         }
 
-        [Authorize]
         [HttpGet("ById/{id}")]
-        public async Task<ActionResult<User>> GetUserByID(int id)
+        public async Task<ActionResult<UserResponseDTO>> GetUserByID(int id)
         {
-            var user = await _context.Users.FindAsync(id);
+            var Response = await _context.Users.FindAsync(id);
 
-            if (user == null)
+            if (Response == null)
                 return NotFound();
+
+            var user = new UserResponseDTO()
+            {
+                UserID = Response.UserID,
+                Username = Response.Username,
+                CreatedAt = Response.CreatedAt 
+            };
 
             return (Ok(user));
         }
 
-        [Authorize]
         [HttpGet("ByUsername/{username}")]
-        public async Task<ActionResult<User>> GetUserByUsername(string username)
+        public async Task<ActionResult<UserResponseDTO>> GetUserByUsername(string username)
         {
-            var user = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
+            var Response = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
 
-            if (user == null)
+            if (Response == null)
                 return NotFound();
+
+            var user = new UserResponseDTO()
+            {
+                UserID = Response.UserID,
+                Username = Response.Username,
+                CreatedAt = Response.CreatedAt
+            };
 
             return (Ok(user));
         }
 
+        [AllowAnonymous]
         [HttpPost]
         public async Task<ActionResult<UserResponseDTO>> CreateUser(RegisterDTO Credentials)
         {
@@ -59,7 +73,7 @@ namespace GestioneDb.Controllers
 
             try
             {
-                (HashedPassword, Salt) = Hashing.HashPassword(Credentials.Password);
+                (HashedPassword, Salt) = HashingService.HashPassword(Credentials.Password);
             }
             catch (Exception)
             {
@@ -87,7 +101,6 @@ namespace GestioneDb.Controllers
             return CreatedAtAction(nameof(GetUserByID), new { id = NewUser.UserID }, response);
         }
 
-        [Authorize]
         [HttpPut("{id}")]
         public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDTO ModifiedUser)
         {
@@ -114,7 +127,7 @@ namespace GestioneDb.Controllers
             {
                 try
                 {
-                    (user.HashedPassword, user.PasswordSalt) = Hashing.HashPassword(ModifiedUser.Password);
+                    (user.HashedPassword, user.PasswordSalt) = HashingService.HashPassword(ModifiedUser.Password);
                 }
                 catch
                 {
@@ -127,6 +140,7 @@ namespace GestioneDb.Controllers
             return Ok("Utente aggiornato");
         }
 
+        [AllowAnonymous]
         [HttpPost("login")]
         public async Task<ActionResult<string>> Login(LoginDTO credentials, [FromServices] JwtService jwt)
         {
@@ -139,7 +153,7 @@ namespace GestioneDb.Controllers
             if (user == null)
                 return Unauthorized("Credenziali non valide");
 
-            bool ok = Hashing.VerifyPassword(
+            bool ok = HashingService.VerifyPassword(
                 credentials.Password,
                 user.HashedPassword,
                 user.PasswordSalt

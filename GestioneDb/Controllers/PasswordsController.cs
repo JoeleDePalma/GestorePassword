@@ -2,12 +2,16 @@
 using Microsoft.EntityFrameworkCore;
 using GestioneDb.Data;
 using GestioneDb.Models;
+using Microsoft.AspNetCore.Authorization;
+using GestioneDb.DTOs;
+using Security;
 
 namespace GestioneDb.Controllers
 {
+    [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PasswordsController : Controller
+    public class PasswordsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
@@ -16,11 +20,9 @@ namespace GestioneDb.Controllers
             _context = context;
         }
 
-        [HttpGet]
-        public async Task<ActionResult<List<Password>>> GetPasswords()
-        {
-            return Ok(await _context.Passwords.ToListAsync());
-        }
+        [HttpGet("UserId")]
+        public async Task<ActionResult<List<Password>>> GetPasswords(int UserId)
+            => Ok(await _context.Passwords.FirstOrDefaultAsync(p => p.UserID == UserId));
 
         [HttpGet("ById/{id}")]
         public async Task<ActionResult<Password>> GetPasswordById(int id)
@@ -34,9 +36,9 @@ namespace GestioneDb.Controllers
         }
 
         [HttpGet("ByApp/{app}")]
-        public async Task<ActionResult<Password>> GetPasswordByApp(string app)
+        public async Task<ActionResult<Password>> GetPasswordByApp(string app, int UserID)
         {
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
+            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app && p.UserID == UserID);
 
             if (password == null)
                 return NotFound();

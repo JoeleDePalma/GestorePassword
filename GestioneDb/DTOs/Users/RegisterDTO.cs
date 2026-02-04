@@ -1,6 +1,6 @@
-﻿namespace GestioneDb.DTOs
+﻿namespace GestioneDb.DTOs.Users
 {
-    public class UpdateUserDTO
+    public class RegisterDTO
     {
         public string Username { get; set; }
         public string Password { get; set; }
