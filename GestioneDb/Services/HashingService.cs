@@ -5,27 +5,17 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Security.Cryptography;
 using Konscious.Security.Cryptography;
+using Security;
 
 namespace Security
 {
-    public class Hashing
+    public class HashingService
     {
-        private static string GenerateSalt(int SaltSize = 16)
-        {
-            var SaltBytes = new byte[SaltSize];
-
-            using (var RandomNumber = RandomNumberGenerator.Create())
-            {
-                RandomNumber.GetBytes(SaltBytes);
-            }
-
-            return Convert.ToBase64String(SaltBytes);
-        }
 
         public static (string Hash, string Salt) HashPassword(string password, string Salt = null)
         {
             if (Salt == null)
-                Salt = GenerateSalt();
+                Salt = SecurityServices.GenerateSalt();
 
             var SaltBytes = Convert.FromBase64String(Salt);
 

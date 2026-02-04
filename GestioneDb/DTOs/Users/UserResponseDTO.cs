@@ -1,4 +1,4 @@
-﻿namespace GestioneDb.DTOs
+﻿namespace GestioneDb.DTOs.Users
 {
     public class UserResponseDTO
     {
