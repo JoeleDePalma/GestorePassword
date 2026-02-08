@@ -162,7 +162,7 @@ namespace GestioneDb.Controllers
             if (!ok)
                 return Unauthorized("Credenziali non valide");
 
-            var tokenUser = new ClassesLibrary.User
+            var tokenUser = new User
             {
                 UserID = user.UserID,
                 Username = user.Username,

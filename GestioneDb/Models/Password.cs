@@ -9,9 +9,9 @@
         public string AppUsername { get; set; }
 
         public string EncryptedPassword { get; set; }
-        public string IV { get; set; }
-        public string SaltIV { get; set; }
+        public string KeySalt { get; set; }
 
         public DateTime CreatedAt { get; set; }
+        public DateTime LastUpdateAt { get; set; }
     }
 }
