@@ -8,7 +8,7 @@ namespace Security
 {
     public class CryptographyService
     {
-        private static byte[] DeriveKey(string password, string salt = null)
+        public static byte[] DeriveKey(string password, string salt = null)
         {
             if (salt == null)
                 salt = SecurityServices.GenerateSalt();

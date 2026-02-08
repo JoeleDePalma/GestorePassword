@@ -1,10 +1,13 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GestioneDb.Data;
+﻿using GestioneDb.Data;
+using GestioneDb.DTOs.Passwords;
 using GestioneDb.Models;
 using Microsoft.AspNetCore.Authorization;
-using GestioneDb.DTOs;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.IdentityModel.Tokens.Jwt;
 using Security;
+using ControllersServices;
+using System.Security.Cryptography.Xml;
 
 namespace GestioneDb.Controllers
 {
@@ -13,46 +16,130 @@ namespace GestioneDb.Controllers
     [ApiController]
     public class PasswordsController : ControllerBase
     {
+        private int _userId;
         private readonly ApplicationDbContext _context;
+        private readonly ControllersServices.ControllersServices _services;
 
-        public PasswordsController(ApplicationDbContext context)
+        public PasswordsController(ApplicationDbContext context, ControllersServices.ControllersServices services)
         {
             _context = context;
+            _services = services;
         }
 
         [HttpGet("UserId")]
-        public async Task<ActionResult<List<Password>>> GetPasswords(int UserId)
-            => Ok(await _context.Passwords.FirstOrDefaultAsync(p => p.UserID == UserId));
+        public async Task<ActionResult<List<PasswordResponseDTO>>> GetPasswords(string MasterPassword)
+        {
+            byte[] Key;
+            _userId = GetUserId();
+
+            List<Password> PasswordsList = await _context.Passwords
+                .Where(p => p.UserID == _userId)
+                    .ToListAsync();
+
+            if (!PasswordsList.Any())
+                return Ok(new List<PasswordResponseDTO>());
+
+            List<PasswordResponseDTO> InfoList = new List<PasswordResponseDTO>();
+
+            foreach (Password p in PasswordsList)
+            {
+                (Key, _) = await _services.KeyFromPassword(MasterPassword, _userId, p.KeySalt);
+
+                if (Key == null)
+                    return Unauthorized();
+
+                InfoList.Add(new PasswordResponseDTO
+                {
+                    AppName = p.AppName,
+                    AppUsername = p.AppUsername,
+                    Password = CryptographyService.Decrypt(p.EncryptedPassword, Key),
+                    CreatedAt = p.CreatedAt,
+                    LastUpdateAt = p.LastUpdateAt
+                });
+            }
+
+            return Ok(InfoList);
+        }
 
         [HttpGet("ById/{id}")]
-        public async Task<ActionResult<Password>> GetPasswordById(int id)
+        public async Task<ActionResult<PasswordResponseDTO>> GetPasswordById(int id, string MasterPassword)
         {
-            var password = await _context.Passwords.FindAsync(id);
+            _userId = GetUserId();
+
+            Password? password = await _context.Passwords.FindAsync(id);
 
             if (password == null)
                 return NotFound();
 
-            return (Ok(password));
+            if (password.UserID != _userId)
+                return Unauthorized();
+
+            var (Key, _) = await _services.KeyFromPassword(MasterPassword, _userId, password.KeySalt);
+
+            if (Key == null)
+                return Unauthorized();
+
+            PasswordResponseDTO Info = new PasswordResponseDTO()
+            {
+                AppName = password.AppName,
+                AppUsername = password.AppUsername,
+                Password = CryptographyService.Decrypt(password.EncryptedPassword, Key),
+                CreatedAt = password.CreatedAt,
+                LastUpdateAt = password.LastUpdateAt
+            };
+
+            return (Ok(Info));
         }
 
         [HttpGet("ByApp/{app}")]
-        public async Task<ActionResult<Password>> GetPasswordByApp(string app, int UserID)
+        public async Task<ActionResult<PasswordResponseDTO>> GetPasswordByApp(string app, string MasterPassword)
         {
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app && p.UserID == UserID);
+            _userId = GetUserId();
+
+            Password? password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app && p.UserID == _userId);
 
             if (password == null)
                 return NotFound();
 
-            return (Ok(password));
+            var (Key, _) = await _services.KeyFromPassword(MasterPassword, _userId, password.KeySalt);
+
+            if (Key == null)
+                return Unauthorized();
+
+            PasswordResponseDTO Info = new PasswordResponseDTO()
+            {
+                AppName = password.AppName,
+                AppUsername = password.AppUsername,
+                Password = CryptographyService.Decrypt(password.EncryptedPassword, Key),
+                CreatedAt = password.CreatedAt,
+                LastUpdateAt = password.LastUpdateAt
+            };
+
+            return (Ok(Info));
         }
 
         [HttpPost]
-        public async Task<ActionResult<Password>> CreatePassword(Password NewPassword)
+        public async Task<ActionResult<Password>> CreatePassword(UpdatePasswordDTO InfoNewPassword)
         {
-            var PasswordIn = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == NewPassword.AppName);
+            _userId = GetUserId();
+
+            var PasswordIn = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == InfoNewPassword.AppName && p.UserID == _userId);
             
-            if (NewPassword == null || PasswordIn != null)
+            if (InfoNewPassword == null || PasswordIn != null)
                 return BadRequest();
+
+            var (Key, KeySalt) = await _services.KeyFromPassword(InfoNewPassword.MasterPassword, _userId);
+
+            Password NewPassword = new Password()
+            {
+                UserID = _userId,
+                AppName = InfoNewPassword.AppName,
+                AppUsername = InfoNewPassword.AppUsername,
+                EncryptedPassword = CryptographyService.Encrypt(InfoNewPassword.Password, Key),
+                KeySalt = KeySalt,
+                CreatedAt = DateTime.UtcNow,
+                LastUpdateAt = DateTime.UtcNow
+            };
 
             _context.Passwords.Add(NewPassword);
             await _context.SaveChangesAsync();
@@ -60,17 +147,38 @@ namespace GestioneDb.Controllers
         }
 
         [HttpPut("ById/{id}")]
-        public async Task<IActionResult> UpdatePasswordById(Password ModifiedPassword, int id)
+        public async Task<IActionResult> UpdatePasswordById(UpdatePasswordDTO ModifiedPassword, int id)
         {
+            _userId = GetUserId();
+
+            var OldPassword = await _context.Passwords.FindAsync(id);
+
+            if (OldPassword == null)
+                return NotFound();
+
+            if (OldPassword.UserID != _userId)
+                return Unauthorized();
+
             if (ModifiedPassword == null)
                 return BadRequest();
 
-            var password = await _context.Passwords.FindAsync(id);
+            var (Key, _) = await _services.KeyFromPassword(ModifiedPassword.MasterPassword, _userId, OldPassword.KeySalt);
 
-            if (password == null) return NotFound();
+            if (Key == null)
+                return Unauthorized();
 
-            password.AppName = ModifiedPassword.AppName;
-            password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
+            var EncryptedPassword = CryptographyService.Encrypt(ModifiedPassword.Password, Key);
+
+            if (ModifiedPassword.AppName != null)
+                OldPassword.AppName = ModifiedPassword.AppName;
+
+            if (ModifiedPassword.AppUsername != null)
+                OldPassword.AppUsername = ModifiedPassword.AppUsername;
+
+            if(ModifiedPassword.Password != null)
+                OldPassword.EncryptedPassword = EncryptedPassword;
+
+            OldPassword.LastUpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
@@ -78,16 +186,38 @@ namespace GestioneDb.Controllers
         }
 
         [HttpPut("ByApp/{app}")]
-        public async Task<IActionResult> UpdatePasswordByApp(Password ModifiedPassword, string app)
+        public async Task<IActionResult> UpdatePasswordByApp(UpdatePasswordDTO ModifiedPassword)
         {
-            if (ModifiedPassword == null) return BadRequest();
+            _userId = GetUserId();
 
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
+            var OldPassword = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == ModifiedPassword.AppName && p.UserID == _userId);
 
-            if (password == null) return NotFound();
+            if (OldPassword == null)
+                return NotFound();
 
-            password.AppName = ModifiedPassword.AppName;
-            password.EncryptedPassword = ModifiedPassword.EncryptedPassword;
+            if (ModifiedPassword == null) 
+                return BadRequest();
+
+            if (string.IsNullOrWhiteSpace(ModifiedPassword.AppName))
+                return BadRequest("AppName is required for UpdateByApp.");
+
+            var (Key, _) = await _services.KeyFromPassword(ModifiedPassword.MasterPassword, _userId, OldPassword.KeySalt);
+
+            if (Key == null)
+                return Unauthorized();
+
+            var EncryptedPassword = CryptographyService.Encrypt(ModifiedPassword.Password, Key);
+
+            if (ModifiedPassword.AppName != null)
+                OldPassword.AppName = ModifiedPassword.AppName;
+
+            if (ModifiedPassword.AppUsername != null)
+                OldPassword.AppUsername = ModifiedPassword.AppUsername;
+
+            if (ModifiedPassword.Password != null)
+                OldPassword.EncryptedPassword = EncryptedPassword;
+
+            OldPassword.LastUpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
 
@@ -97,10 +227,16 @@ namespace GestioneDb.Controllers
         [HttpDelete("ById/{id}")]
         public async Task<IActionResult> DeletePasswordById(int id)
         {
+            _userId = GetUserId();
+
             var password = await _context.Passwords.FindAsync(id);
 
-            if (password == null) return NotFound();
+            if (password == null) 
+                return NotFound();
 
+            if (password.UserID != _userId)
+                return Unauthorized();
+            
             _context.Passwords.Remove(password);
             await _context.SaveChangesAsync();
 
@@ -110,14 +246,22 @@ namespace GestioneDb.Controllers
         [HttpDelete("ByApp/{app}")]
         public async Task<IActionResult> DeletePasswordByApp(string app)
         {
-            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app);
+            _userId = GetUserId();
 
-            if (password == null) return NotFound();
+            var password = await _context.Passwords.FirstOrDefaultAsync(p => p.AppName == app && p.UserID == _userId);
+
+            if (password == null) 
+                return NotFound();
 
             _context.Passwords.Remove(password);
             await _context.SaveChangesAsync();
 
             return NoContent();
+        }
+
+        private int GetUserId()
+        {
+            return int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
         }
     }
 }
