@@ -49,7 +49,7 @@ namespace HTTPRequestsLibrary
             => await client.PostAsync(url, new StringContent(JsonSerializer.Serialize(NewPassword), Encoding.UTF8, "application/json"));
 
         public async Task<HttpResponseMessage> UpdatePasswordByApp(Password UpdatedPassword)
-            => await client.PutAsync($"{url}/ByApp/{UpdatedPassword.App}", new StringContent(JsonSerializer.Serialize(UpdatedPassword), Encoding.UTF8, "application/json"));
+            => await client.PutAsync($"{url}/ByApp/{UpdatedPassword.AppName}", new StringContent(JsonSerializer.Serialize(UpdatedPassword), Encoding.UTF8, "application/json"));
 
         public async Task<HttpResponseMessage> DeletePasswordByApp(string app)
             => await client.DeleteAsync($"{url}/ByApp/{app}");
