@@ -1,8 +1,10 @@
+using ControllersServices;
 using GestioneDb.Data;
+using GestioneDb.Services.Implementations;
+using GestioneDb.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.IdentityModel.Tokens;
 using System.Text;
-using ControllersServices;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -42,6 +44,7 @@ builder.Services.AddAuthentication("Bearer")
 
 builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ControllersServices.ControllersServices>();
+builder.Services.AddScoped<IPasswordService, PasswordService>();
 
 app.UseAuthentication();
 app.UseAuthorization();
