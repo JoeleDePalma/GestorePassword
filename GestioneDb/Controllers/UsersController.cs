@@ -1,10 +1,15 @@
-﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.EntityFrameworkCore;
-using GestioneDb.Data;
-using GestioneDb.Models;
-using Microsoft.AspNetCore.Authorization;
-using Security;
+﻿using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
+using GestioneDb.Models;
+using GestioneDb.Services;
+using GestioneDb.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using Security;
+using System.IdentityModel.Tokens.Jwt;
+using GestioneDb.Services.Common;
+using Microsoft.AspNetCore.Http.HttpResults;
 
 namespace GestioneDb.Controllers
 {
@@ -13,167 +18,84 @@ namespace GestioneDb.Controllers
     [Route("api/[controller]")]
     public class UsersController : ControllerBase
     {
-        private readonly ApplicationDbContext _context;
+        private readonly IUserService _userService;
 
-        public UsersController(ApplicationDbContext context)
+        public UsersController(IUserService userService)
         {
-            _context = context;
+            _userService = userService;
         }
 
         [HttpGet("ById/{id}")]
-        public async Task<ActionResult<UserResponseDTO>> GetUserByID(int id)
+        public async Task<IActionResult> GetUserById(int id)
         {
-            var Response = await _context.Users.FindAsync(id);
+            var result = await _userService.GetUserByIdAsync(id);
 
-            if (Response == null)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            var user = new UserResponseDTO()
-            {
-                UserID = Response.UserID,
-                Username = Response.Username,
-                CreatedAt = Response.CreatedAt 
-            };
-
-            return (Ok(user));
-        }
-
-        [HttpGet("ByUsername/{username}")]
-        public async Task<ActionResult<UserResponseDTO>> GetUserByUsername(string username)
-        {
-            var Response = await _context.Users.FirstOrDefaultAsync(u => u.Username == username);
-
-            if (Response == null)
-                return NotFound();
-
-            var user = new UserResponseDTO()
-            {
-                UserID = Response.UserID,
-                Username = Response.Username,
-                CreatedAt = Response.CreatedAt
-            };
-
-            return (Ok(user));
+            return (Ok(result.Data));
         }
 
         [AllowAnonymous]
         [HttpPost]
-        public async Task<ActionResult<UserResponseDTO>> CreateUser(RegisterDTO Credentials)
+        public async Task<IActionResult> CreateUser(RegisterDTO Credentials)
         {
-            if (Credentials == null)
-                return BadRequest("Dati utente mancanti");
+            var result = await _userService.CreateUserAsync(Credentials);
 
-            var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == Credentials.Username);
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            if (existing != null)
-                return BadRequest("Username già esistente");
-
-            string HashedPassword, Salt;
-
-            try
-            {
-                (HashedPassword, Salt) = HashingService.HashPassword(Credentials.Password);
-            }
-            catch (Exception)
-            {
-                return StatusCode(500, "Errore interno durante l'hashing della password");
-            }
-
-            var NewUser = new User
-            {
-                Username = Credentials.Username,
-                HashedPassword = HashedPassword,
-                PasswordSalt = Salt,
-                CreatedAt = DateTime.Now
-            };
-
-            _context.Users.Add(NewUser);
-            await _context.SaveChangesAsync();
-
-            var response = new UserResponseDTO
-            {
-                UserID = NewUser.UserID,
-                Username = NewUser.Username,
-                CreatedAt = NewUser.CreatedAt
-            };
-
-            return CreatedAtAction(nameof(GetUserByID), new { id = NewUser.UserID }, response);
+            return CreatedAtAction(nameof(GetUserById), new { id = result.Data.UserID }, result.Data);
         }
 
-        [HttpPut("{id}")]
-        public async Task<IActionResult> UpdateUser(int id, [FromBody] UpdateUserDTO ModifiedUser)
+        [HttpPut]
+        public async Task<IActionResult> UpdateUserById([FromBody] UpdateUserDTO ModifiedUser)
         {
-            if (ModifiedUser == null)
-                return BadRequest("Dati mancanti");
+            int id = GetUserId();
+            var result = await _userService.UpdateUserByIdAsync(id, ModifiedUser);
 
-            var user = await _context.Users.FindAsync(id);
-
-            if (user == null)
-                return NotFound("Utente non trovato");
-
-            if (!string.IsNullOrEmpty(ModifiedUser.Username))
-            {
-                var conflict = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Username == ModifiedUser.Username && u.UserID != id);
-
-                if (conflict != null)
-                    return BadRequest("Username già esistente");
-
-                user.Username = ModifiedUser.Username;
-            }
-
-            if (!string.IsNullOrEmpty(ModifiedUser.Password))
-            {
-                try
-                {
-                    (user.HashedPassword, user.PasswordSalt) = HashingService.HashPassword(ModifiedUser.Password);
-                }
-                catch
-                {
-                    return StatusCode(500, "Errore interno durante l'hashing della password");
-                }
-            }
-
-            await _context.SaveChangesAsync();
+            if (!result.Success)
+                return HandleError(result.Error);
 
             return Ok("Utente aggiornato");
         }
 
+        [HttpDelete]
+        public async Task<IActionResult> DeleteUserById()
+        {
+            int id = GetUserId();
+            var result = await _userService.DeleteUserByIdAsync(id);
+
+            if (!result.Success)
+                return HandleError(result.Error);
+
+            return NoContent();
+        }
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<ActionResult<string>> Login(LoginDTO credentials, [FromServices] JwtService jwt)
+        public async Task<IActionResult> Login(LoginDTO Credentials, [FromServices] JwtService jwt)
         {
-            if (credentials == null)
-                return BadRequest("Dati mancanti");
+            var result = await _userService.LoginAsync(Credentials, jwt);
 
-            var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == credentials.Username);
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            if (user == null)
-                return Unauthorized("Credenziali non valide");
+            return Ok(new { Token = result.Data });
+        }
 
-            bool ok = HashingService.VerifyPassword(
-                credentials.Password,
-                user.HashedPassword,
-                user.PasswordSalt
-            );
+        private int GetUserId()
+            => int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
 
-            if (!ok)
-                return Unauthorized("Credenziali non valide");
-
-            var tokenUser = new User
+        private IActionResult HandleError(ErrorCode error)
+        {
+            return error switch
             {
-                UserID = user.UserID,
-                Username = user.Username,
-                HashedPassword = user.HashedPassword,
-                PasswordSalt = user.PasswordSalt,
-                CreatedAt = user.CreatedAt
+                ErrorCode.NotFound => NotFound(),
+                ErrorCode.Unauthorized => Unauthorized(),
+                ErrorCode.BadRequest => BadRequest(),
+                ErrorCode.Conflict => Conflict(),
+                _ => StatusCode(500)
             };
-
-            var token = jwt.GenerateToken(tokenUser);
-
-            return Ok(new { Token = token });
         }
     } 
 }
