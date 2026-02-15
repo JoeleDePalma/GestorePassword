@@ -1,6 +1,8 @@
 ﻿using GestioneDb.DTOs.Passwords;
+using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
 
@@ -19,101 +21,115 @@ namespace GestioneDb.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> GetAll(string masterPassword)
+        public async Task<IActionResult> GetAllPasswords(string masterPassword)
         {
             int userId = GetUserId();
-            var result = await _passwordService.GetAllAsync(userId, masterPassword);
+            var result = await _passwordService.GetAllPasswordsAsync(userId, masterPassword);
 
-            return Ok(result);
+            if (!result.Success)
+                return HandleError(result.Error);
+
+            return Ok(result.Data);
         }
 
         [HttpGet("ById/{id}")]
-        public async Task<IActionResult> GetById(int id, string masterPassword)
+        public async Task<IActionResult> GetPasswordById(int id, string masterPassword)
         {
             int userId = GetUserId();
-            var result = await _passwordService.GetByIdAsync(id, userId, masterPassword);
+            var result = await _passwordService.GetPasswordByIdAsync(id, userId, masterPassword);
 
-            if (result == null)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpGet("ByApp/{app}")]
-        public async Task<IActionResult> GetByApp(string app, string masterPassword)
+        public async Task<IActionResult> GetPasswordByApp(string app, string masterPassword)
         {
             int userId = GetUserId();
-            var result = await _passwordService.GetByAppAsync(app, userId, masterPassword);
+            var result = await _passwordService.GetPasswordByAppAsync(app, userId, masterPassword);
 
-            if (result == null)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            return Ok(result);
+            return Ok(result.Data);
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(UpdatePasswordDTO dto)
+        public async Task<IActionResult> CreatePassword(UpdatePasswordDTO dto)
         {
             int userId = GetUserId();
-            var created = await _passwordService.CreateAsync(dto, userId);
+            var result = await _passwordService.CreatePasswordAsync(dto, userId);
 
-            if (created == null)
-                return BadRequest("Password already exists for this app.");
+            if (!result.Success)
+                return HandleError(result.Error);
 
-            return CreatedAtAction(nameof(GetById), new { id = created.CredentialID }, created);
+            return CreatedAtAction(nameof(GetPasswordById), new { id = result.Data.CredentialID }, result);
         }
 
         [HttpPut("ById/{id}")]
-        public async Task<IActionResult> UpdateById(int id, UpdatePasswordDTO dto)
+        public async Task<IActionResult> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
             int userId = GetUserId();
-            bool success = await _passwordService.UpdateByIdAsync(id, dto, userId);
+            var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
-            if (!success)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
             return NoContent();
         }
 
         [HttpPut("ByApp/{app}")]
-        public async Task<IActionResult> UpdateByApp(string app, UpdatePasswordDTO dto)
+        public async Task<IActionResult> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
         {
             int userId = GetUserId();
+            var result = await _passwordService.UpdatePasswordByAppAsync(app, dto, userId);
 
-            bool success = await _passwordService.UpdateByAppAsync(app, dto, userId);
-
-            if (!success)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
             return NoContent();
         }
 
         [HttpDelete("ById/{id}")]
-        public async Task<IActionResult> DeleteById(int id)
+        public async Task<IActionResult> DeletePasswordById(int id)
         {
             int userId = GetUserId();
-            bool success = await _passwordService.DeleteByIdAsync(id, userId);
+            var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
 
-            if (!success)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
             return NoContent();
         }
 
         [HttpDelete("ByApp/{app}")]
-        public async Task<IActionResult> DeleteByApp(string app)
+        public async Task<IActionResult> DeletePasswordByApp(string app)
         {
             int userId = GetUserId();
-            bool success = await _passwordService.DeleteByAppAsync(app, userId);
+            var result = await _passwordService.DeletePasswordByAppAsync(app, userId);
 
-            if (!success)
-                return NotFound();
+            if (!result.Success)
+                return HandleError(result.Error);
 
             return NoContent();
         }
 
         private int GetUserId()
             => int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
-        
+
+        private IActionResult HandleError(ErrorCode error)
+        {
+            return error switch
+            {
+                ErrorCode.NotFound => NotFound(),
+                ErrorCode.Unauthorized => Unauthorized(),
+                ErrorCode.BadRequest => BadRequest(),
+                ErrorCode.Conflict => Conflict(),
+                _ => StatusCode(500)
+            };
+        }
+
     }
 }
