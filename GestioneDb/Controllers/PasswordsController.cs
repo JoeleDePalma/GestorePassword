@@ -20,7 +20,7 @@ namespace GestioneDb.Controllers
             _passwordService = passwordService;
         }
 
-        [HttpGet]
+        [HttpGet("get/all")]
         public async Task<IActionResult> GetAllPasswords(string masterPassword)
         {
             int userId = GetUserId();
@@ -32,7 +32,7 @@ namespace GestioneDb.Controllers
             return Ok(result.Data);
         }
 
-        [HttpGet("ById/{id}")]
+        [HttpGet("get/ById/{id}")]
         public async Task<IActionResult> GetPasswordById(int id, string masterPassword)
         {
             int userId = GetUserId();
@@ -44,7 +44,7 @@ namespace GestioneDb.Controllers
             return Ok(result.Data);
         }
 
-        [HttpGet("ByApp/{app}")]
+        [HttpGet("get/ByApp/{app}")]
         public async Task<IActionResult> GetPasswordByApp(string app, string masterPassword)
         {
             int userId = GetUserId();
@@ -56,11 +56,11 @@ namespace GestioneDb.Controllers
             return Ok(result.Data);
         }
 
-        [HttpPost]
-        public async Task<IActionResult> CreatePassword(UpdatePasswordDTO dto)
+        [HttpPost("create")]
+        public async Task<IActionResult> CreatePassword(UpdatePasswordDTO NewPassword)
         {
             int userId = GetUserId();
-            var result = await _passwordService.CreatePasswordAsync(dto, userId);
+            var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
 
             if (!result.Success)
                 return HandleError(result.Error);
@@ -68,7 +68,7 @@ namespace GestioneDb.Controllers
             return CreatedAtAction(nameof(GetPasswordById), new { id = result.Data.CredentialID }, result);
         }
 
-        [HttpPut("ById/{id}")]
+        [HttpPut("update/ById/{id}")]
         public async Task<IActionResult> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
             int userId = GetUserId();
@@ -80,7 +80,7 @@ namespace GestioneDb.Controllers
             return NoContent();
         }
 
-        [HttpPut("ByApp/{app}")]
+        [HttpPut("update/ByApp/{app}")]
         public async Task<IActionResult> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
         {
             int userId = GetUserId();
@@ -92,7 +92,7 @@ namespace GestioneDb.Controllers
             return NoContent();
         }
 
-        [HttpDelete("ById/{id}")]
+        [HttpDelete("delete/ById/{id}")]
         public async Task<IActionResult> DeletePasswordById(int id)
         {
             int userId = GetUserId();
@@ -104,7 +104,7 @@ namespace GestioneDb.Controllers
             return NoContent();
         }
 
-        [HttpDelete("ByApp/{app}")]
+        [HttpDelete("delete/ByApp/{app}")]
         public async Task<IActionResult> DeletePasswordByApp(string app)
         {
             int userId = GetUserId();
