@@ -6,6 +6,7 @@ using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Security;
+using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace GestioneDb.Services
 {
@@ -37,16 +38,16 @@ namespace GestioneDb.Services
             return Result<UserResponseDTO>.Ok(user);
         }
 
-        public async Task<Result<UserResponseDTO>> CreateUserAsync(RegisterDTO Credentials)
+        public async Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO Credentials, JwtService jwt)
         {
             if (Credentials == null)
-                return Result<UserResponseDTO>.Fail(ErrorCode.BadRequest);
+                return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest);
 
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == Credentials.Username);
 
             if (existing != null)
-                return Result<UserResponseDTO>.Fail(ErrorCode.BadRequest);
+                return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest);
 
             string HashedPassword, Salt;
 
@@ -56,10 +57,10 @@ namespace GestioneDb.Services
             }
             catch (Exception)
             {
-                return Result<UserResponseDTO>.Fail(ErrorCode.InternalServerError);
+                return Result<RegisterResponseDTO>.Fail(ErrorCode.InternalServerError);
             }
 
-            var NewUser = new User
+            var NewUser = new Models.User
             {
                 Username = Credentials.Username,
                 HashedPassword = HashedPassword,
@@ -70,14 +71,26 @@ namespace GestioneDb.Services
             _context.Users.Add(NewUser);
             await _context.SaveChangesAsync();
 
-            var response = new UserResponseDTO
+            var tokenUser = new Models.User
+            {
+                UserID = NewUser.UserID,
+                Username = Credentials.Username,
+                HashedPassword = HashedPassword,
+                PasswordSalt = Salt,
+                CreatedAt = DateTime.Now
+            };
+
+            var token = jwt.GenerateToken(tokenUser);
+
+            var response = new RegisterResponseDTO
             {
                 UserID = NewUser.UserID,
                 Username = NewUser.Username,
-                CreatedAt = NewUser.CreatedAt
+                CreatedAt = NewUser.CreatedAt,
+                Token = token
             };
 
-            return Result<UserResponseDTO>.Ok(response);
+            return Result<RegisterResponseDTO>.Ok(response);
         }
 
         public async Task<Result<bool>> UpdateUserByIdAsync(int id, UpdateUserDTO ModifiedUser)
@@ -131,16 +144,16 @@ namespace GestioneDb.Services
             return Result<bool>.Ok(true);
         }
 
-        public async Task<Result<string>> LoginAsync(LoginDTO credentials, JwtService jwt)
+        public async Task<Result<LoginResponseDTO>> LoginAsync(LoginDTO credentials, JwtService jwt)
         {
             if (credentials == null)
-                return Result<string>.Fail(ErrorCode.BadRequest);
+                return Result<LoginResponseDTO>.Fail(ErrorCode.BadRequest);
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username == credentials.Username);
 
             if (user == null)
-                return Result<string>.Fail(ErrorCode.Unauthorized);
+                return Result<LoginResponseDTO>.Fail(ErrorCode.Unauthorized);
 
             bool ok = HashingService.VerifyPassword(
                 credentials.Password,
@@ -149,9 +162,9 @@ namespace GestioneDb.Services
             );
 
             if (!ok)
-                return Result<string>.Fail(ErrorCode.Unauthorized);
+                return Result<LoginResponseDTO>.Fail(ErrorCode.Unauthorized);
 
-            var tokenUser = new User
+            var tokenUser = new Models.User
             {
                 UserID = user.UserID,
                 Username = user.Username,
@@ -162,7 +175,12 @@ namespace GestioneDb.Services
 
             var token = jwt.GenerateToken(tokenUser);
 
-            return Result<string>.Ok(token);
+            var obj = new LoginResponseDTO()
+            {
+                Token = token
+            };
+
+            return Result<LoginResponseDTO>.Ok(obj);
         }
     }
 }

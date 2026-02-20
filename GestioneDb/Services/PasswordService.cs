@@ -99,13 +99,13 @@ namespace GestioneDb.Services.Implementations
             return Result<PasswordResponseDTO?>.Ok(PasswordInfo);
         }
 
-        public async Task<Result<Password>> CreatePasswordAsync(UpdatePasswordDTO dto, int userId)
+        public async Task<Result<CreatedPasswordDTO>> CreatePasswordAsync(UpdatePasswordDTO dto, int userId)
         {
             var existing = await _context.Passwords
                 .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId);
 
             if (existing != null)
-                return Result<Password>.Fail(ErrorCode.BadRequest);
+                return Result<CreatedPasswordDTO>.Fail(ErrorCode.BadRequest);
 
             var (key, salt) = await _services.KeyFromPassword(dto.MasterPassword, userId);
 
@@ -123,7 +123,17 @@ namespace GestioneDb.Services.Implementations
             _context.Passwords.Add(newPassword);
             await _context.SaveChangesAsync();
 
-            return Result<Password>.Ok(newPassword);
+            var NewPasswordInfo = new CreatedPasswordDTO()
+            {
+                CredentialID = (int) newPassword.CredentialID,
+                AppName = newPassword.AppName,
+                AppUsername = newPassword.AppUsername,
+                Password = dto.Password,
+                CreatedAt = newPassword.CreatedAt,
+                LastUpdateAt = newPassword.LastUpdateAt
+            };
+
+            return Result<CreatedPasswordDTO?>.Ok(NewPasswordInfo);
         }
 
         public async Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)

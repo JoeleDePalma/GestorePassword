@@ -25,7 +25,7 @@ namespace GestioneDb.Controllers
             _userService = userService;
         }
 
-        [HttpGet("ById/{id}")]
+        [HttpGet("get/ById/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
@@ -37,7 +37,7 @@ namespace GestioneDb.Controllers
         }
 
         [AllowAnonymous]
-        [HttpPost]
+        [HttpPost("register")]
         public async Task<IActionResult> CreateUser(RegisterDTO Credentials)
         {
             var result = await _userService.CreateUserAsync(Credentials);
@@ -48,8 +48,8 @@ namespace GestioneDb.Controllers
             return CreatedAtAction(nameof(GetUserById), new { id = result.Data.UserID }, result.Data);
         }
 
-        [HttpPut]
-        public async Task<IActionResult> UpdateUserById([FromBody] UpdateUserDTO ModifiedUser)
+        [HttpPut("update")]
+        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO ModifiedUser)
         {
             int id = GetUserId();
             var result = await _userService.UpdateUserByIdAsync(id, ModifiedUser);
@@ -57,10 +57,10 @@ namespace GestioneDb.Controllers
             if (!result.Success)
                 return HandleError(result.Error);
 
-            return Ok("Utente aggiornato");
+            return Ok(result.Data);
         }
 
-        [HttpDelete]
+        [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUserById()
         {
             int id = GetUserId();
@@ -71,6 +71,7 @@ namespace GestioneDb.Controllers
 
             return NoContent();
         }
+
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO Credentials, [FromServices] JwtService jwt)

@@ -14,7 +14,7 @@ namespace GestioneDb.Services.Interfaces
 
         Task<Result<bool>> DeleteUserByIdAsync(int id);
 
-        Task<Result<string>> LoginAsync(LoginDTO credentials, JwtService jwt);
+        Task<Result<LoginResponseDTO>> LoginAsync(LoginDTO credentials, JwtService jwt);
 
     }
 }
