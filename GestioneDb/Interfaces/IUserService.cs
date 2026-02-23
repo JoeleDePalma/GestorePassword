@@ -9,7 +9,7 @@ namespace GestioneDb.Services.Interfaces
     {
         Task<Result<UserResponseDTO>> GetUserByIdAsync(int id);
 
-        Task<Result<UserResponseDTO>> CreateUserAsync(RegisterDTO Credentials);
+        Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO Credentials, JwtService jwt);
         Task<Result<bool>> UpdateUserByIdAsync(int id, [FromBody] UpdateUserDTO ModifiedUser);
 
         Task<Result<bool>> DeleteUserByIdAsync(int id);
