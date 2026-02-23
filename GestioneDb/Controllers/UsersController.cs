@@ -38,9 +38,9 @@ namespace GestioneDb.Controllers
 
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> CreateUser(RegisterDTO Credentials)
+        public async Task<IActionResult> CreateUser([FromBody] RegisterDTO NewUser, [FromServices] JwtService jwt)
         {
-            var result = await _userService.CreateUserAsync(Credentials);
+            var result = await _userService.CreateUserAsync(NewUser, jwt);
 
             if (!result.Success)
                 return HandleError(result.Error);
