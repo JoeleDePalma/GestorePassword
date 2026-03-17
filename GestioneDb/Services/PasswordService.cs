@@ -5,6 +5,7 @@ using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Security;
+using System.Xml;
 
 namespace GestioneDb.Services.Implementations
 {
@@ -44,6 +45,13 @@ namespace GestioneDb.Services.Implementations
                 });
             }
 
+            Console.WriteLine(@$"
+
+
+{result}
+
+
+");
             return Result<List<PasswordResponseDTO>>.Ok(result);
         }
 
@@ -99,7 +107,7 @@ namespace GestioneDb.Services.Implementations
             return Result<PasswordResponseDTO?>.Ok(PasswordInfo);
         }
 
-        public async Task<Result<CreatedPasswordDTO>> CreatePasswordAsync(UpdatePasswordDTO dto, int userId)
+        public async Task<Result<CreatedPasswordDTO>> CreatePasswordAsync(CreatePasswordDTO dto, int userId)
         {
             var existing = await _context.Passwords
                 .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId);
@@ -123,15 +131,26 @@ namespace GestioneDb.Services.Implementations
             _context.Passwords.Add(newPassword);
             await _context.SaveChangesAsync();
 
+            Console.WriteLine(@$"
+
+
+
+EF ID dopo SaveChanges: {newPassword.CredentialID}
+
+
+
+");
+
             var NewPasswordInfo = new CreatedPasswordDTO()
             {
-                CredentialID = (int) newPassword.CredentialID,
+                CredentialID = newPassword.CredentialID,
                 AppName = newPassword.AppName,
                 AppUsername = newPassword.AppUsername,
                 Password = dto.Password,
                 CreatedAt = newPassword.CreatedAt,
                 LastUpdateAt = newPassword.LastUpdateAt
             };
+
 
             return Result<CreatedPasswordDTO?>.Ok(NewPasswordInfo);
         }

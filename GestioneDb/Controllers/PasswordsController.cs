@@ -5,6 +5,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace GestioneDb.Controllers
 {
@@ -57,7 +58,7 @@ namespace GestioneDb.Controllers
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePassword(UpdatePasswordDTO NewPassword)
+        public async Task<IActionResult> CreatePassword(CreatePasswordDTO NewPassword)
         {
             int userId = GetUserId();
             var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
@@ -117,7 +118,7 @@ namespace GestioneDb.Controllers
         }
 
         private int GetUserId()
-            => int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
+            => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
         private IActionResult HandleError(ErrorCode error)
         {

@@ -9,7 +9,7 @@ namespace HTTPRequestsLibrary.Interfaces
         Task<ApiResponse<PasswordResponseDTO>> GetByIdAsync(int id, string masterPassword);
         Task<ApiResponse<PasswordResponseDTO>> GetByAppAsync(string app, string masterPassword);
 
-        Task<ApiResponse<CreatedPasswordDTO>> CreateAsync(UpdatePasswordDTO dto);
+        Task<ApiResponse<CreatedPasswordDTO>> CreateAsync(CreatePasswordDTO dto);
 
         Task<ApiResponse<bool>> UpdateByIdAsync(int id, UpdatePasswordDTO dto);
         Task<ApiResponse<bool>> UpdateByAppAsync(string app, UpdatePasswordDTO dto);

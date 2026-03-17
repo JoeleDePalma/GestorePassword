@@ -1,8 +1,12 @@
-﻿namespace GestioneDb.Models
+﻿using System.ComponentModel.DataAnnotations;
+
+namespace GestioneDb.Models
 {
     public class Password
     {
-        public int? CredentialID { get; set; }
+        [Key]
+        public int CredentialID { get; set; }
+
         public int UserID { get; set; }
 
         public string AppName { get; set; }

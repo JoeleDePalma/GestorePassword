@@ -18,13 +18,16 @@ namespace Libreria.API
         public async Task<ApiResponse<UserResponseDTO>> GetByIdAsync(int id)
             => await HTTPRequestHelper.SendAsync<UserResponseDTO>(() => _client.Http.GetAsync($"api/users/get/ById/{id}"));
 
+        public async Task<ApiResponse<UserResponseDTO>> GetByTokenAsync()
+            => await HTTPRequestHelper.SendAsync<UserResponseDTO>(() => _client.Http.GetAsync($"api/users/get/ByToken"));
+
         public async Task<ApiResponse<RegisterResponseDTO>> RegisterAsync(RegisterDTO Credentials)
             => await HTTPRequestHelper.SendAsync<RegisterResponseDTO>(() => _client.Http.PostAsJsonAsync("api/users/register", Credentials));
 
         public async Task<ApiResponse<bool>> UpdateByIdAsync(UpdateUserDTO ModifiedUser)
             => await HTTPRequestHelper.SendAsync<bool>(() => _client.Http.PutAsJsonAsync("api/users/update", ModifiedUser));
 
-        public async Task<ApiResponse<bool>> DeleteByIdAsync()
+        public async Task<ApiResponse<bool>> DeleteByTokenAsync()
             => await HTTPRequestHelper.SendAsync<bool>(() => _client.Http.DeleteAsync("api/users/delete"));
 
         public async Task<ApiResponse<LoginResponseDTO>> LoginAsync(LoginDTO dto)

@@ -9,12 +9,13 @@ namespace HTTPRequestsLibrary.Interfaces
     public interface IUserApi
     {
         Task<ApiResponse<UserResponseDTO>> GetByIdAsync(int id);
+        Task<ApiResponse<UserResponseDTO>> GetByTokenAsync();
 
         Task<ApiResponse<RegisterResponseDTO>> RegisterAsync(RegisterDTO Credentials);
 
         Task<ApiResponse<bool>> UpdateByIdAsync(UpdateUserDTO ModifiedUser);
 
-        Task<ApiResponse<bool>> DeleteByIdAsync();
+        Task<ApiResponse<bool>> DeleteByTokenAsync();
 
         Task<ApiResponse<LoginResponseDTO>> LoginAsync(LoginDTO dto);
     }

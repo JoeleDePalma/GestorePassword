@@ -10,6 +10,8 @@ using Security;
 using System.IdentityModel.Tokens.Jwt;
 using GestioneDb.Services.Common;
 using Microsoft.AspNetCore.Http.HttpResults;
+using System.Security.Claims;
+using System.ComponentModel.DataAnnotations;
 
 namespace GestioneDb.Controllers
 {
@@ -24,14 +26,28 @@ namespace GestioneDb.Controllers
         {
             _userService = userService;
         }
-
+        
+        [AllowAnonymous]
         [HttpGet("get/ById/{id}")]
         public async Task<IActionResult> GetUserById(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
+
+            return (Ok(result.Data));
+        }
+
+        [HttpGet("get/ByToken")]
+        public async Task<IActionResult> GetUserByToken()
+        {
+            int id = GetUserId();
+
+            var result = await _userService.GetUserByIdAsync(id);
+
+            if (!result.Success)
+                return HandleError(result.Error, result.ErrorString);
 
             return (Ok(result.Data));
         }
@@ -43,7 +59,7 @@ namespace GestioneDb.Controllers
             var result = await _userService.CreateUserAsync(NewUser, jwt);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return CreatedAtAction(nameof(GetUserById), new { id = result.Data.UserID }, result.Data);
         }
@@ -55,19 +71,19 @@ namespace GestioneDb.Controllers
             var result = await _userService.UpdateUserByIdAsync(id, ModifiedUser);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return Ok(result.Data);
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteUserById()
+        public async Task<IActionResult> DeleteUserByToken()
         {
             int id = GetUserId();
             var result = await _userService.DeleteUserByIdAsync(id);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return NoContent();
         }
@@ -79,23 +95,25 @@ namespace GestioneDb.Controllers
             var result = await _userService.LoginAsync(Credentials, jwt);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
-            return Ok(new { Token = result.Data });
+            return Ok(new { token = result.Data.Token });
         }
 
         private int GetUserId()
-            => int.Parse(User.FindFirst(JwtRegisteredClaimNames.Sub).Value);
+            => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
-        private IActionResult HandleError(ErrorCode error)
+        private IActionResult HandleError(ErrorCode error, string ErrorString)
         {
+            var message = ErrorString ?? "Unknown error";
+
             return error switch
             {
-                ErrorCode.NotFound => NotFound(),
-                ErrorCode.Unauthorized => Unauthorized(),
-                ErrorCode.BadRequest => BadRequest(),
-                ErrorCode.Conflict => Conflict(),
-                _ => StatusCode(500)
+                ErrorCode.NotFound => NotFound(message),
+                ErrorCode.Unauthorized => Unauthorized(message),
+                ErrorCode.BadRequest => BadRequest(message),
+                ErrorCode.Conflict => Conflict(message),
+                _ => StatusCode(500, message)
             };
         }
     } 
