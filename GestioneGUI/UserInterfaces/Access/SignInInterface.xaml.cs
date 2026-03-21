@@ -11,9 +11,15 @@ namespace GestorePassword
     /// </summary>
     public partial class SignInInterface : UserControl
     {
+        private ResizeMode? _previousResizeMode;
+        private double? _previousWidth;
+        private double? _previousHeight;
+
         public SignInInterface()
         {
             InitializeComponent();
+            this.Loaded += SignInInterface_Loaded;
+            this.Unloaded += SignInInterface_Unloaded;
         }
 
         public void SwapToSignUpInterface(object sender, RoutedEventArgs e)
@@ -46,6 +52,45 @@ namespace GestorePassword
 
                 Image_PasswordState.Source = new BitmapImage(new Uri("/Images/closed_eye.png", UriKind.Relative));
 
+            }
+
+        }
+
+        private void SignInInterface_Loaded(object? sender, RoutedEventArgs e)
+        {
+            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (main != null)
+            {
+                // save previous mode and disable resizing
+                _previousResizeMode = main.ResizeMode;
+                // save previous size
+                _previousWidth = main.Width;
+                _previousHeight = main.Height;
+                main.ResizeMode = ResizeMode.NoResize;
+                // set required size for sign in/up interfaces
+                main.Width = 800;
+                main.Height = 500;
+            }
+        }
+
+        private void SignInInterface_Unloaded(object? sender, RoutedEventArgs e)
+        {
+            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            if (main != null && _previousResizeMode.HasValue)
+            {
+                main.ResizeMode = _previousResizeMode.Value;
+                _previousResizeMode = null;
+                // restore previous size if available
+                if (_previousWidth.HasValue)
+                {
+                    main.Width = _previousWidth.Value;
+                    _previousWidth = null;
+                }
+                if (_previousHeight.HasValue)
+                {
+                    main.Height = _previousHeight.Value;
+                    _previousHeight = null;
+                }
             }
         }
     }

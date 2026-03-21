@@ -1,24 +1,25 @@
-﻿using GestioneDb.Data;
+﻿using GestioneDb.Controllers.Common;
+using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
 using GestioneDb.Models;
 using GestioneDb.Services;
+using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Security;
-using System.IdentityModel.Tokens.Jwt;
-using GestioneDb.Services.Common;
-using Microsoft.AspNetCore.Http.HttpResults;
-using System.Security.Claims;
 using System.ComponentModel.DataAnnotations;
+using System.IdentityModel.Tokens.Jwt;
+using System.Security.Claims;
 
 namespace GestioneDb.Controllers
 {
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : ControllerBase
+    public class UsersController : BaseController
     {
         private readonly IUserService _userService;
 
@@ -98,23 +99,6 @@ namespace GestioneDb.Controllers
                 return HandleError(result.Error, result.ErrorString);
 
             return Ok(new { token = result.Data.Token });
-        }
-
-        private int GetUserId()
-            => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-        private IActionResult HandleError(ErrorCode error, string ErrorString)
-        {
-            var message = ErrorString ?? "Unknown error";
-
-            return error switch
-            {
-                ErrorCode.NotFound => NotFound(message),
-                ErrorCode.Unauthorized => Unauthorized(message),
-                ErrorCode.BadRequest => BadRequest(message),
-                ErrorCode.Conflict => Conflict(message),
-                _ => StatusCode(500, message)
-            };
         }
     } 
 }

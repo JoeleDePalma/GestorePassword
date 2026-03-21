@@ -23,7 +23,7 @@ namespace GestorePassword
         public MainWindow()
         {
             InitializeComponent();
-            MainContent.Content = new SignUpInterface();
+            MainContent.Content = new SignInInterface();
         }
     }
 }

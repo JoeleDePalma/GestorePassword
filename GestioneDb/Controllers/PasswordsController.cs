@@ -1,4 +1,5 @@
-﻿using GestioneDb.DTOs.Passwords;
+﻿using GestioneDb.Controllers.Common;
+using GestioneDb.DTOs.Passwords;
 using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -12,7 +13,7 @@ namespace GestioneDb.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PasswordsController : ControllerBase
+    public class PasswordsController : BaseController
     {
         private readonly IPasswordService _passwordService;
 
@@ -28,7 +29,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.GetAllPasswordsAsync(userId, masterPassword);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return Ok(result.Data);
         }
@@ -40,7 +41,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.GetPasswordByIdAsync(id, userId, masterPassword);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return Ok(result.Data);
         }
@@ -52,7 +53,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.GetPasswordByAppAsync(app, userId, masterPassword);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return Ok(result.Data);
         }
@@ -64,7 +65,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return CreatedAtAction(nameof(GetPasswordById), new { id = result.Data.CredentialID }, result);
         }
@@ -76,7 +77,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return NoContent();
         }
@@ -88,7 +89,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.UpdatePasswordByAppAsync(app, dto, userId);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return NoContent();
         }
@@ -100,7 +101,7 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return NoContent();
         }
@@ -112,25 +113,9 @@ namespace GestioneDb.Controllers
             var result = await _passwordService.DeletePasswordByAppAsync(app, userId);
 
             if (!result.Success)
-                return HandleError(result.Error);
+                return HandleError(result.Error, result.ErrorString);
 
             return NoContent();
         }
-
-        private int GetUserId()
-            => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
-
-        private IActionResult HandleError(ErrorCode error)
-        {
-            return error switch
-            {
-                ErrorCode.NotFound => NotFound(),
-                ErrorCode.Unauthorized => Unauthorized(),
-                ErrorCode.BadRequest => BadRequest(),
-                ErrorCode.Conflict => Conflict(),
-                _ => StatusCode(500)
-            };
-        }
-
     }
 }
