@@ -1,4 +1,5 @@
-﻿using System;
+﻿using GestioneGUI.PasswordInterfaces;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -23,7 +24,7 @@ namespace GestorePassword
         public MainWindow()
         {
             InitializeComponent();
-            MainContent.Content = new SignInInterface();
+            MainContent.Content = new MenuInterface();
         }
     }
 }

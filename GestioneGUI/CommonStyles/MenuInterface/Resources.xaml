@@ -1,5 +1,6 @@
 ﻿<ResourceDictionary xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+                    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+                    xmlns:sys="clr-namespace:System;assembly=mscorlib">
 
     <Style 
         x:Key="InfoPasswordButton" 
@@ -62,8 +63,7 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
-                    <!-- Viewbox qui per scalare il contenuto del singolo ContentControl se necessario -->
-                    <Viewbox Stretch="Fill" StretchDirection="Both">
+                    <Viewbox Stretch="Uniform" StretchDirection="Both">
                         <Grid 
                             Width="{TemplateBinding Width}" 
                             Height="{TemplateBinding Height}" 
@@ -227,5 +227,63 @@
         <Setter Property="FontSize" Value="12"/>
         <Setter Property="FontWeight" Value="Bold"/>
         <Setter Property="FontFamily" Value="Segoe UI"/>
+    </Style>
+
+    <Style
+        x:Key="AddPasswordButton"
+        TargetType="Button"
+        >
+
+        <Setter Property="Width" Value="250"/>
+        <Setter Property="Height" Value="30"/>
+        <Setter Property="Margin" Value="0, 5, 0, 5"/>
+        <Setter Property="Content" Value="+"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="Background" Value="LightGray"/>
+        <Setter Property="BorderBrush" Value="Black"/>
+        <Setter Property="BorderThickness" Value="1"/>
+        <Setter Property="FontFamily" Value="Arial"/>
+        <Setter Property="FontSize" Value="25"/>
+        <Setter Property="FontWeight" Value="Black"/>
+        <Setter Property="ToolTip" Value="Aggiungi Password"/>
+        <Setter Property="Cursor" Value="Hand"/>
+
+        <Setter Property="Template">
+            <Setter.Value>
+                <ControlTemplate TargetType="Button">
+
+                    <Border
+                        Height="{TemplateBinding Height}"
+                        Width="{TemplateBinding Width}"
+                        Background="{TemplateBinding Background}"
+                        BorderBrush="{TemplateBinding BorderBrush}"
+                        BorderThickness="{TemplateBinding BorderThickness}"
+                        CornerRadius="5"
+                        >
+
+                    <ContentPresenter 
+                        HorizontalAlignment="{TemplateBinding HorizontalContentAlignment}"
+                        VerticalAlignment="{TemplateBinding VerticalContentAlignment}"
+                        Content="{TemplateBinding Content}"
+                        ContentTemplate="{TemplateBinding ContentTemplate}"
+                        RecognizesAccessKey="True"
+                        />
+
+                    </Border>
+                </ControlTemplate>
+            </Setter.Value>
+        </Setter>
+        
+        <Style.Triggers>
+
+            <Trigger Property="IsMouseOver" Value="True">
+                <Setter Property="Background" Value="#CECECE"/>
+            </Trigger>
+
+            <Trigger Property="IsPressed" Value="True">
+                <Setter Property="Background" Value="#C9C9C9"/>
+            </Trigger>
+
+        </Style.Triggers>
     </Style>
 </ResourceDictionary>

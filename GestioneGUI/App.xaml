@@ -6,8 +6,9 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="/CommonStyles/SignInUp/Resources.xaml"/>
+                <ResourceDictionary Source="/CommonStyles/SignInUpInterfaces/Resources.xaml"/>
                 <ResourceDictionary Source="/CommonStyles/MenuInterface/Resources.xaml"/>
+                <ResourceDictionary Source="/CommonStyles/CreatePasswordInterface/Resources.xaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>
