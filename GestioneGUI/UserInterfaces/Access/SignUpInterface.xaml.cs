@@ -1,4 +1,9 @@
-﻿using System;
+﻿using GestioneGUI;
+using HTTPRequestsLibrary;
+using Libreria.API;
+using Libreria.DTOs.Users;
+using Services;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -24,8 +29,16 @@ namespace GestorePassword
         private double? _previousWidth;
         private double? _previousHeight;
 
-        public SignUpInterface()
+        private ApiClient Client { get; set; }
+        public UserApi userApi { get; set; }
+        public PasswordApi passwordApi { get; set; }
+
+        public SignUpInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi)
         {
+            this.Client = Client;
+            this.userApi = userApi;
+            this.passwordApi = passwordApi;
+
             InitializeComponent();
             Welcome_Text.Text = @"
                         Benvenuto in Password Manager!
@@ -50,22 +63,22 @@ namespace GestorePassword
 
         public void SwapPasswordStackPanel(object sender, RoutedEventArgs e)
         {
-            if (PasswordBox_Input.Visibility == Visibility.Visible)
+            if (PasswordBoxPasswordInput.Visibility == Visibility.Visible)
             {
-                TextBox_Input.Text = PasswordBox_Input.Password;
+                TextBoxPasswordInput.Text = PasswordBoxPasswordInput.Password;
 
-                PasswordBox_Input.Visibility = Visibility.Collapsed;
-                TextBox_Input.Visibility = Visibility.Visible;
+                PasswordBoxPasswordInput.Visibility = Visibility.Collapsed;
+                TextBoxPasswordInput.Visibility = Visibility.Visible;
 
                 Image_PasswordState.Source = new BitmapImage(new Uri("/Images/opened_eye.png", UriKind.Relative));
             }
 
             else
             {
-                PasswordBox_Input.Password = TextBox_Input.Text;
+                PasswordBoxPasswordInput.Password = TextBoxPasswordInput.Text;
 
-                PasswordBox_Input.Visibility = Visibility.Visible;
-                TextBox_Input.Visibility = Visibility.Collapsed;
+                PasswordBoxPasswordInput.Visibility = Visibility.Visible;
+                TextBoxPasswordInput.Visibility = Visibility.Collapsed;
 
                 Image_PasswordState.Source = new BitmapImage(new Uri("/Images/closed_eye.png", UriKind.Relative));
 
@@ -74,9 +87,8 @@ namespace GestorePassword
 
         public void SwapToSignInInterface(object sender, RoutedEventArgs e)
         {
-            // Find the MainWindow and set its MainContent to SignInInterface
             var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new SignInInterface();
+            main.MainContent.Content = new SignInInterface(Client, userApi, passwordApi);
         }   
 
         private void SignUpInterface_Loaded(object? sender, RoutedEventArgs e)
@@ -85,11 +97,11 @@ namespace GestorePassword
             if (main != null)
             {
                 _previousResizeMode = main.ResizeMode;
-                // save previous size
+
                 _previousWidth = main.Width;
                 _previousHeight = main.Height;
                 main.ResizeMode = ResizeMode.NoResize;
-                // set required size for sign in/up interfaces
+
                 main.Width = 800;
                 main.Height = 500;
             }
@@ -102,7 +114,7 @@ namespace GestorePassword
             {
                 main.ResizeMode = _previousResizeMode.Value;
                 _previousResizeMode = null;
-                // restore previous size if available
+
                 if (_previousWidth.HasValue)
                 {
                     main.Width = _previousWidth.Value;
@@ -114,6 +126,133 @@ namespace GestorePassword
                     _previousHeight = null;
                 }
             }
+        }
+
+        private async void CreateAccount(object? sender, RoutedEventArgs e)
+        {
+            var username = TextBoxUsernameInput.Text;
+            string password;
+
+            if (TextBoxPasswordInput.IsVisible)
+                password = TextBoxPasswordInput.Text;
+            else
+                password = PasswordBoxPasswordInput.Password;
+
+            bool isThereUsernameError = false;
+            bool isTherePasswordError = false;
+            bool isThereServerError = false;
+
+            if (string.IsNullOrWhiteSpace(username))
+            {
+                SetErrorBlock(UsernameErrorBlock, "Completare il campo", ref isThereUsernameError);
+            }
+
+            if (username.Length < 4)
+            {
+                SetErrorBlock(UsernameErrorBlock, "Il nome utente deve contenere\nalmeno 4 caratteri", ref isThereUsernameError);
+            }
+
+            else if (username.Length > 10)
+            {
+                SetErrorBlock(UsernameErrorBlock, "Il nome utente può contenere\nfino a 10 caratteri", ref isThereUsernameError);
+            }
+
+            else if (username.Any(c => !char.IsLetterOrDigit(c)))
+            {
+                SetErrorBlock(UsernameErrorBlock, "Il nome utente può contenere\nsolo caratteri alfanumerici", ref isThereUsernameError);
+            }
+
+            bool hasLetter = password.Any(char.IsLetter);
+            bool hasDigit = password.Any(char.IsDigit);
+            bool hasSpecial = password.Any(c => !char.IsLetterOrDigit(c));
+
+            if (string.IsNullOrWhiteSpace(password))
+            {
+                SetErrorBlock(PasswordErrorBlock, "Completare il campo", ref isTherePasswordError);
+            }
+
+            if (password.Length < 8)
+            {
+                SetErrorBlock(PasswordErrorBlock, "La password deve contenere\nalmeno 8 caratteri", ref isTherePasswordError);
+            }
+
+            else if (password.Length > 50)
+            {
+                SetErrorBlock(PasswordErrorBlock, "La password può contenere\nfino a 50 caratteri", ref isTherePasswordError);
+            }
+
+            else if (!(hasLetter && hasDigit && hasSpecial))
+            {
+                SetErrorBlock(PasswordErrorBlock,
+                    "La password deve contenere\nlettere, numeri e caratteri speciali",
+                    ref isTherePasswordError);
+            }
+
+            if (!isThereUsernameError && UsernameErrorBlock.IsVisible)
+                UsernameErrorBlock.Visibility = Visibility.Collapsed;
+
+            if (!isTherePasswordError && PasswordErrorBlock.IsVisible)
+                PasswordErrorBlock.Visibility = Visibility.Collapsed;
+
+            if (isTherePasswordError || isThereUsernameError)
+            {
+                return;
+            }
+
+            bool success = default;
+            UserResponseDTO registerDto = default;
+            LoginResponseDTO loginDto = default;
+            int statusCode = default;
+            string? errorString = default;
+
+            try
+            {
+                (success, registerDto, statusCode, errorString) = await Access.CreateUser(userApi, username, password);
+            }
+            catch(Exception ex)
+            {
+                MessageBox.Show("Errore durante la richiesta" + ex.Message);
+            }
+
+            if (!success)
+                if (statusCode == 400)
+                    SetErrorBlock(UsernameErrorBlock, "Nome utente già esistente", ref isThereUsernameError);
+                else
+                    SetErrorBlock(PasswordErrorBlock, "Errore interno del server", ref isThereServerError);
+
+            else
+            {
+                try
+                {
+                    (success, loginDto, statusCode, errorString) = await Access.Login(userApi, username, password);
+                }
+                catch (Exception ex)
+                {
+                    MessageBox.Show("Errore durante la richiesta" + ex.Message);
+                    return;
+                }
+
+                UserInfo info = new UserInfo()
+                {
+                    UserID = loginDto.UserID,
+                    Username = loginDto.Username,
+                    CreatedAt = loginDto.CreatedAt,
+                    Token = loginDto.Token
+                };
+
+                var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+                main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, info);
+            }
+        }
+
+        private void SetErrorBlock(TextBlock errorBlock, string error, ref bool isThereError)
+        {
+            isThereError = true;
+
+            errorBlock.Text = error;
+
+            if (!errorBlock.IsVisible)
+                errorBlock.Visibility = Visibility.Visible;
         }
     }
 }

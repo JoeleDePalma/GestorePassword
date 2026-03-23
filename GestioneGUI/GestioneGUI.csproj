@@ -13,9 +13,11 @@
     <None Remove="Images\opened_eye.png" />
     <None Remove="Images\pencil.png" />
     <None Remove="Images\profile_image.png" />
+    <None Remove="Images\Save.png" />
     <None Remove="Images\settings.png" />
     <None Remove="Images\statistics.png" />
     <None Remove="Images\trash_can.png" />
+    <None Remove="Images\update.png" />
   </ItemGroup>
 
   <ItemGroup>
@@ -27,9 +29,11 @@
     <Resource Include="Images\opened_eye.png" />
     <Resource Include="Images\pencil.png" />
     <Resource Include="Images\profile_image.png" />
+    <Resource Include="Images\save.png" />
     <Resource Include="Images\settings.png" />
     <Resource Include="Images\statistics.png" />
     <Resource Include="Images\trash_can.png" />
+    <Resource Include="Images\update.png" />
   </ItemGroup>
 
 </Project>

@@ -1,4 +1,7 @@
-﻿using System;
+﻿using GestioneGUI;
+using HTTPRequestsLibrary;
+using Libreria.API;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -20,9 +23,18 @@ namespace GestorePassword
     /// </summary>
     public partial class MenuInterface : UserControl
     {
-        public MenuInterface()
+        private ApiClient Client { get; set; }
+        private UserApi userApi { get; set; }
+        private PasswordApi passwordApi { get; set; }
+        private UserInfo userInfo { get; set; }
+
+        public MenuInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo)
         {
             InitializeComponent();
+            this.Client = Client;
+            this.userApi = userApi;
+            this.passwordApi = passwordApi;
+            this.userInfo = userInfo;
         }
     }
 }

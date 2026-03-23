@@ -179,6 +179,9 @@ namespace GestioneDb.Services
 
             var obj = new LoginResponseDTO()
             {
+                UserID = (int) user.UserID,
+                Username = user.Username,
+                CreatedAt = user.CreatedAt,
                 Token = token
             };
 

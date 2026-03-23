@@ -1,6 +1,6 @@
 ﻿namespace Libreria.DTOs.Users
 {
-    public class LoginResponseDTO
+    public class LoginResponseDTO : UserResponseDTO
     {
         public string Token { get; set; }
     }

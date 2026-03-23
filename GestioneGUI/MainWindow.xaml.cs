@@ -1,4 +1,6 @@
 ﻿using GestioneGUI.PasswordInterfaces;
+using HTTPRequestsLibrary;
+using Libreria.API;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,10 +23,58 @@ namespace GestorePassword
     /// </summary>
     public partial class MainWindow : Window
     {
+        public ApiClient Client { get; set; }
+        public UserApi userApi { get; set; }
+        public PasswordApi passwordApi { get; set; }
+
         public MainWindow()
         {
+            Client = new ApiClient("http://localhost:5211");
+            userApi = new UserApi(Client);
+            passwordApi = new PasswordApi(Client);
+
             InitializeComponent();
-            MainContent.Content = new MenuInterface();
+            MainContent.Content = new SignInInterface(Client, userApi, passwordApi);
+            this.SizeChanged += Window_SizeChanged;
+        }
+
+        private bool _isResizing = false;
+        private double aspectRatio = 800.0 / 500.0; 
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            if (_isResizing) return;
+
+            _isResizing = true;
+
+            double newWidth = this.Width;
+            double newHeight = this.Height;
+
+            if (e.WidthChanged)
+            {
+                newHeight = newWidth / aspectRatio;
+
+                if (newHeight < this.MinHeight)
+                {
+                    newHeight = this.MinHeight;
+                    newWidth = newHeight * aspectRatio;
+                }
+            }
+            else if (e.HeightChanged)
+            {
+                newWidth = newHeight * aspectRatio;
+
+                if (newWidth < this.MinWidth)
+                {
+                    newWidth = this.MinWidth;
+                    newHeight = newWidth / aspectRatio;
+                }
+            }
+
+            this.Width = newWidth;
+            this.Height = newHeight;
+
+            _isResizing = false;
         }
     }
 }

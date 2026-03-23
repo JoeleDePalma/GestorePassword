@@ -64,7 +64,7 @@
                                 FontSize="15"
                                 FontWeight="Bold"
                                 FontStyle="Italic"
-                                Text="PREova"
+                                Text="Prova"
                                 HorizontalAlignment="Center"
                                 />
 
@@ -87,59 +87,59 @@
                                 <Separator Margin="5,15,5,0"/>
 
                                 <StackPanel 
-                                Orientation="Horizontal"
-                                Margin="5,15,0,0"
-                                >
+                                    Orientation="Horizontal"
+                                    Margin="5,15,0,0"
+                                    >
 
                                     <TextBlock 
-                                    Text="STATISTICHE"
-                                    FontSize="15"
-                                    FontWeight="Bold"
-                                    />
+                                        Text="STATISTICHE"
+                                        FontSize="15"
+                                        FontWeight="Bold"
+                                        />
 
                                     <Image 
-                                    Source="/Images/statistics.png"
-                                    Width="20"
-                                    Height="20"
-                                    Margin="5,0,0,0"
-                                    />
+                                        Source="/Images/statistics.png"
+                                        Width="20"
+                                        Height="20"
+                                        Margin="5,0,0,0"
+                                        />
                                 </StackPanel>
 
                                 <TextBlock 
-                                x:Name="PasswordsCreatedPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Password salvate: 10"
-                                />
+                                    x:Name="PasswordsCreatedPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Password salvate: 10"
+                                    />
 
                                 <TextBlock 
-                                x:Name="LastPasswordCreatedAtPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Ultimo salvataggio: 21/03/2026"
-                                />
+                                    x:Name="LastPasswordCreatedAtPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Ultimo salvataggio: 21/03/2026"
+                                    />
 
                                 <TextBlock 
-                                x:Name="LastUpdateAtPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Ultima modifica: 21/03/2026"
-                                />
+                                    x:Name="LastUpdateAtPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Ultima modifica: 21/03/2026"
+                                    />
 
                                 <TextBlock 
-                                x:Name="LongestPasswordPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Password più lunga: 34 caratteri"
-                                />
+                                    x:Name="LongestPasswordPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Password più lunga: 34 caratteri"
+                                    />
 
                                 <TextBlock 
-                                x:Name="ShortestPasswordPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Password più corta: 6 caratteri"
-                                />
+                                    x:Name="ShortestPasswordPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Password più corta: 6 caratteri"
+                                    />
 
                                 <TextBlock 
-                                x:Name="AveragePasswordLengthPanelBlock"
-                                Style="{StaticResource StatisticsTextBlocksPanel}"
-                                Text="Lunghezza media: 15 caratteri"
-                                />
+                                    x:Name="AveragePasswordLengthPanelBlock"
+                                    Style="{StaticResource StatisticsTextBlocksPanel}"
+                                    Text="Lunghezza media: 15 caratteri"
+                                    />
                             </StackPanel>
 
                         
