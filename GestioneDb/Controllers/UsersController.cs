@@ -98,7 +98,7 @@ namespace GestioneDb.Controllers
             if (!result.Success)
                 return HandleError(result.Error, result.ErrorString);
 
-            return Ok(new { token = result.Data.Token });
+            return Ok(result.Data);
         }
     } 
 }

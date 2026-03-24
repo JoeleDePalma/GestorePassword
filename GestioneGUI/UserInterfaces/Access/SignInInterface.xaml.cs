@@ -107,15 +107,21 @@ namespace GestorePassword
         private async void Login(object? sender, RoutedEventArgs e)
         {
             var username = TextBoxUsernameInput.Text;
-            var password = TextBoxPasswordInput.Text;
+            var shownPassword = TextBoxPasswordInput.Text;
+            var hiddenPassword = PasswordBox_Input.Password;
+            string password = default;
 
+            bool isThereError = false;
             bool isThereUsernameError = false;
             bool isTherePasswordError = false;
 
             if (string.IsNullOrWhiteSpace(username))
                 SetErrorBlock(UsernameErrorBlock, "Completare il campo", ref isThereUsernameError);
 
-            if (string.IsNullOrWhiteSpace(password))
+            if (string.IsNullOrWhiteSpace(shownPassword) && TextBoxPasswordInput.IsVisible)
+                SetErrorBlock(PasswordErrorBlock, "Completare il campo", ref isTherePasswordError);
+            
+            if (string.IsNullOrWhiteSpace(hiddenPassword) && PasswordBox_Input.IsVisible)
                 SetErrorBlock(PasswordErrorBlock, "Completare il campo", ref isTherePasswordError);
 
             if (!isThereUsernameError && UsernameErrorBlock.IsVisible)
@@ -134,19 +140,33 @@ namespace GestorePassword
             int StatusCode = default;
             string? errorString = default;
 
+            if (TextBoxPasswordInput.IsVisible)
+                password = shownPassword;
+            else
+                password = hiddenPassword;
+
             try
             {
-                (Success, response, StatusCode, errorString) = await Access.Login(userApi, username, password);
+                (Success, response, StatusCode, errorString) = await AccessRequests.Login(userApi, username, password);
             }
             catch (Exception ex)
             {
                 MessageBox.Show("Errore durante la richiesta" + ex);
             }
 
+            if (!Success)
+            {
+                if (StatusCode == 404 || StatusCode == 401)
+                    SetErrorBlock(PasswordErrorBlock, "Nome utente o password errati", ref isThereError);
+
+                return;
+            }
+
             var info = new UserInfo()
             {
                 UserID = response.UserID,
                 Username = response.Username,
+                Password = password,
                 CreatedAt = response.CreatedAt,
                 Token = response.Token
             };

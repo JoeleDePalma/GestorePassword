@@ -52,37 +52,37 @@
                                 >
 
                                 <Image 
-                                Source="/Images/profile_image.png"
-                                Height="70"
-                                Width="70"
-                                HorizontalAlignment="Center"
-                                />
+                                    Source="/Images/profile_image.png"
+                                    Height="70"
+                                    Width="70"
+                                    HorizontalAlignment="Center"
+                                    />
 
                                 <TextBlock 
-                                x:Name="UsernamePanelBlock"
-                                Margin="0,10,0,0"
-                                FontSize="15"
-                                FontWeight="Bold"
-                                FontStyle="Italic"
-                                Text="Prova"
-                                HorizontalAlignment="Center"
-                                />
+                                    x:Name="UsernamePanelBlock"
+                                    Margin="0,10,0,0"
+                                    FontSize="15"
+                                    FontWeight="Bold"
+                                    FontStyle="Italic"
+                                    HorizontalAlignment="Center"
+                                    Text=""
+                                    />
 
                                 <TextBlock 
-                                x:Name="IdPanelBlock"
-                                FontSize="10"
-                                Foreground="Gray"
-                                Text="ID utente: #103"
-                                HorizontalAlignment="Center"
-                                />
+                                    x:Name="IdPanelBlock"
+                                    FontSize="10"
+                                    Foreground="Gray"
+                                    HorizontalAlignment="Center"
+                                    Text=""
+                                    />
 
                                 <TextBlock 
-                                x:Name="CreatedAtPanelBlock"
-                                FontSize="10"
-                                Foreground="Gray"
-                                Text="Data di creazione: 20/03/2026"
-                                HorizontalAlignment="Center"
-                                />
+                                    x:Name="CreatedAtPanelBlock"
+                                    FontSize="10"
+                                    Foreground="Gray"
+                                    HorizontalAlignment="Center"
+                                    Text=""
+                                    />
 
                                 <Separator Margin="5,15,5,0"/>
 
@@ -207,11 +207,6 @@
 
                     <Viewbox Stretch="Uniform" StretchDirection="Both">
                         <StackPanel x:Name="PasswordStackPanel" Orientation="Vertical">
-                            <ContentControl Style="{StaticResource InfoPasswordContent}"/>
-                            <ContentControl Style="{StaticResource InfoPasswordContent}"/>
-                            <ContentControl Style="{StaticResource InfoPasswordContent}"/>
-                            <ContentControl Style="{StaticResource InfoPasswordContent}"/>
-                            <Button Style="{StaticResource AddPasswordButton}"/>
                         </StackPanel>
                     </Viewbox>
                 </Border>

@@ -207,7 +207,7 @@ namespace GestorePassword
 
             try
             {
-                (success, registerDto, statusCode, errorString) = await Access.CreateUser(userApi, username, password);
+                (success, registerDto, statusCode, errorString) = await AccessRequests.CreateUser(userApi, username, password);
             }
             catch(Exception ex)
             {
@@ -224,7 +224,7 @@ namespace GestorePassword
             {
                 try
                 {
-                    (success, loginDto, statusCode, errorString) = await Access.Login(userApi, username, password);
+                    (success, loginDto, statusCode, errorString) = await AccessRequests.Login(userApi, username, password);
                 }
                 catch (Exception ex)
                 {
@@ -236,6 +236,7 @@ namespace GestorePassword
                 {
                     UserID = loginDto.UserID,
                     Username = loginDto.Username,
+                    Password = password,
                     CreatedAt = loginDto.CreatedAt,
                     Token = loginDto.Token
                 };

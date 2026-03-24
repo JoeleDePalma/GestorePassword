@@ -37,6 +37,7 @@ namespace GestioneDb.Services.Implementations
 
                 result.Add(new PasswordResponseDTO
                 {
+                    Id = p.CredentialID,
                     AppName = p.AppName,
                     AppUsername = p.AppUsername,
                     Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
@@ -45,13 +46,6 @@ namespace GestioneDb.Services.Implementations
                 });
             }
 
-            Console.WriteLine(@$"
-
-
-{result}
-
-
-");
             return Result<List<PasswordResponseDTO>>.Ok(result);
         }
 
@@ -72,6 +66,7 @@ namespace GestioneDb.Services.Implementations
 
             var PasswordInfo = new PasswordResponseDTO()
             {
+                Id = p.CredentialID,
                 AppName = p.AppName,
                 AppUsername = p.AppUsername,
                 Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
@@ -97,6 +92,7 @@ namespace GestioneDb.Services.Implementations
 
             var PasswordInfo = new PasswordResponseDTO()
             {
+                Id = p.CredentialID,
                 AppName = p.AppName,
                 AppUsername = p.AppUsername,
                 Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
@@ -130,16 +126,6 @@ namespace GestioneDb.Services.Implementations
 
             _context.Passwords.Add(newPassword);
             await _context.SaveChangesAsync();
-
-            Console.WriteLine(@$"
-
-
-
-EF ID dopo SaveChanges: {newPassword.CredentialID}
-
-
-
-");
 
             var NewPasswordInfo = new CreatedPasswordDTO()
             {

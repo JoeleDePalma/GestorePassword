@@ -62,16 +62,16 @@
         <Setter Property="Template">
             <Setter.Value>
                 <ControlTemplate TargetType="ContentControl">
-                    <Viewbox Stretch="Uniform" StretchDirection="Both">
+                    <Viewbox 
+                        Stretch="Uniform"
+                        StretchDirection="Both"
+                        DataContext="{TemplateBinding Content}"
+                        >
                         <Grid 
-                            Width="{TemplateBinding Width}" 
-                            Height="{TemplateBinding Height}" 
-                            Background="{TemplateBinding Background}">
-
-                            <ContentPresenter 
-                                ContentSource="Content" 
-                                VerticalAlignment="Center" 
-                                Margin="10, 0, 0, 0" />
+                            Width="{TemplateBinding Width}"
+                            Height="{TemplateBinding Height}"
+                            Background="{TemplateBinding Background}"
+                            >
 
                             <StackPanel
                                 Orientation="Vertical"
@@ -80,41 +80,81 @@
                                 Margin="10, 0, 0, 0"
                                 >
 
-                                <TextBlock
-                                    x:Name="AppBlock"
+                                <StackPanel
                                     Height="30"
-                                    MinWidth="100"
-                                    MaxWidth="400"
-                                    Text="App:"
-                                    FontFamily="Arial black"
-                                    FontSize="16"
-                                    FontWeight="Black"
-                                    FontStyle="Normal"
-                                    />
+                                    Orientation="Horizontal"
+                                    >
+                                    <TextBlock
+                                        Height="30"
+                                        Width="45"
+                                        Text="App:"
+                                        FontFamily="Arial black"
+                                        FontSize="16"
+                                        FontWeight="Black"
+                                        FontStyle="Normal"
+                                        />
+                                
+                                    <TextBlock
+                                        Text="{Binding App}"
+                                        Height="30"
+                                        MinWidth="100"
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        FontStyle="Normal"
+                                        />
+                                </StackPanel>
 
-                                <TextBlock
-                                    x:Name="UsernameBlock"
+                                <StackPanel
+                                    Orientation="Horizontal"
                                     Height="30"
-                                    MinWidth="100"
-                                    MaxWidth="400"
-                                    Text="Username:"
-                                    FontFamily="Arial black"
-                                    FontSize="16"
-                                    FontWeight="Black"
-                                    FontStyle="Normal"
-                                    />
+                                    >
+                                    
+                                    <TextBlock
+                                        Height="30"
+                                        Width="100"
+                                        Text="Username:"
+                                        FontFamily="Arial black"
+                                        FontSize="16"
+                                        FontWeight="Black"
+                                        FontStyle="Normal"
+                                        />
 
-                                <TextBlock
-                                    x:Name="PasswordBlock"
+                                    <TextBlock
+                                        Text="{Binding Username}"
+                                        Height="30"
+                                        MinWidth="100"
+                                        FontFamily="Segoe UI Semibold"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        FontStyle="Normal"
+                                        />
+                                </StackPanel>
+
+                                <StackPanel
+                                    Orientation="Horizontal"
                                     Height="30"
-                                    MinWidth="100"
-                                    MaxWidth="400"
-                                    Text="Password:"
-                                    FontFamily="Arial black"
-                                    FontSize="16"
-                                    FontWeight="Black"
-                                    FontStyle="Normal"
-                                    />
+                                    >
+                                    <TextBlock
+                                        Height="30"
+                                        Width="95"
+                                        Text="Password:"
+                                        FontFamily="Arial black"
+                                        FontSize="16"
+                                        FontWeight="Black"
+                                        FontStyle="Normal"
+                                        />
+
+                                    <TextBlock
+                                        Text="{Binding Password}"
+                                        Height="30"
+                                        MinWidth="100"
+                                        FontFamily="Segoe UI Bold"
+                                        FontSize="14"
+                                        FontWeight="Normal"
+                                        FontStyle="Normal"
+                                        />
+                                </StackPanel>
 
                             </StackPanel>
 
@@ -130,6 +170,7 @@
                                     x:Name="ShowPasswordButton"
                                     Style="{StaticResource InfoPasswordButton}"
                                     ToolTip="Mostra"
+                                    ClickMode="Release"
                                     >
 
                                     <Image 
@@ -144,8 +185,10 @@
                                 </Button>
 
                                 <Button 
+                                    x:Name="UpdatePasswordButton"
                                     Style="{StaticResource InfoPasswordButton}"
                                     ToolTip="Modifica"
+                                    ClickMode="Release"
                                     >
 
                                     <Image 
@@ -160,8 +203,10 @@
                                 </Button>
 
                                 <Button 
+                                    x:Name="DeletePasswordButton"
                                     Style="{StaticResource InfoPasswordButton}"
                                     ToolTip="Elimina"
+                                    ClickMode="Release"
                                     >
 
                                     <Image 
@@ -246,6 +291,7 @@
         <Setter Property="FontWeight" Value="Black"/>
         <Setter Property="ToolTip" Value="Aggiungi Password"/>
         <Setter Property="Cursor" Value="Hand"/>
+        <Setter Property="ClickMode" Value="Release"/>
 
         <Setter Property="Template">
             <Setter.Value>

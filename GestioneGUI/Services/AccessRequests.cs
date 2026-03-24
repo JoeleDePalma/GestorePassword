@@ -8,7 +8,7 @@ using Libreria.DTOs.Users;
 
 namespace Services
 {
-    public class Access
+    public class AccessRequests
     {
         public static async Task<(bool, UserResponseDTO?, int, string?)> CreateUser(UserApi Client, string username, string password)
         {
@@ -35,7 +35,7 @@ namespace Services
             return (true, infoDto, response.StatusCode, null);
         }
 
-        public static async Task<(bool, LoginResponseDTO?, int, string?)> Login(UserApi Client, string username, string password)
+        public static async Task<(bool, LoginResponseDTO, int, string?)> Login(UserApi Client, string username, string password)
         {
             var dto = new LoginDTO()
             {
@@ -47,7 +47,7 @@ namespace Services
 
             if (!response.Success)
             {
-                return (false, null, response.StatusCode, response.ErrorString);
+                return (false, new LoginResponseDTO(), response.StatusCode, response.ErrorString);
             }
 
             var infoDto = new LoginResponseDTO()

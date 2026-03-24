@@ -10,16 +10,16 @@
     <Grid>
 
         <Border
-        Background="#FF89CFF0"
-        CornerRadius="200"
-        Width="700"
-        Height="500"
-        HorizontalAlignment="Right"
-        VerticalAlignment="Stretch"
-        IsHitTestVisible="False"
-        Margin="0, 0, -250, 0"
-        Panel.ZIndex="0" 
-        >
+            Background="#FF89CFF0"
+            CornerRadius="200"
+            Width="700"
+            Height="500"
+            HorizontalAlignment="Right"
+            VerticalAlignment="Stretch"
+            IsHitTestVisible="False"
+            Margin="0, 0, -250, 0"
+            Panel.ZIndex="0" 
+            >
 
             <Grid>
 

@@ -1,7 +1,9 @@
 ﻿using GestorePassword;
 using HTTPRequestsLibrary;
 using Libreria.API;
+using Libreria.DTOs.Passwords;
 using Libreria.DTOs.Users;
+using Services;
 using Services;
 using System;
 using System.Collections.Generic;
@@ -15,20 +17,21 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using static System.Runtime.InteropServices.JavaScript.JSType;
 
 namespace GestioneGUI.PasswordInterfaces
 {
     /// <summary>
     /// Logica di interazione per CreatePassword.xaml
     /// </summary>
-    public partial class CreatePassword : UserControl
+    public partial class CreatePasswordInterface : UserControl
     {
         private ApiClient Client { get; set; }
         private UserApi userApi { get; set; }
         private PasswordApi passwordApi { get; set; }
         private UserInfo userInfo { get; set; }
 
-        public CreatePassword(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo)
+        public CreatePasswordInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo)
         {
             InitializeComponent();
             this.Client = Client;
@@ -76,6 +79,74 @@ namespace GestioneGUI.PasswordInterfaces
         {
             var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, userInfo);
+        }
+
+        private async void SavePassword(object sender, RoutedEventArgs e)
+        {
+            var app = AppInput.Text;
+            var username = UsernameInput.Text;
+            string password = default;
+
+            bool isThereError = false;
+            bool isThereAppError = false;
+            bool isTherePasswordError = false;
+
+            if (ShownPasswordInput.IsVisible)
+                password = ShownPasswordInput.Text;
+            else
+                password = HiddenPasswordInput.Password;
+
+            if (string.IsNullOrWhiteSpace(app))
+                SetErrorBlock(AppErrorBlock, "Completare il campo obbligatorio*", ref isThereAppError);
+
+            if (string.IsNullOrWhiteSpace(password))
+                SetErrorBlock(PasswordErrorBlock, "Completare il campo obbligatorio*", ref isTherePasswordError);
+
+            if (!isThereAppError && !string.IsNullOrWhiteSpace(AppErrorBlock.Text))
+                AppErrorBlock.Text = "";
+
+            if (!isTherePasswordError && !string.IsNullOrWhiteSpace(PasswordErrorBlock.Text))
+                PasswordErrorBlock.Text = "";
+
+            if (isThereAppError || isTherePasswordError)
+            {
+                return;
+            }
+
+            bool Success = default;
+            int StatusCode = default;
+            string? ErrorString = default;
+
+            try
+            {
+                (Success, StatusCode, ErrorString) = await PasswordRequests.CreatePasswordAsync(passwordApi, app, username, password, userInfo.Password);
+            }
+            catch (Exception ex)
+            {
+                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereError);
+            }
+
+            if (!Success)
+                if (StatusCode == 400)
+                    SetErrorBlock(AppErrorBlock, "Hai già salvato una password di quest'app", ref isThereError);
+
+            if (isThereError)
+            {
+                return;
+            }
+
+            MessageBox.Show("Nuova password salvata con successo!");
+            BackToMenu(this, new RoutedEventArgs());
+        }
+
+        private void SetErrorBlock(TextBlock errorBlock, string error, ref bool isThereError)
+        {
+            isThereError = true;
+
+            errorBlock.Text = error;
+
+            if (!errorBlock.IsVisible)
+                errorBlock.Visibility = Visibility.Visible;
         }
     }
 }

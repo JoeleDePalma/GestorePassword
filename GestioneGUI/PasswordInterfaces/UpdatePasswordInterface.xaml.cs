@@ -20,20 +20,28 @@ namespace GestioneGUI.PasswordInterfaces
     /// <summary>
     /// Logica di interazione per UpdatePassword.xaml
     /// </summary>
-    public partial class UpdatePassword : UserControl
+    public partial class UpdatePasswordInterface : UserControl
     {
         private ApiClient Client { get; set; }
         private UserApi userApi { get; set; }
         private PasswordApi passwordApi { get; set; }
         private UserInfo userInfo { get; set; }
+        private PasswordInfo passwordDto { get; set; }
 
-        public UpdatePassword(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo)
+        public UpdatePasswordInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo, PasswordInfo passwordDto)
         {
             InitializeComponent();
+
             this.Client = Client;
             this.userApi = userApi;
             this.passwordApi = passwordApi;
             this.userInfo = userInfo;
+            this.passwordDto = passwordDto;
+
+            AppInput.Text = passwordDto.App;
+            UsernameInput.Text = passwordDto.Username;
+            ShownPasswordInput.Text = passwordDto.Password;
+            HiddenPasswordInput.Password = passwordDto.Password;
         }
 
         private void GeneratePassword_Click(object sender, RoutedEventArgs e)
@@ -75,6 +83,77 @@ namespace GestioneGUI.PasswordInterfaces
         {
             var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
             main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, userInfo);
+        }
+
+        private async void UpdatePassword(object seder, RoutedEventArgs e)
+        {
+            var app = AppInput.Text;
+            var username = UsernameInput.Text;
+            string password = default;
+
+            bool isThereError = false;
+            bool isThereAppError = false;
+            bool isTherePasswordError = false;
+
+            if (ShownPasswordInput.IsVisible)
+                password = ShownPasswordInput.Text;
+            else
+                password = HiddenPasswordInput.Password;
+
+            if (string.IsNullOrWhiteSpace(app))
+                SetErrorBlock(AppErrorBlock, "Completare il campo obbligatorio*", ref isThereAppError);
+
+            if (string.IsNullOrWhiteSpace(password))
+                SetErrorBlock(PasswordErrorBlock, "Completare il campo obbligatorio*", ref isTherePasswordError);
+
+            if (!isThereAppError && !string.IsNullOrWhiteSpace(AppErrorBlock.Text))
+                AppErrorBlock.Text = "";
+
+            if (!isTherePasswordError && !string.IsNullOrWhiteSpace(PasswordErrorBlock.Text))
+                PasswordErrorBlock.Text = "";
+
+            if (isThereAppError || isTherePasswordError)
+            {
+                return;
+            }
+
+            bool Success = default;
+            int StatusCode = default;
+            string? ErrorString = default;
+
+            try
+            {
+                (Success, StatusCode, ErrorString) = await PasswordRequests.UpdatePasswordAsync(passwordApi, passwordDto.Id, app, username, password, userInfo.Password);
+            }
+            catch (Exception ex)
+            {
+                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereError);
+            }
+
+            if (!Success)
+                if (StatusCode == 404)
+                    SetErrorBlock(PasswordErrorBlock, "Nessuna password corrispondente trovata", ref isThereError);
+
+                else if (StatusCode == 401)
+                    SetErrorBlock(PasswordErrorBlock, "Accesso non autorizzato rilevato", ref isThereError);
+
+            if (isThereError)
+            {
+                return;
+            }
+
+            MessageBox.Show("Password aggiornata con successo!");
+            BackToMenu(this, new RoutedEventArgs());
+        }
+
+        private void SetErrorBlock(TextBlock errorBlock, string error, ref bool isThereError)
+        {
+            isThereError = true;
+
+            errorBlock.Text = error;
+
+            if (!errorBlock.IsVisible)
+                errorBlock.Visibility = Visibility.Visible;
         }
     }
 }
