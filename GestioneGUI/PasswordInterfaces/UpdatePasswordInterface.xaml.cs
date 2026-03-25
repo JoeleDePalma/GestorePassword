@@ -106,6 +106,9 @@ namespace GestioneGUI.PasswordInterfaces
             if (string.IsNullOrWhiteSpace(password))
                 SetErrorBlock(PasswordErrorBlock, "Completare il campo obbligatorio*", ref isTherePasswordError);
 
+            if (password.All(c => c == '*'))
+                SetErrorBlock(PasswordErrorBlock, "La password non può contenere solo asterischi", ref isTherePasswordError);
+
             if (!isThereAppError && !string.IsNullOrWhiteSpace(AppErrorBlock.Text))
                 AppErrorBlock.Text = "";
 
@@ -133,6 +136,9 @@ namespace GestioneGUI.PasswordInterfaces
             if (!Success)
                 if (StatusCode == 404)
                     SetErrorBlock(PasswordErrorBlock, "Nessuna password corrispondente trovata", ref isThereError);
+
+                else if (StatusCode == 400)
+                    SetErrorBlock(AppErrorBlock, "Hai già salvato una password di quest'app", ref isThereError);
 
                 else if (StatusCode == 401)
                     SetErrorBlock(PasswordErrorBlock, "Accesso non autorizzato rilevato", ref isThereError);

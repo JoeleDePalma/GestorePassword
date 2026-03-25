@@ -108,37 +108,31 @@
                                 <TextBlock 
                                     x:Name="PasswordsCreatedPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Password salvate: 10"
                                     />
 
                                 <TextBlock 
                                     x:Name="LastPasswordCreatedAtPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Ultimo salvataggio: 21/03/2026"
                                     />
 
                                 <TextBlock 
-                                    x:Name="LastUpdateAtPanelBlock"
+                                    x:Name="LastPasswordUpdatedAtPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Ultima modifica: 21/03/2026"
                                     />
 
                                 <TextBlock 
                                     x:Name="LongestPasswordPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Password più lunga: 34 caratteri"
                                     />
 
                                 <TextBlock 
                                     x:Name="ShortestPasswordPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Password più corta: 6 caratteri"
                                     />
 
                                 <TextBlock 
                                     x:Name="AveragePasswordLengthPanelBlock"
                                     Style="{StaticResource StatisticsTextBlocksPanel}"
-                                    Text="Lunghezza media: 15 caratteri"
                                     />
                             </StackPanel>
 

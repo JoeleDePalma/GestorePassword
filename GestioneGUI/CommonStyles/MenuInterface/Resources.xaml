@@ -146,6 +146,7 @@
                                         />
 
                                     <TextBlock
+                                        x:Name="PasswordTextBlock"
                                         Text="{Binding Password}"
                                         Height="30"
                                         MinWidth="100"
@@ -174,13 +175,14 @@
                                     >
 
                                     <Image 
-                                            Source="/Images/opened_eye.png" 
-                                            Width="20" 
-                                            Height="20" 
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Right"
-                                            Margin="0, 0, 0, 0"
-                                            />
+                                        x:Name="EyeImage"
+                                        Source="/Images/closed_eye.png" 
+                                        Width="20" 
+                                        Height="20" 
+                                        VerticalAlignment="Center"
+                                        HorizontalAlignment="Right"
+                                        Margin="0, 0, 0, 0"
+                                        />
 
                                 </Button>
 

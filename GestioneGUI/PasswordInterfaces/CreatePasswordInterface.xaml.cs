@@ -18,6 +18,7 @@ using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
 using static System.Runtime.InteropServices.JavaScript.JSType;
+using System.Linq;
 
 namespace GestioneGUI.PasswordInterfaces
 {
@@ -101,6 +102,9 @@ namespace GestioneGUI.PasswordInterfaces
 
             if (string.IsNullOrWhiteSpace(password))
                 SetErrorBlock(PasswordErrorBlock, "Completare il campo obbligatorio*", ref isTherePasswordError);
+
+            if (password.All(c => c == '*'))
+                SetErrorBlock(PasswordErrorBlock, "La password non può contenere solo asterischi", ref isTherePasswordError);
 
             if (!isThereAppError && !string.IsNullOrWhiteSpace(AppErrorBlock.Text))
                 AppErrorBlock.Text = "";

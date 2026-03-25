@@ -38,5 +38,12 @@ namespace Services
 
             return (response.Success, response.StatusCode, response.ErrorString);
         }
+
+        public static async Task<(bool, int, string?)> DeletePasswordAsync(PasswordApi Client, int Id)
+        {
+            var response = await Client.DeleteByIdAsync(Id);
+
+            return (response.Success, response.StatusCode, response.ErrorString);
+        }
     }
 }
