@@ -1,4 +1,4 @@
-@GestioneDb_HostAddress = http://localhost:5211
+@GestioneDb_HostAddress = http://gestorepassword.fly.dev
 
 GET {{GestioneDb_HostAddress}}/api/Passwords
 Accept: application/json

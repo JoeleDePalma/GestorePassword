@@ -29,7 +29,7 @@ namespace GestorePassword
 
         public MainWindow()
         {
-            Client = new ApiClient("http://localhost:5211");
+            Client = new ApiClient("https://gestionedb-solitary-cloud-3682.fly.dev/");
             userApi = new UserApi(Client);
             passwordApi = new PasswordApi(Client);
 

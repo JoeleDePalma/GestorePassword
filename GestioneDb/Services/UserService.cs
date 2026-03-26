@@ -65,7 +65,7 @@ namespace GestioneDb.Services
                 Username = Credentials.Username,
                 HashedPassword = HashedPassword,
                 PasswordSalt = Salt,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
             _context.Users.Add(NewUser);
@@ -77,7 +77,7 @@ namespace GestioneDb.Services
                 Username = Credentials.Username,
                 HashedPassword = HashedPassword,
                 PasswordSalt = Salt,
-                CreatedAt = DateTime.Now
+                CreatedAt = DateTime.UtcNow
             };
 
             var token = jwt.GenerateToken(tokenUser);

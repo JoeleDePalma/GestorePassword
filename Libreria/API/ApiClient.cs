@@ -19,7 +19,6 @@ namespace HTTPRequestsLibrary
 
         public void SetToken(string token)
         {
-            Console.WriteLine("AUTH HEADER SET: Bearer " + token);
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
