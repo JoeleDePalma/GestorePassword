@@ -1,39 +1,75 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using GestorePassword;
+using Libreria.API;
+using Services;
 using System.Windows;
-using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
-using System.Windows.Media.Imaging;
-using System.Windows.Shapes;
 
 namespace GestioneGUI.PasswordInterfaces
 {
-    /// <summary>
-    /// Logica di interazione per DeletePasswordWindow.xaml
-    /// </summary>
     public partial class DeletePasswordWindow : Window
     {
-        public bool Result { get; private set; }
+        private bool HasFinished { get; set; } = false;
+        public bool IsThereError { get; private set; } = false;
+        private PasswordApi passwordApi { get; set; }
+        private PasswordInfo passwordInfo { get; set; }
 
-        public DeletePasswordWindow()
+        public DeletePasswordWindow(PasswordInfo passwordInfo)
         {
             InitializeComponent();
 
-            YesButton.Click += (s, e) =>
-            {
-                Result = true;
-                Close();
-            };
+            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            passwordApi = main.passwordApi;
+            this.passwordInfo = passwordInfo;
+        }
 
-            NoButton.Click += (s, e) =>
+        private async void DeletePassword(object sender, RoutedEventArgs e)
+        {
+            bool Success = default;
+            int StatusCode = default;
+            string? ErrorString = default;
+
+            try
             {
-                Result = false;
-                Close();
-            };
+                DecisionStackPanel.Visibility = Visibility.Collapsed;
+                LoadingTextBlock.Visibility = Visibility.Visible;
+                (Success, StatusCode, ErrorString) = await PasswordRequests.DeletePasswordAsync(passwordApi, passwordInfo.Id);
+            }
+            catch
+            {
+                MessageBox.Show("Errore durante la richiesta");
+                IsThereError = true;
+                DialogResult = IsThereError;
+                GoBack(new(), new RoutedEventArgs());
+                return;
+            }
+
+            if (!Success)
+            {
+                if (StatusCode == 404)
+                {
+                    MessageBox.Show("Nessuna password trovata");
+                    IsThereError = true;
+                }
+                else if (StatusCode == 401)
+                {
+                    MessageBox.Show("Accesso non autorizzato");
+                    IsThereError = true;
+                }
+            }
+
+            DialogResult = IsThereError;
+            GoBack(new(), new RoutedEventArgs());
+        }
+
+        private void GoBack(object sender, RoutedEventArgs e)
+        {
+            HasFinished = true;
+            Close();
+        }
+
+        protected override void OnClosing(System.ComponentModel.CancelEventArgs e)
+        {
+            if (!HasFinished)
+                e.Cancel = true;
         }
     }
 }

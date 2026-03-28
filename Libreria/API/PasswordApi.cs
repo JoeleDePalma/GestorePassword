@@ -30,7 +30,7 @@ namespace Libreria.API
         public async Task<ApiResponse<CreatedPasswordDTO>> CreateAsync(CreatePasswordDTO NewPassword)
             => await HTTPRequestHelper.SendAsync<CreatedPasswordDTO>(() => _client.Http.PostAsJsonAsync("api/passwords/create", NewPassword));
 
-        public async Task<ApiResponse<bool>> UpdateByIdAsync(int id,UpdatePasswordDTO ModifiedPassword)
+        public async Task<ApiResponse<bool>> UpdateByIdAsync(int id, UpdatePasswordDTO ModifiedPassword)
             => await HTTPRequestHelper.SendAsync<bool>(() => _client.Http.PutAsJsonAsync($"api/passwords/update/ById/{id}", ModifiedPassword));
        
         public async Task<ApiResponse<bool>> UpdateByAppAsync(string app, UpdatePasswordDTO ModifiedPassword)

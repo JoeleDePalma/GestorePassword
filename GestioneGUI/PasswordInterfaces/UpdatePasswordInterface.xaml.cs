@@ -27,15 +27,17 @@ namespace GestioneGUI.PasswordInterfaces
         private PasswordApi passwordApi { get; set; }
         private UserInfo userInfo { get; set; }
         private PasswordInfo passwordDto { get; set; }
+        private MainWindow main { get; set; }
 
-        public UpdatePasswordInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo, PasswordInfo passwordDto)
+        public UpdatePasswordInterface(PasswordInfo passwordDto)
         {
             InitializeComponent();
-
-            this.Client = Client;
-            this.userApi = userApi;
-            this.passwordApi = passwordApi;
-            this.userInfo = userInfo;
+            main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            
+            Client = main.Client;
+            userApi = main.userApi;
+            passwordApi = main.passwordApi;
+            userInfo = main.userInfo;
             this.passwordDto = passwordDto;
 
             AppInput.Text = passwordDto.App;
@@ -81,8 +83,7 @@ namespace GestioneGUI.PasswordInterfaces
 
         private void BackToMenu(object sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, userInfo);
+            main.MainContent.Content = new MenuInterface();
         }
 
         private async void UpdatePassword(object seder, RoutedEventArgs e)
@@ -126,6 +127,11 @@ namespace GestioneGUI.PasswordInterfaces
 
             try
             {
+                LoadingTextBlock.Visibility = Visibility.Visible;
+                GeneratePasswordButton.IsEnabled = false;
+                SavePasswordButton.IsEnabled = false;
+                GoBackToMenuButton.IsEnabled = false;
+
                 (Success, StatusCode, ErrorString) = await PasswordRequests.UpdatePasswordAsync(passwordApi, passwordDto.Id, app, username, password, userInfo.Password);
             }
             catch (Exception ex)
@@ -145,6 +151,10 @@ namespace GestioneGUI.PasswordInterfaces
 
             if (isThereError)
             {
+                LoadingTextBlock.Visibility = Visibility.Collapsed;
+                GeneratePasswordButton.IsEnabled = true;
+                SavePasswordButton.IsEnabled = true;
+                GoBackToMenuButton.IsEnabled = true;
                 return;
             }
 

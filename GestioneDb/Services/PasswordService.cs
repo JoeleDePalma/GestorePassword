@@ -144,7 +144,7 @@ namespace GestioneDb.Services.Implementations
         public async Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)
         {
             var existing = await _context.Passwords
-                .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId);
+                .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId && p.CredentialID != id);
 
             if (existing != null)
                 return Result<bool>.Fail(ErrorCode.BadRequest);

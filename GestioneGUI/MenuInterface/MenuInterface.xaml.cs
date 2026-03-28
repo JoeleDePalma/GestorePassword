@@ -31,16 +31,19 @@ namespace GestorePassword
         private PasswordApi passwordApi { get; set; }
         private UserInfo userInfo { get; set; }
         private List<PasswordInfo> passwordInfoList { get; set; }
+        private MainWindow main { get; set; }
 
-        public MenuInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi, UserInfo userInfo)
+        public MenuInterface()
         {
             InitializeComponent();
 
-            this.Client = Client;
-            this.userApi = userApi;
-            this.passwordApi = passwordApi;
-            this.userInfo = userInfo;
-            this.Client.SetToken(userInfo.Token);
+            main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+
+            Client = main.Client;
+            userApi = main.userApi;
+            passwordApi = main.passwordApi;
+            userInfo = main.userInfo;
+            Client.SetToken(userInfo.Token);
 
             UsernamePanelBlock.Text = $"{userInfo.Username}";
             IdPanelBlock.Text = $"ID: #{userInfo.UserID}";
@@ -118,8 +121,7 @@ namespace GestorePassword
 
         public void CreatePassword(object sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new CreatePasswordInterface(Client, userApi, passwordApi, userInfo);
+            main.MainContent.Content = new CreatePasswordInterface();
         }
 
         public void UpdatePassword(object sender, RoutedEventArgs e)
@@ -135,8 +137,7 @@ namespace GestorePassword
                 return;
 
             var dto = (PasswordInfo)cc.Content;
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new UpdatePasswordInterface(Client, userApi, passwordApi, userInfo, dto);
+            main.MainContent.Content = new UpdatePasswordInterface(dto);
         }
 
         public void ShowHidePassword(object sender, RoutedEventArgs e)
@@ -242,8 +243,6 @@ namespace GestorePassword
 
         public async void DeletePassword(object sender, RoutedEventArgs e)
         {
-            bool isThereError = false; 
-
             var button = e.Source as Button;
 
             if (button == null)
@@ -259,36 +258,12 @@ namespace GestorePassword
             if (dto == null)
                 return;
 
-            var confirm = new DeletePasswordWindow
+            var confirm = new DeletePasswordWindow(dto)
             {
                 Owner = Application.Current.MainWindow
             };
 
-            confirm.ShowDialog();
-
-            if (!confirm.Result)
-                return;
-
-            bool Success = default;
-            int StatusCode = default;
-            string? ErrorString = default;
-
-            (Success, StatusCode, ErrorString) = await PasswordRequests.DeletePasswordAsync(passwordApi, dto.Id);
-
-            if (!Success)
-            {
-                if (StatusCode == 404)
-                {
-                    MessageBox.Show("Nessuna password da eliminare trovata");
-                    isThereError = true;
-                }
-                
-                else if (StatusCode == 401)
-                {
-                    MessageBox.Show("Accesso non autorizzato rilevato");
-                    isThereError = true;
-                }
-            }
+            bool isThereError = (bool) confirm.ShowDialog();
 
             if (isThereError)
             {
@@ -302,9 +277,15 @@ namespace GestorePassword
 
         public async void UILoad(object sender, RoutedEventArgs e)
         {
+            ContentGrid.Visibility = Visibility.Collapsed;
+            LoadingContentTextBlock.Visibility = Visibility.Visible;
+
             var passwordsList = await GetAllPasswordsAsync(userInfo.Password);
             PasswordsLoad(this, new RoutedEventArgs(), passwordsList);
             StatisticsLoad(this, new RoutedEventArgs(), passwordsList);
+
+            ContentGrid.Visibility = Visibility.Visible;
+            LoadingContentTextBlock.Visibility = Visibility.Collapsed;
         }
 
         public static T FindParent<T>(DependencyObject child) where T : DependencyObject

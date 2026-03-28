@@ -30,14 +30,17 @@ namespace GestorePassword
         private double? _previousHeight;
 
         private ApiClient Client { get; set; }
-        public UserApi userApi { get; set; }
-        public PasswordApi passwordApi { get; set; }
+        private UserApi userApi { get; set; }
+        private PasswordApi passwordApi { get; set; }
+        private MainWindow main { get; set; }
 
-        public SignUpInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi)
+        public SignUpInterface()
         {
-            this.Client = Client;
-            this.userApi = userApi;
-            this.passwordApi = passwordApi;
+            main = Application.Current.Windows.OfType<MainWindow>() .FirstOrDefault();
+
+            this.Client = main.Client;
+            this.userApi = main.userApi;
+            this.passwordApi = main.passwordApi;
 
             InitializeComponent();
             Welcome_Text.Text = @"
@@ -87,44 +90,35 @@ namespace GestorePassword
 
         public void SwapToSignInInterface(object sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new SignInInterface(Client, userApi, passwordApi);
+            main.MainContent.Content = new SignInInterface();
         }   
 
         private void SignUpInterface_Loaded(object? sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (main != null)
-            {
-                _previousResizeMode = main.ResizeMode;
+            _previousResizeMode = main.ResizeMode;
 
-                _previousWidth = main.Width;
-                _previousHeight = main.Height;
-                main.ResizeMode = ResizeMode.NoResize;
+            _previousWidth = main.Width;
+            _previousHeight = main.Height;
+            main.ResizeMode = ResizeMode.NoResize;
 
-                main.Width = 800;
-                main.Height = 500;
-            }
+            main.Width = 800;
+            main.Height = 500;
         }
 
         private void SignUpInterface_Unloaded(object? sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (main != null && _previousResizeMode.HasValue)
-            {
-                main.ResizeMode = _previousResizeMode.Value;
-                _previousResizeMode = null;
+            main.ResizeMode = _previousResizeMode.Value;
+            _previousResizeMode = null;
 
-                if (_previousWidth.HasValue)
-                {
-                    main.Width = _previousWidth.Value;
-                    _previousWidth = null;
-                }
-                if (_previousHeight.HasValue)
-                {
-                    main.Height = _previousHeight.Value;
-                    _previousHeight = null;
-                }
+            if (_previousWidth.HasValue)
+            {
+                main.Width = _previousWidth.Value;
+                _previousWidth = null;
+            }
+            if (_previousHeight.HasValue)
+            {
+                main.Height = _previousHeight.Value;
+                _previousHeight = null;
             }
         }
 
@@ -207,7 +201,13 @@ namespace GestorePassword
 
             try
             {
+                RegisterButton.IsEnabled = false;
+                RegisterButton.Content = "Caricamento...";
+
                 (success, registerDto, statusCode, errorString) = await AccessRequests.CreateUser(userApi, username, password);
+
+                RegisterButton.IsEnabled = true;
+                RegisterButton.Content = "Registrati";
             }
             catch(Exception ex)
             {
@@ -232,7 +232,7 @@ namespace GestorePassword
                     return;
                 }
 
-                UserInfo info = new UserInfo()
+                main.userInfo = new UserInfo()
                 {
                     UserID = loginDto.UserID,
                     Username = loginDto.Username,
@@ -241,8 +241,7 @@ namespace GestorePassword
                     Token = loginDto.Token
                 };
 
-                var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-                main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, info);
+                main.MainContent.Content = new MenuInterface();
             }
         }
 

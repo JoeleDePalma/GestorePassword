@@ -1,4 +1,5 @@
-﻿using GestioneGUI.PasswordInterfaces;
+﻿using GestioneGUI;
+using GestioneGUI.PasswordInterfaces;
 using HTTPRequestsLibrary;
 using Libreria.API;
 using System;
@@ -26,6 +27,7 @@ namespace GestorePassword
         public ApiClient Client { get; set; }
         public UserApi userApi { get; set; }
         public PasswordApi passwordApi { get; set; }
+        public UserInfo userInfo { get; set; }
 
         public MainWindow()
         {
@@ -34,7 +36,7 @@ namespace GestorePassword
             passwordApi = new PasswordApi(Client);
 
             InitializeComponent();
-            MainContent.Content = new SignInInterface(Client, userApi, passwordApi);
+            MainContent.Content = new SignInInterface();
             this.SizeChanged += Window_SizeChanged;
         }
 

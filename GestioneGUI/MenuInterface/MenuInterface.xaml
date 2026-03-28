@@ -10,7 +10,9 @@
              >
     <Grid>
 
-        <Grid>
+        <Grid
+            x:Name="ContentGrid"
+            >
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="1*"/>
                 <ColumnDefinition Width="3*"/>
@@ -24,7 +26,7 @@
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="Auto"/>
                 </Grid.RowDefinitions>
-                
+
                 <Border 
                     Grid.Row="0"
                     BorderBrush="Transparent"
@@ -136,7 +138,7 @@
                                     />
                             </StackPanel>
 
-                        
+
                         </Grid>
                     </Viewbox>
                 </Border>
@@ -206,5 +208,20 @@
                 </Border>
             </ScrollViewer>
         </Grid>
+        
+        <TextBlock
+            x:Name="LoadingContentTextBlock"
+            Visibility="Collapsed"
+            Text="Caricamento..."
+            Background="Transparent"
+            Foreground="Black"
+            Height="40"
+            Width="250"
+            FontFamily="Sitka Text"
+            FontSize="35"
+            FontWeight="Bold"
+            VerticalAlignment="Center"
+            HorizontalAlignment="Center"
+            />
     </Grid>
 </UserControl>

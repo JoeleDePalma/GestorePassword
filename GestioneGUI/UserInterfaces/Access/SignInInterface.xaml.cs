@@ -1,5 +1,6 @@
 using System;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Media.Imaging;
@@ -21,26 +22,24 @@ namespace GestorePassword
         private double? _previousHeight;
 
         private ApiClient Client { get; set; }
-        public UserApi userApi { get; set; }
-        public PasswordApi passwordApi { get; set; }
-
-        public SignInInterface(ApiClient Client, UserApi userApi, PasswordApi passwordApi)
+        private UserApi userApi { get; set; }
+        private PasswordApi passwordApi { get; set; }
+        private MainWindow main { get; set; }
+        
+        public SignInInterface()
         {
             InitializeComponent();
-            this.Loaded += SignInInterface_Loaded;
-            this.Unloaded += SignInInterface_Unloaded;
-            this.Client = Client;
-            this.userApi = userApi;
-            this.passwordApi = passwordApi;
+            Loaded += SignInInterface_Loaded;
+            Unloaded += SignInInterface_Unloaded;
+            main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
+            Client = main.Client;
+            userApi = main.userApi;
+            passwordApi = main.passwordApi;
         }
 
         public void SwapToSignUpInterface(object sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (main != null)
-            {
-                main.MainContent.Content = new SignUpInterface(Client, userApi, passwordApi);
-            }
+            main.MainContent.Content = new SignUpInterface();
         }
 
         public void SwapPasswordStackPanel(object sender, RoutedEventArgs e)
@@ -68,48 +67,42 @@ namespace GestorePassword
 
         private void SignInInterface_Loaded(object? sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (main != null)
-            {
+            _previousResizeMode = main.ResizeMode;
 
-                _previousResizeMode = main.ResizeMode;
+            _previousWidth = main.Width;
+            _previousHeight = main.Height;
+            main.ResizeMode = ResizeMode.NoResize;
 
-                _previousWidth = main.Width;
-                _previousHeight = main.Height;
-                main.ResizeMode = ResizeMode.NoResize;
-
-                main.Width = 800;
-                main.Height = 500;
-            }
+            main.Width = 800;
+            main.Height = 500;
         }
 
         private void SignInInterface_Unloaded(object? sender, RoutedEventArgs e)
         {
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            if (main != null && _previousResizeMode.HasValue)
-            {
-                main.ResizeMode = _previousResizeMode.Value;
-                _previousResizeMode = null;
+            main.ResizeMode = _previousResizeMode.Value;
+            _previousResizeMode = null;
 
-                if (_previousWidth.HasValue)
-                {
-                    main.Width = _previousWidth.Value;
-                    _previousWidth = null;
-                }
-                if (_previousHeight.HasValue)
-                {
-                    main.Height = _previousHeight.Value;
-                    _previousHeight = null;
-                }
+            if (_previousWidth.HasValue)
+            {
+                main.Width = _previousWidth.Value;
+                _previousWidth = null;
+            }
+            if (_previousHeight.HasValue)
+            {
+                main.Height = _previousHeight.Value;
+                _previousHeight = null;
             }
         }
 
         private async void Login(object? sender, RoutedEventArgs e)
         {
             var username = TextBoxUsernameInput.Text;
-            var shownPassword = TextBoxPasswordInput.Text;
-            var hiddenPassword = PasswordBox_Input.Password;
             string password = default;
+
+            if (TextBoxPasswordInput.IsVisible)
+                password = TextBoxPasswordInput.Text;
+            else
+                password = PasswordBox_Input.Password;
 
             bool isThereError = false;
             bool isThereUsernameError = false;
@@ -118,10 +111,7 @@ namespace GestorePassword
             if (string.IsNullOrWhiteSpace(username))
                 SetErrorBlock(UsernameErrorBlock, "Completare il campo", ref isThereUsernameError);
 
-            if (string.IsNullOrWhiteSpace(shownPassword) && TextBoxPasswordInput.IsVisible)
-                SetErrorBlock(PasswordErrorBlock, "Completare il campo", ref isTherePasswordError);
-            
-            if (string.IsNullOrWhiteSpace(hiddenPassword) && PasswordBox_Input.IsVisible)
+            if (string.IsNullOrWhiteSpace(password))
                 SetErrorBlock(PasswordErrorBlock, "Completare il campo", ref isTherePasswordError);
 
             if (!isThereUsernameError && UsernameErrorBlock.IsVisible)
@@ -139,15 +129,16 @@ namespace GestorePassword
             LoginResponseDTO? response = default;
             int StatusCode = default;
             string? errorString = default;
-
-            if (TextBoxPasswordInput.IsVisible)
-                password = shownPassword;
-            else
-                password = hiddenPassword;
-
+            
             try
             {
+                LoginButton.IsEnabled = false;
+                LoginButton.Content = "Caricamento...";
+
                 (Success, response, StatusCode, errorString) = await AccessRequests.Login(userApi, username, password);
+
+                LoginButton.IsEnabled = true;
+                LoginButton.Content = "Accedi";
             }
             catch (Exception ex)
             {
@@ -162,7 +153,7 @@ namespace GestorePassword
                 return;
             }
 
-            var info = new UserInfo()
+            main.userInfo = new UserInfo()
             {
                 UserID = response.UserID,
                 Username = response.Username,
@@ -171,8 +162,7 @@ namespace GestorePassword
                 Token = response.Token
             };
 
-            var main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            main.MainContent.Content = new MenuInterface(Client, userApi, passwordApi, info);
+            main.MainContent.Content = new MenuInterface();
         }
 
         private void SetErrorBlock(TextBlock errorBlock, string error, ref bool isThereError)

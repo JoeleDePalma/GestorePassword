@@ -166,4 +166,17 @@
         <Setter Property="FontStyle" Value="Normal"/>
 
     </Style>
+
+    <Style
+        x:Key="LoadingTextBlockStyle"
+        TargetType="TextBlock"
+        >
+
+        <Setter Property="Background" Value="Transparent"/>
+        <Setter Property="Foreground" Value="Black"/>
+        <Setter Property="FontFamily" Value="Sitka Text"/>
+        <Setter Property="Text" Value="Caricamento..."/>
+        <Setter Property="Visibility" Value="Collapsed"/>
+        
+    </Style>
 </ResourceDictionary>

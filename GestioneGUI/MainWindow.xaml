@@ -9,6 +9,7 @@
         MinHeight="500" 
         MinWidth="800"
         ResizeMode="CanResize"
+        Icon="/Images/ApplicationIcon.ico"
         >
     <Grid>
         <ContentControl x:Name="MainContent"/>

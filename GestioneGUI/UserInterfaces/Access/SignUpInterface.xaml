@@ -158,6 +158,7 @@
                 />
             
             <Button
+                x:Name="RegisterButton"
                 Style="{StaticResource Sign_up-in_ButtonStyle}"
                 Margin="0,10,0,0"
                 Content="Registrati"
