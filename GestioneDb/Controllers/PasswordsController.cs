@@ -25,7 +25,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/all")]
         public async Task<IActionResult> GetAllPasswords(string masterPassword)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetAllPasswordsAsync(userId, masterPassword);
 
             if (!result.Success)
@@ -37,7 +37,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/ById/{id}")]
         public async Task<IActionResult> GetPasswordById(int id, string masterPassword)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetPasswordByIdAsync(id, userId, masterPassword);
 
             if (!result.Success)
@@ -49,7 +49,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/ByApp/{app}")]
         public async Task<IActionResult> GetPasswordByApp(string app, string masterPassword)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetPasswordByAppAsync(app, userId, masterPassword);
 
             if (!result.Success)
@@ -61,7 +61,7 @@ namespace GestioneDb.Controllers
         [HttpPost("create")]
         public async Task<IActionResult> CreatePassword(CreatePasswordDTO NewPassword)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
 
             if (!result.Success)
@@ -73,7 +73,7 @@ namespace GestioneDb.Controllers
         [HttpPut("update/ById/{id}")]
         public async Task<IActionResult> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
             if (!result.Success)
@@ -85,7 +85,7 @@ namespace GestioneDb.Controllers
         [HttpPut("update/ByApp/{app}")]
         public async Task<IActionResult> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.UpdatePasswordByAppAsync(app, dto, userId);
 
             if (!result.Success)
@@ -97,7 +97,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("delete/ById/{id}")]
         public async Task<IActionResult> DeletePasswordById(int id)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
 
             if (!result.Success)
@@ -109,7 +109,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("delete/ByApp/{app}")]
         public async Task<IActionResult> DeletePasswordByApp(string app)
         {
-            int userId = GetUserId();
+            int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.DeletePasswordByAppAsync(app, userId);
 
             if (!result.Success)

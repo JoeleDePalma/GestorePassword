@@ -1,6 +1,7 @@
 ﻿using GestioneDb.Controllers.Common;
 using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
+using GestioneDb.Middlewares;
 using GestioneDb.Models;
 using GestioneDb.Services;
 using GestioneDb.Services.Common;
@@ -27,7 +28,8 @@ namespace GestioneDb.Controllers
         {
             _userService = userService;
         }
-        
+
+        [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpGet("get/ById/{id}")]
         public async Task<IActionResult> GetUserById(int id)
@@ -43,7 +45,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/ByToken")]
         public async Task<IActionResult> GetUserByToken()
         {
-            int id = GetUserId();
+            int id = (int) HttpContext.Items["UserId"];
 
             var result = await _userService.GetUserByIdAsync(id);
 
@@ -53,6 +55,7 @@ namespace GestioneDb.Controllers
             return (Ok(result.Data));
         }
 
+        [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpPost("register")]
         public async Task<IActionResult> CreateUser([FromBody] RegisterDTO NewUser, [FromServices] JwtService jwt)
@@ -68,7 +71,7 @@ namespace GestioneDb.Controllers
         [HttpPut("update")]
         public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO ModifiedUser)
         {
-            int id = GetUserId();
+            int id = (int) HttpContext.Items["UserId"];
             var result = await _userService.UpdateUserByIdAsync(id, ModifiedUser);
 
             if (!result.Success)
@@ -80,7 +83,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("delete")]
         public async Task<IActionResult> DeleteUserByToken()
         {
-            int id = GetUserId();
+            int id = (int) HttpContext.Items["UserId"];
             var result = await _userService.DeleteUserByIdAsync(id);
 
             if (!result.Success)
@@ -89,6 +92,7 @@ namespace GestioneDb.Controllers
             return NoContent();
         }
 
+        [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpPost("login")]
         public async Task<IActionResult> Login(LoginDTO Credentials, [FromServices] JwtService jwt)

@@ -1,18 +1,11 @@
 ﻿using GestioneDb.Services.Common;
-using GestioneDb.Services.Interfaces;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 
 namespace GestioneDb.Controllers.Common
 {
     public abstract class BaseController : ControllerBase
     {
-        protected int GetUserId()
-            => int.Parse(User.FindFirst(ClaimTypes.NameIdentifier).Value);
 
         protected IActionResult HandleError(ErrorCode error, string ErrorString)
         {

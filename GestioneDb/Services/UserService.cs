@@ -44,7 +44,7 @@ namespace GestioneDb.Services
                 return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest, "Credentials aren't valid");
 
             var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == Credentials.Username);
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == Credentials.Username.ToLower());
 
             if (existing != null)
                 return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest, "This username already exists");
@@ -106,7 +106,7 @@ namespace GestioneDb.Services
             if (!string.IsNullOrEmpty(ModifiedUser.Username))
             {
                 var conflict = await _context.Users
-                    .FirstOrDefaultAsync(u => u.Username == ModifiedUser.Username && u.UserID != id);
+                    .FirstOrDefaultAsync(u => u.Username.ToLower() == ModifiedUser.Username.ToLower() && u.UserID != id);
 
                 if (conflict != null)
                 {
@@ -152,7 +152,7 @@ namespace GestioneDb.Services
                 return Result<LoginResponseDTO>.Fail(ErrorCode.BadRequest, "Credential are null");
 
             var user = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username == credentials.Username);
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
             if (user == null)
                 return Result<LoginResponseDTO>.Fail(ErrorCode.NotFound, "User not found");
