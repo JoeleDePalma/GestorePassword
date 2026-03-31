@@ -8,7 +8,7 @@ namespace GestioneGUI.PasswordInterfaces
     public partial class DeletePasswordWindow : Window
     {
         private bool HasFinished { get; set; } = false;
-        public bool IsThereError { get; private set; } = false;
+        public bool IsThereRequestError { get; private set; } = false;
         private PasswordApi passwordApi { get; set; }
         private PasswordInfo passwordInfo { get; set; }
 
@@ -31,32 +31,24 @@ namespace GestioneGUI.PasswordInterfaces
             {
                 DecisionStackPanel.Visibility = Visibility.Collapsed;
                 LoadingTextBlock.Visibility = Visibility.Visible;
-                (Success, StatusCode, ErrorString) = await PasswordRequests.DeletePasswordAsync(passwordApi, passwordInfo.Id);
+                (Success, ErrorString) = await PasswordRequests.DeletePasswordAsync(passwordApi, passwordInfo.Id);
             }
             catch
             {
                 MessageBox.Show("Errore durante la richiesta");
-                IsThereError = true;
-                DialogResult = IsThereError;
+                IsThereRequestError = true;
+                DialogResult = IsThereRequestError;
                 GoBack(new(), new RoutedEventArgs());
                 return;
             }
 
             if (!Success)
             {
-                if (StatusCode == 404)
-                {
-                    MessageBox.Show("Nessuna password trovata");
-                    IsThereError = true;
-                }
-                else if (StatusCode == 401)
-                {
-                    MessageBox.Show("Accesso non autorizzato");
-                    IsThereError = true;
-                }
+                MessageBox.Show(ErrorString);
+                IsThereRequestError = true;
             }
 
-            DialogResult = IsThereError;
+            DialogResult = IsThereRequestError;
             GoBack(new(), new RoutedEventArgs());
         }
 

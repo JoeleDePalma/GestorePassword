@@ -364,3 +364,6 @@ FodyWeavers.xsd
 
 # Ignore appsettings containing secrets
 GestioneDb/appsettings.*.json
+
+# Ignore Production database backups
+DbBackups/

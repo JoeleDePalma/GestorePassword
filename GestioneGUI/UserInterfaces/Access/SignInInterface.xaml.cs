@@ -21,9 +21,7 @@ namespace GestorePassword
         private double? _previousWidth;
         private double? _previousHeight;
 
-        private ApiClient Client { get; set; }
         private UserApi userApi { get; set; }
-        private PasswordApi passwordApi { get; set; }
         private MainWindow main { get; set; }
         
         public SignInInterface()
@@ -32,9 +30,7 @@ namespace GestorePassword
             Loaded += SignInInterface_Loaded;
             Unloaded += SignInInterface_Unloaded;
             main = Application.Current.Windows.OfType<MainWindow>().FirstOrDefault();
-            Client = main.Client;
             userApi = main.userApi;
-            passwordApi = main.passwordApi;
         }
 
         public void SwapToSignUpInterface(object sender, RoutedEventArgs e)
@@ -104,7 +100,7 @@ namespace GestorePassword
             else
                 password = PasswordBox_Input.Password;
 
-            bool isThereError = false;
+            bool isThereRequestError = false;
             bool isThereUsernameError = false;
             bool isTherePasswordError = false;
 
@@ -135,7 +131,7 @@ namespace GestorePassword
                 LoginButton.IsEnabled = false;
                 LoginButton.Content = "Caricamento...";
 
-                (Success, response, StatusCode, errorString) = await AccessRequests.Login(userApi, username, password);
+                (Success, response, errorString) = await AccessRequests.Login(userApi, username, password);
 
                 LoginButton.IsEnabled = true;
                 LoginButton.Content = "Accedi";
@@ -143,13 +139,14 @@ namespace GestorePassword
             catch (Exception ex)
             {
                 MessageBox.Show("Errore durante la richiesta" + ex);
+
+                LoginButton.IsEnabled = true;
+                LoginButton.Content = "Accedi";
             }
 
             if (!Success)
             {
-                if (StatusCode == 404 || StatusCode == 401)
-                    SetErrorBlock(PasswordErrorBlock, "Nome utente o password errati", ref isThereError);
-
+                SetErrorBlock(PasswordErrorBlock, errorString, ref isThereRequestError);
                 return;
             }
 

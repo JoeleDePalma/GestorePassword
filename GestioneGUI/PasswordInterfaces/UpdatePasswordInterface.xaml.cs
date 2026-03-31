@@ -92,7 +92,7 @@ namespace GestioneGUI.PasswordInterfaces
             var username = UsernameInput.Text;
             string password = default;
 
-            bool isThereError = false;
+            bool isThereRequestError = false;
             bool isThereAppError = false;
             bool isTherePasswordError = false;
 
@@ -122,7 +122,6 @@ namespace GestioneGUI.PasswordInterfaces
             }
 
             bool Success = default;
-            int StatusCode = default;
             string? ErrorString = default;
 
             try
@@ -132,24 +131,17 @@ namespace GestioneGUI.PasswordInterfaces
                 SavePasswordButton.IsEnabled = false;
                 GoBackToMenuButton.IsEnabled = false;
 
-                (Success, StatusCode, ErrorString) = await PasswordRequests.UpdatePasswordAsync(passwordApi, passwordDto.Id, app, username, password, userInfo.Password);
+                (Success, ErrorString) = await PasswordRequests.UpdatePasswordAsync(passwordApi, passwordDto.Id, app, username, password, userInfo.Password);
             }
             catch (Exception ex)
             {
-                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereError);
+                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereRequestError);
             }
 
             if (!Success)
-                if (StatusCode == 404)
-                    SetErrorBlock(PasswordErrorBlock, "Nessuna password corrispondente trovata", ref isThereError);
+                SetErrorBlock(PasswordErrorBlock, ErrorString, ref isThereRequestError);
 
-                else if (StatusCode == 400)
-                    SetErrorBlock(AppErrorBlock, "Hai già salvato una password di quest'app", ref isThereError);
-
-                else if (StatusCode == 401)
-                    SetErrorBlock(PasswordErrorBlock, "Accesso non autorizzato rilevato", ref isThereError);
-
-            if (isThereError)
+            if (isThereRequestError)
             {
                 LoadingTextBlock.Visibility = Visibility.Collapsed;
                 GeneratePasswordButton.IsEnabled = true;

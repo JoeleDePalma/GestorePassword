@@ -31,7 +31,7 @@ namespace GestorePassword
 
         public MainWindow()
         {
-            Client = new ApiClient("https://gestorepassword.fly.dev/");
+            Client = new ApiClient("http://localhost:8080");
             userApi = new UserApi(Client);
             passwordApi = new PasswordApi(Client);
 
@@ -40,7 +40,7 @@ namespace GestorePassword
             this.SizeChanged += Window_SizeChanged;
         }
 
-        private bool _isResizing = false;
+        private bool _isResizing = false;     
         private double aspectRatio = 800.0 / 500.0; 
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)

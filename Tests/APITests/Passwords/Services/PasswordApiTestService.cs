@@ -27,9 +27,6 @@ namespace Tests.APITests.Passwords.Services
             var response = await _api.CreateAsync(NewPassword);
             
             Assert.That(response.Success, Is.EqualTo(true));
-
-            TestContext.WriteLine(response.Data.GetType().FullName);
-            TestContext.WriteLine($"Saved ID: {response.Data.CredentialID}");
             
             return response.Data.CredentialID;
         }
@@ -37,8 +34,6 @@ namespace Tests.APITests.Passwords.Services
         public async Task UpdateByIdAsync(string token, UpdatePasswordDTO UpdatedPassword, int passwordId)
         {
             _client.SetToken(token);
-
-            TestContext.WriteLine("ID: " + passwordId);
 
             var response = await _api.UpdateByIdAsync(passwordId, UpdatedPassword);
 

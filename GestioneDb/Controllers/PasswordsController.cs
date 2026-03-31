@@ -1,5 +1,4 @@
-﻿using GestioneDb.Controllers.Common;
-using GestioneDb.DTOs.Passwords;
+﻿using GestioneDb.DTOs.Passwords;
 using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
@@ -13,7 +12,7 @@ namespace GestioneDb.Controllers
     [Authorize]
     [Route("api/[controller]")]
     [ApiController]
-    public class PasswordsController : BaseController
+    public class PasswordsController : ControllerBase
     {
         private readonly IPasswordService _passwordService;
 
@@ -23,99 +22,75 @@ namespace GestioneDb.Controllers
         }
 
         [HttpGet("get/all")]
-        public async Task<IActionResult> GetAllPasswords(string masterPassword)
+        public async Task<Result<List<PasswordResponseDTO>>> GetAllPasswords(string masterPassword)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetAllPasswordsAsync(userId, masterPassword);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return Ok(result.Data);
+            return result;
         }
 
         [HttpGet("get/ById/{id}")]
-        public async Task<IActionResult> GetPasswordById(int id, string masterPassword)
+        public async Task<Result<PasswordResponseDTO>> GetPasswordById(int id, string masterPassword)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetPasswordByIdAsync(id, userId, masterPassword);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return Ok(result.Data);
+            return result;
         }
 
         [HttpGet("get/ByApp/{app}")]
-        public async Task<IActionResult> GetPasswordByApp(string app, string masterPassword)
+        public async Task<Result<PasswordResponseDTO>> GetPasswordByApp(string app, string masterPassword)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.GetPasswordByAppAsync(app, userId, masterPassword);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return Ok(result.Data);
+            return result;
         }
 
         [HttpPost("create")]
-        public async Task<IActionResult> CreatePassword(CreatePasswordDTO NewPassword)
+        public async Task<Result<CreatedPasswordDTO>> CreatePassword(CreatePasswordDTO NewPassword)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return CreatedAtAction(nameof(GetPasswordById), new { id = result.Data.CredentialID }, result);
+            return result;
         }
 
         [HttpPut("update/ById/{id}")]
-        public async Task<IActionResult> UpdatePasswordById(int id, UpdatePasswordDTO dto)
+        public async Task<Result<bool>> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return NoContent();
+            return result;
         }
 
         [HttpPut("update/ByApp/{app}")]
-        public async Task<IActionResult> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
+        public async Task<Result<bool>> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.UpdatePasswordByAppAsync(app, dto, userId);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return NoContent();
+            return result;
         }
 
         [HttpDelete("delete/ById/{id}")]
-        public async Task<IActionResult> DeletePasswordById(int id)
+        public async Task<Result<bool>> DeletePasswordById(int id)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return NoContent();
+            return result;
         }
 
         [HttpDelete("delete/ByApp/{app}")]
-        public async Task<IActionResult> DeletePasswordByApp(string app)
+        public async Task<Result<bool>> DeletePasswordByApp(string app)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.DeletePasswordByAppAsync(app, userId);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return NoContent();
+            return result;
         }
     }
 }

@@ -134,7 +134,7 @@ namespace GestorePassword
 
             bool isThereUsernameError = false;
             bool isTherePasswordError = false;
-            bool isThereServerError = false;
+            bool isThereRequestError = false;
 
             if (string.IsNullOrWhiteSpace(username))
             {
@@ -194,9 +194,8 @@ namespace GestorePassword
             }
 
             bool success = default;
-            UserResponseDTO registerDto = default;
+            UserResponseDTO? registerDto = default;
             LoginResponseDTO loginDto = default;
-            int statusCode = default;
             string? errorString = default;
 
             try
@@ -204,7 +203,7 @@ namespace GestorePassword
                 RegisterButton.IsEnabled = false;
                 RegisterButton.Content = "Caricamento...";
 
-                (success, registerDto, statusCode, errorString) = await AccessRequests.CreateUser(userApi, username, password);
+                (success, registerDto, errorString) = await AccessRequests.CreateUser(userApi, username, password);
 
                 RegisterButton.IsEnabled = true;
                 RegisterButton.Content = "Registrati";
@@ -212,19 +211,19 @@ namespace GestorePassword
             catch(Exception ex)
             {
                 MessageBox.Show("Errore durante la richiesta" + ex.Message);
+
+                RegisterButton.IsEnabled = true;
+                RegisterButton.Content = "Registrati";
             }
 
             if (!success)
-                if (statusCode == 400)
-                    SetErrorBlock(UsernameErrorBlock, "Nome utente già esistente", ref isThereUsernameError);
-                else
-                    SetErrorBlock(PasswordErrorBlock, "Errore interno del server", ref isThereServerError);
+                SetErrorBlock(PasswordErrorBlock, errorString, ref isThereRequestError);
 
             else
             {
                 try
                 {
-                    (success, loginDto, statusCode, errorString) = await AccessRequests.Login(userApi, username, password);
+                    (success, loginDto, errorString) = await AccessRequests.Login(userApi, username, password);
                 }
                 catch (Exception ex)
                 {
@@ -256,4 +255,3 @@ namespace GestorePassword
         }
     }
 }
-

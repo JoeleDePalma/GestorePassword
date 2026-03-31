@@ -1,8 +1,11 @@
 ﻿namespace GestioneDb.Services.Common
 {
-    public enum ErrorCode
+    public enum StatusCode
     {
-        None,
+        Ok,
+        Created,
+        NoContent,
+
         NotFound,
         Unauthorized,
         Conflict,

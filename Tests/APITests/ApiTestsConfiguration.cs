@@ -13,7 +13,7 @@ namespace Tests.APITests
         [SetUp]
         public void SetUp()
         {
-            Client = new ApiClient("http://localhost:5211");
+            Client = new ApiClient("http://localhost:8080");
         }
 
         [TearDown]

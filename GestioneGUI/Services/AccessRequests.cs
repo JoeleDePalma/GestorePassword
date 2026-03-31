@@ -10,7 +10,7 @@ namespace Services
 {
     public class AccessRequests
     {
-        public static async Task<(bool, UserResponseDTO?, int, string?)> CreateUser(UserApi Client, string username, string password)
+        public static async Task<(bool, UserResponseDTO?, string?)> CreateUser(UserApi Client, string username, string password)
         {
             var dto = new RegisterDTO()
             {
@@ -22,7 +22,7 @@ namespace Services
 
             if (!response.Success)
             {
-                return (false, null, response.StatusCode, response.ErrorString);
+                return (false, null, response.Message ?? null);
             }
 
             var infoDto = new UserResponseDTO()
@@ -32,10 +32,10 @@ namespace Services
                 CreatedAt = response.Data.CreatedAt
             };
 
-            return (true, infoDto, response.StatusCode, null);
+            return (true, infoDto, null);
         }
 
-        public static async Task<(bool, LoginResponseDTO, int, string?)> Login(UserApi Client, string username, string password)
+        public static async Task<(bool, LoginResponseDTO, string?)> Login(UserApi Client, string username, string password)
         {
             var dto = new LoginDTO()
             {
@@ -47,7 +47,7 @@ namespace Services
 
             if (!response.Success)
             {
-                return (false, new LoginResponseDTO(), response.StatusCode, response.ErrorString);
+                return (false, new LoginResponseDTO(), response.Message ?? null);
             }
 
             var infoDto = new LoginResponseDTO()
@@ -58,7 +58,7 @@ namespace Services
                 Token = response.Data.Token
             };
 
-            return (true, infoDto, response.StatusCode, null);
+            return (true, infoDto, null);
         }
     }
 }

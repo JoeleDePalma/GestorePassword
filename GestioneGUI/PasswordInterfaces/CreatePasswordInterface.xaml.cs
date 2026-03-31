@@ -1,24 +1,10 @@
 ﻿using GestorePassword;
 using HTTPRequestsLibrary;
 using Libreria.API;
-using Libreria.DTOs.Passwords;
-using Libreria.DTOs.Users;
 using Services;
-using Services;
-using System;
-using System.Collections.Generic;
-using System.Text;
 using System.Windows;
 using System.Windows.Controls;
-using System.Windows.Data;
-using System.Windows.Documents;
-using System.Windows.Input;
-using System.Windows.Media;
 using System.Windows.Media.Imaging;
-using System.Windows.Navigation;
-using System.Windows.Shapes;
-using static System.Runtime.InteropServices.JavaScript.JSType;
-using System.Linq;
 
 namespace GestioneGUI.PasswordInterfaces
 {
@@ -89,7 +75,7 @@ namespace GestioneGUI.PasswordInterfaces
             var username = UsernameInput.Text;
             string password = default;
 
-            bool isThereError = false;
+            bool isThereRequestError = false;
             bool isThereAppError = false;
             bool isTherePasswordError = false;
 
@@ -119,7 +105,6 @@ namespace GestioneGUI.PasswordInterfaces
             }
 
             bool Success = default;
-            int StatusCode = default;
             string? ErrorString = default;
 
             try
@@ -129,18 +114,17 @@ namespace GestioneGUI.PasswordInterfaces
                 SavePasswordButton.IsEnabled = false;
                 GoBackToMenuButton.IsEnabled = false;
 
-                (Success, StatusCode, ErrorString) = await PasswordRequests.CreatePasswordAsync(passwordApi, app, username, password, userInfo.Password);
+                (Success, ErrorString) = await PasswordRequests.CreatePasswordAsync(passwordApi, app, username, password, userInfo.Password);
             }
             catch (Exception ex)
             {
-                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereError);
+                SetErrorBlock(PasswordErrorBlock, "Si è verificato un errore durante la richiesta", ref isThereRequestError);
             }
 
             if (!Success)
-                if (StatusCode == 400)
-                    SetErrorBlock(AppErrorBlock, "Hai già salvato una password di quest'app", ref isThereError);
+                SetErrorBlock(AppErrorBlock, ErrorString, ref isThereRequestError);
 
-            if (isThereError)
+            if (isThereRequestError)
             {
                 LoadingTextBlock.Visibility = Visibility.Collapsed;
                 GeneratePasswordButton.IsEnabled = true;

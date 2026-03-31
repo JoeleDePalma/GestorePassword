@@ -26,28 +26,28 @@ namespace GestioneDb.Services
             var Response = await _context.Users.FindAsync(id);
 
             if (Response == null)
-                return Result<UserResponseDTO>.Fail(ErrorCode.NotFound, "User not found");
+                return Result<UserResponseDTO>.Fail(StatusCode.NotFound, "User not found");
 
             var user = new UserResponseDTO()
             {
-                UserID = (int)Response.UserID,
+                UserID = (int) Response.UserID,
                 Username = Response.Username,
                 CreatedAt = Response.CreatedAt
             };
 
-            return Result<UserResponseDTO>.Ok(user);
+            return Result<UserResponseDTO>.Ok(user, StatusCode.Ok);
         }
 
         public async Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO Credentials, JwtService jwt)
         {
             if (Credentials == null)
-                return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest, "Credentials aren't valid");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Credentials aren't valid");
 
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == Credentials.Username.ToLower());
 
             if (existing != null)
-                return Result<RegisterResponseDTO>.Fail(ErrorCode.BadRequest, "This username already exists");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "This username already exists");
 
             string HashedPassword, Salt;
 
@@ -57,7 +57,7 @@ namespace GestioneDb.Services
             }
             catch (Exception)
             {
-                return Result<RegisterResponseDTO>.Fail(ErrorCode.InternalServerError, "Internal server error during the password hashing");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.InternalServerError, "Internal server error during the password hashing");
             }
 
             var NewUser = new Models.User
@@ -90,18 +90,18 @@ namespace GestioneDb.Services
                 Token = token
             };
 
-            return Result<RegisterResponseDTO>.Ok(response);
+            return Result<RegisterResponseDTO>.Ok(response, StatusCode.Created);
         }
 
         public async Task<Result<bool>> UpdateUserByIdAsync(int id, UpdateUserDTO ModifiedUser)
         {
             if (ModifiedUser == null)
-                return Result<bool>.Fail(ErrorCode.BadRequest, "The informations are null");
+                return Result<bool>.Fail(StatusCode.BadRequest, "The informations are null");
 
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                return Result<bool>.Fail(ErrorCode.NotFound, "User not found");
+                return Result<bool>.Fail(StatusCode.NotFound, "User not found");
 
             if (!string.IsNullOrEmpty(ModifiedUser.Username))
             {
@@ -110,7 +110,7 @@ namespace GestioneDb.Services
 
                 if (conflict != null)
                 {
-                    return Result<bool>.Fail(ErrorCode.BadRequest, "This username already exists");
+                    return Result<bool>.Fail(StatusCode.BadRequest, "This username already exists");
                 }
 
                 user.Username = ModifiedUser.Username;
@@ -124,13 +124,13 @@ namespace GestioneDb.Services
                 }
                 catch
                 {
-                    return Result<bool>.Fail(ErrorCode.InternalServerError, "Internal server error during the password hashing");
+                    return Result<bool>.Fail(StatusCode.InternalServerError, "Internal server error during the password hashing");
                 }
             }
 
             await _context.SaveChangesAsync();
 
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.Ok);
         }
 
         public async Task<Result<bool>> DeleteUserByIdAsync(int id)
@@ -138,24 +138,24 @@ namespace GestioneDb.Services
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                return Result<bool>.Fail(ErrorCode.BadRequest, "User not found");
+                return Result<bool>.Fail(StatusCode.BadRequest, "User not found");
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
 
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
         public async Task<Result<LoginResponseDTO>> LoginAsync(LoginDTO credentials, JwtService jwt)
         {
             if (credentials == null)
-                return Result<LoginResponseDTO>.Fail(ErrorCode.BadRequest, "Credential are null");
+                return Result<LoginResponseDTO>.Fail(StatusCode.BadRequest, "Credential are null");
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
             if (user == null)
-                return Result<LoginResponseDTO>.Fail(ErrorCode.NotFound, "User not found");
+                return Result<LoginResponseDTO>.Fail(StatusCode.NotFound, "User not found");
 
             bool ok = HashingService.VerifyPassword(
                 credentials.Password,
@@ -164,7 +164,7 @@ namespace GestioneDb.Services
             );
 
             if (!ok)
-                return Result<LoginResponseDTO>.Fail(ErrorCode.Unauthorized, "Wrong password");
+                return Result<LoginResponseDTO>.Fail(StatusCode.Unauthorized, "Wrong password");
 
             var tokenUser = new Models.User
             {
@@ -185,7 +185,7 @@ namespace GestioneDb.Services
                 Token = token
             };
 
-            return Result<LoginResponseDTO>.Ok(obj);
+            return Result<LoginResponseDTO>.Ok(obj, StatusCode.Ok);
         }
     }
 }

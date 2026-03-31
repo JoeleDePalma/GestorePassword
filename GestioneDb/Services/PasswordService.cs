@@ -33,7 +33,7 @@ namespace GestioneDb.Services.Implementations
                 var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
 
                 if (key == null)
-                    return Result<List<PasswordResponseDTO>>.Fail(ErrorCode.Unauthorized); 
+                    return Result<List<PasswordResponseDTO>>.Fail(StatusCode.Unauthorized); 
 
                 result.Add(new PasswordResponseDTO
                 {
@@ -46,7 +46,7 @@ namespace GestioneDb.Services.Implementations
                 });
             }
 
-            return Result<List<PasswordResponseDTO>>.Ok(result);
+            return Result<List<PasswordResponseDTO>>.Ok(result, StatusCode.Ok);
         }
 
         public async Task<Result<PasswordResponseDTO?>> GetPasswordByIdAsync(int id, int userId, string masterPassword)
@@ -54,15 +54,15 @@ namespace GestioneDb.Services.Implementations
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<PasswordResponseDTO?>.Fail(ErrorCode.NotFound);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.NotFound);
 
             if (p.UserID != userId)
-                return Result<PasswordResponseDTO?>.Fail(ErrorCode.Unauthorized);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized);
 
             var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<PasswordResponseDTO?>.Fail(ErrorCode.Unauthorized);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized);
 
             var PasswordInfo = new PasswordResponseDTO()
             {
@@ -74,7 +74,7 @@ namespace GestioneDb.Services.Implementations
                 LastUpdateAt = p.LastUpdateAt
             };
 
-            return Result<PasswordResponseDTO?>.Ok(PasswordInfo);
+            return Result<PasswordResponseDTO?>.Ok(PasswordInfo, StatusCode.Ok);
         }
 
         public async Task<Result<PasswordResponseDTO?>> GetPasswordByAppAsync(string app, int userId, string masterPassword)
@@ -83,12 +83,12 @@ namespace GestioneDb.Services.Implementations
                 .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
 
             if (p == null)
-                return Result<PasswordResponseDTO?>.Fail(ErrorCode.NotFound);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.NotFound);
 
             var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<PasswordResponseDTO?>.Fail(ErrorCode.Unauthorized); ;
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized); ;
 
             var PasswordInfo = new PasswordResponseDTO()
             {
@@ -100,7 +100,7 @@ namespace GestioneDb.Services.Implementations
                 LastUpdateAt = p.LastUpdateAt
             };
 
-            return Result<PasswordResponseDTO?>.Ok(PasswordInfo);
+            return Result<PasswordResponseDTO?>.Ok(PasswordInfo, StatusCode.Ok);
         }
 
         public async Task<Result<CreatedPasswordDTO>> CreatePasswordAsync(CreatePasswordDTO dto, int userId)
@@ -109,7 +109,7 @@ namespace GestioneDb.Services.Implementations
                 .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId);
 
             if (existing != null)
-                return Result<CreatedPasswordDTO>.Fail(ErrorCode.BadRequest);
+                return Result<CreatedPasswordDTO>.Fail(StatusCode.BadRequest);
 
             var (key, salt) = await _services.KeyFromPassword(dto.MasterPassword, userId);
 
@@ -137,8 +137,7 @@ namespace GestioneDb.Services.Implementations
                 LastUpdateAt = newPassword.LastUpdateAt
             };
 
-
-            return Result<CreatedPasswordDTO?>.Ok(NewPasswordInfo);
+            return Result<CreatedPasswordDTO?>.Ok(NewPasswordInfo, StatusCode.Created);
         }
 
         public async Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)
@@ -147,20 +146,20 @@ namespace GestioneDb.Services.Implementations
                 .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId && p.CredentialID != id);
 
             if (existing != null)
-                return Result<bool>.Fail(ErrorCode.BadRequest);
+                return Result<bool>.Fail(StatusCode.BadRequest);
 
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<bool>.Fail(ErrorCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound);
 
             if (p.UserID != userId)
-                return Result<bool>.Fail(ErrorCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized);
 
             var (key, _) = await _services.KeyFromPassword(dto.MasterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<bool>.Fail(ErrorCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized);
 
             if (dto.AppName != null)
                 p.AppName = dto.AppName;
@@ -174,7 +173,7 @@ namespace GestioneDb.Services.Implementations
             p.LastUpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
         public async Task<Result<bool>> UpdatePasswordByAppAsync(string app, UpdatePasswordDTO dto, int userId)
@@ -183,12 +182,12 @@ namespace GestioneDb.Services.Implementations
                 .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
 
             if (p == null)
-                return Result<bool>.Fail(ErrorCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound);
 
             var (key, _) = await _services.KeyFromPassword(dto.MasterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<bool>.Fail(ErrorCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized);
 
             if (dto.AppName != null)
                 p.AppName = dto.AppName;
@@ -202,7 +201,7 @@ namespace GestioneDb.Services.Implementations
             p.LastUpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
         public async Task<Result<bool>> DeletePasswordByIdAsync(int id, int userId)
@@ -210,14 +209,14 @@ namespace GestioneDb.Services.Implementations
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<bool>.Fail(ErrorCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound);
 
             if (p.UserID != userId)
-                return Result<bool>.Fail(ErrorCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized);
 
             _context.Passwords.Remove(p);
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
         public async Task<Result<bool>> DeletePasswordByAppAsync(string app, int userId)
@@ -226,11 +225,11 @@ namespace GestioneDb.Services.Implementations
                 .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
 
             if (p == null)
-                return Result<bool>.Fail(ErrorCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound);
 
             _context.Passwords.Remove(p);
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true);
+            return Result<bool>.Ok(true, StatusCode.NoContent);
         }
     }
 }

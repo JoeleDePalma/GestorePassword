@@ -1,4 +1,4 @@
-﻿namespace HTTPRequestsLibrary.Services
+﻿namespace GestioneDb.Services.Common
 {
     public class ApiResponse<T>
     {

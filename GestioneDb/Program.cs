@@ -1,5 +1,6 @@
 using ControllersServices;
 using GestioneDb.Data;
+using GestioneDb.Middlewares;
 using GestioneDb.Services;
 using GestioneDb.Services.Implementations;
 using GestioneDb.Services.Interfaces;
@@ -64,9 +65,14 @@ if (!app.Environment.IsDevelopment())
     app.UseHttpsRedirection();
 }
 
+app.UseRouting();
+
+app.UseMiddleware<CatchStatusCodeMiddleware>(); 
+
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapControllers();
+app.UseMiddleware<GetUserIdMiddleware>();
 
+app.MapControllers();
 app.Run();

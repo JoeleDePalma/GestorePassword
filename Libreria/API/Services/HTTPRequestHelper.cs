@@ -8,27 +8,24 @@ namespace HTTPRequestsLibrary.Services
         public static async Task<ApiResponse<T>> SendAsync<T>(Func<Task<HttpResponseMessage>> httpCall)
         {
             var response = await httpCall();
-
             var raw = await response.Content.ReadAsStringAsync();
 
-            Console.WriteLine($"RAW RESPONSE: {raw}");
-            Console.WriteLine($"STATUS CODE: {response.StatusCode}");
+            var apiResponse = new ApiResponse<T>();
 
-            var apiResponse = new ApiResponse<T>
+            if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
             {
-                Success = response.IsSuccessStatusCode,
-                StatusCode = (int) response.StatusCode
-            };
-
-            if (!apiResponse.Success)
-            {
-                apiResponse.ErrorString = await response.Content.ReadAsStringAsync();
+                apiResponse.Success = true;
+                apiResponse.Message = "No content";
                 apiResponse.Data = default;
                 return apiResponse;
             }
 
             if (string.IsNullOrWhiteSpace(raw))
             {
+                apiResponse.Success = response.IsSuccessStatusCode;
+                apiResponse.Message = response.IsSuccessStatusCode
+                    ? "No content"
+                    : "Empty response body";
                 apiResponse.Data = default;
                 return apiResponse;
             }
@@ -37,44 +34,33 @@ namespace HTTPRequestsLibrary.Services
             {
                 var options = new JsonSerializerOptions
                 {
-                    PropertyNameCaseInsensitive = true,
-                    PropertyNamingPolicy = null
+                    PropertyNameCaseInsensitive = true
                 };
 
-                // Se il JSON contiene "data": è ApiResponse<T>
-                if (raw.Contains("\"data\":{") || raw.Contains("\"data\":["))
-                {
-                    var wrapper = await response.Content.ReadFromJsonAsync<ApiResponse<T>>(options);
+                var wrapper = JsonSerializer.Deserialize<ApiResponse<T>>(raw, options);
 
-                    if (wrapper != null)
-                    {
-                        apiResponse.Success = wrapper.Success;
-                        apiResponse.Error = wrapper.Error;
-                        apiResponse.ErrorString = wrapper.ErrorString;
-                        apiResponse.Data = wrapper.Data;
-                    }
-                    else
-                    {
-                        apiResponse.Success = false;
-                        apiResponse.ErrorString = "Wrapper null";
-                    }
-                }
-                else
+                if (wrapper != null)
                 {
-                    // DTO piatto (Users/Register)
-                    var dto = await response.Content.ReadFromJsonAsync<T>(options);
-                    apiResponse.Data = dto;
-                    apiResponse.Success = true;
+                    return wrapper;
                 }
+
+                var dto = JsonSerializer.Deserialize<T>(raw, options);
+
+                apiResponse.Success = true;
+                apiResponse.Data = dto;
+                apiResponse.Message = null;
+
+                return apiResponse;
             }
             catch (Exception ex)
             {
-                apiResponse.Success = false;
-                apiResponse.ErrorString = $"Deserialization error: {ex.Message}";
-                apiResponse.Data = default;
+                return new ApiResponse<T>
+                {
+                    Success = false,
+                    Message = $"Deserialization error: {ex.Message}",
+                    Data = default
+                };
             }
-
-            return apiResponse;
         }
     }
 }

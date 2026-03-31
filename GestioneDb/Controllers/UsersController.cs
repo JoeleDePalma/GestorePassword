@@ -1,5 +1,4 @@
-﻿using GestioneDb.Controllers.Common;
-using GestioneDb.Data;
+﻿using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
 using GestioneDb.Middlewares;
 using GestioneDb.Models;
@@ -8,6 +7,7 @@ using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http.HttpResults;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Security;
@@ -20,7 +20,7 @@ namespace GestioneDb.Controllers
     [Authorize]
     [ApiController]
     [Route("api/[controller]")]
-    public class UsersController : BaseController
+    public class UsersController : ControllerBase
     {
         private readonly IUserService _userService;
 
@@ -32,77 +32,58 @@ namespace GestioneDb.Controllers
         [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpGet("get/ById/{id}")]
-        public async Task<IActionResult> GetUserById(int id)
+        public async Task<Result<UserResponseDTO>> GetUserById(int id)
         {
             var result = await _userService.GetUserByIdAsync(id);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return (Ok(result.Data));
+            return result;
         }
 
         [HttpGet("get/ByToken")]
-        public async Task<IActionResult> GetUserByToken()
+        public async Task<Result<UserResponseDTO>> GetUserByToken()
         {
             int id = (int) HttpContext.Items["UserId"];
-
             var result = await _userService.GetUserByIdAsync(id);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return (Ok(result.Data));
+            return result;
         }
 
         [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpPost("register")]
-        public async Task<IActionResult> CreateUser([FromBody] RegisterDTO NewUser, [FromServices] JwtService jwt)
+        public async Task<Result<RegisterResponseDTO>> CreateUser([FromBody] RegisterDTO NewUser, [FromServices] JwtService jwt)
         {
             var result = await _userService.CreateUserAsync(NewUser, jwt);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return CreatedAtAction(nameof(GetUserById), new { id = result.Data.UserID }, result.Data);
+            return result;
         }
 
         [HttpPut("update")]
-        public async Task<IActionResult> UpdateUser([FromBody] UpdateUserDTO ModifiedUser)
+        public async Task<Result<bool>> UpdateUser([FromBody] UpdateUserDTO ModifiedUser)
         {
             int id = (int) HttpContext.Items["UserId"];
             var result = await _userService.UpdateUserByIdAsync(id, ModifiedUser);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return Ok(result.Data);
+            return result;
         }
 
         [HttpDelete("delete")]
-        public async Task<IActionResult> DeleteUserByToken()
+        public async Task<Result<bool>> DeleteUserByToken()
         {
             int id = (int) HttpContext.Items["UserId"];
             var result = await _userService.DeleteUserByIdAsync(id);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return NoContent();
+            return result;
         }
 
         [SkipUserIdExtraction]
         [AllowAnonymous]
         [HttpPost("login")]
-        public async Task<IActionResult> Login(LoginDTO Credentials, [FromServices] JwtService jwt)
+        public async Task<Result<LoginResponseDTO>> Login(LoginDTO Credentials, [FromServices] JwtService jwt)
         {
             var result = await _userService.LoginAsync(Credentials, jwt);
 
-            if (!result.Success)
-                return HandleError(result.Error, result.ErrorString);
-
-            return Ok(result.Data);
+            return result;
         }
     } 
 }
