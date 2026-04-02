@@ -16,6 +16,11 @@ namespace GestioneDb.Middlewares
             _next = next;
         }
 
+        /// <summary>
+        /// Extracts the authenticated user's ID from the JWT token and stores it in <c> HttpContext.Items </c>
+        /// unless the endpoint is marked with <see cref="SkipUserIdExtractionAttribute"/>
+        /// </summary>
+        /// <param name="context">The HTTP context of the current request </param>
         public async Task InvokeAsync(HttpContext context)
         {
             var endpoint = context.GetEndpoint();

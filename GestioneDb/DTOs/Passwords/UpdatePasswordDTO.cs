@@ -1,5 +1,8 @@
 ﻿namespace GestioneDb.DTOs.Passwords
 {
+    /// <summary>
+    /// Represents the data that can be updated for an existing password entry
+    /// </summary>
     public class UpdatePasswordDTO
     {
         public string? AppName { get; set; }

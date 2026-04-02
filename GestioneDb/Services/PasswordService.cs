@@ -5,7 +5,6 @@ using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Security;
-using System.Xml;
 
 namespace GestioneDb.Services.Implementations
 {
@@ -20,6 +19,15 @@ namespace GestioneDb.Services.Implementations
             _services = services;
         }
 
+        /// <summary>
+        /// Retrieves all passwords belonging to the specified user and decrypts them using the provided master password
+        /// </summary>
+        /// <param name="userId">The ID of the user whose passwords must be retrieved </param>
+        /// <param name="masterPassword">The master password used to derive the decryption key </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a list of decrypted <see cref="PasswordResponseDTO"/> objects
+        /// if the operation succeeds, or an error result if the master password is invalid
+        /// </returns>
         public async Task<Result<List<PasswordResponseDTO>>> GetAllPasswordsAsync(int userId, string masterPassword)
         {
             var passwords = await _context.Passwords
@@ -49,6 +57,17 @@ namespace GestioneDb.Services.Implementations
             return Result<List<PasswordResponseDTO>>.Ok(result, StatusCode.Ok);
         }
 
+        /// <summary>
+        /// Retrieves a specific password belonging to the specified user and decrypts it using the provided master password
+        /// </summary>
+        /// <param name="id">The ID of the password to retrieve </param>
+        /// <param name="userId">The ID of the user who owns the password </param>
+        /// <param name="masterPassword">The master password used to derive the decryption key </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing the decrypted <see cref="PasswordResponseDTO"/> object
+        /// if the operation succeeds, or an error result if the password does not exist,
+        /// does not belong to the user, or the master password is invalid
+        /// </returns>
         public async Task<Result<PasswordResponseDTO?>> GetPasswordByIdAsync(int id, int userId, string masterPassword)
         {
             var p = await _context.Passwords.FindAsync(id);
@@ -77,40 +96,17 @@ namespace GestioneDb.Services.Implementations
             return Result<PasswordResponseDTO?>.Ok(PasswordInfo, StatusCode.Ok);
         }
 
-        public async Task<Result<PasswordResponseDTO?>> GetPasswordByAppAsync(string app, int userId, string masterPassword)
-        {
-            var p = await _context.Passwords
-                .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
-
-            if (p == null)
-                return Result<PasswordResponseDTO?>.Fail(StatusCode.NotFound);
-
-            var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
-
-            if (key == null)
-                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized); ;
-
-            var PasswordInfo = new PasswordResponseDTO()
-            {
-                Id = p.CredentialID,
-                AppName = p.AppName,
-                AppUsername = p.AppUsername,
-                Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
-                CreatedAt = p.CreatedAt,
-                LastUpdateAt = p.LastUpdateAt
-            };
-
-            return Result<PasswordResponseDTO?>.Ok(PasswordInfo, StatusCode.Ok);
-        }
-
+        /// <summary>
+        /// Creates a new password for the specified user, encrypting it using the master password provided in the request
+        /// </summary>
+        /// <param name="dto">The data required to create the password </param>
+        /// <param name="userId">The ID of the user creating the password </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing the created <see cref="CreatedPasswordDTO"/> object
+        /// if the operation succeeds, or an error result if the encryption process fails
+        /// </returns>
         public async Task<Result<CreatedPasswordDTO>> CreatePasswordAsync(CreatePasswordDTO dto, int userId)
         {
-            var existing = await _context.Passwords
-                .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId);
-
-            if (existing != null)
-                return Result<CreatedPasswordDTO>.Fail(StatusCode.BadRequest);
-
             var (key, salt) = await _services.KeyFromPassword(dto.MasterPassword, userId);
 
             var newPassword = new Password
@@ -137,17 +133,22 @@ namespace GestioneDb.Services.Implementations
                 LastUpdateAt = newPassword.LastUpdateAt
             };
 
-            return Result<CreatedPasswordDTO?>.Ok(NewPasswordInfo, StatusCode.Created);
+            return Result<CreatedPasswordDTO>.Ok(NewPasswordInfo, StatusCode.Created);
         }
 
+        /// <summary>
+        /// Updates the specified password for the given user, encrypting the new password if provided
+        /// </summary>
+        /// <param name="id">The ID of the password to update </param>
+        /// <param name="dto">The data to update for the password </param>
+        /// <param name="userId">The ID of the user performing the update </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a boolean value indicating whether the update was successful,
+        /// or an error result if the password does not exist, does not belong to the user,
+        /// or the master password is invalid
+        /// </returns>
         public async Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)
         {
-            var existing = await _context.Passwords
-                .FirstOrDefaultAsync(p => p.AppName == dto.AppName && p.UserID == userId && p.CredentialID != id);
-
-            if (existing != null)
-                return Result<bool>.Fail(StatusCode.BadRequest);
-
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
@@ -176,34 +177,15 @@ namespace GestioneDb.Services.Implementations
             return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
-        public async Task<Result<bool>> UpdatePasswordByAppAsync(string app, UpdatePasswordDTO dto, int userId)
-        {
-            var p = await _context.Passwords
-                .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
-
-            if (p == null)
-                return Result<bool>.Fail(StatusCode.NotFound);
-
-            var (key, _) = await _services.KeyFromPassword(dto.MasterPassword, userId, p.KeySalt);
-
-            if (key == null)
-                return Result<bool>.Fail(StatusCode.Unauthorized);
-
-            if (dto.AppName != null)
-                p.AppName = dto.AppName;
-
-            if (dto.AppUsername != null)
-                p.AppUsername = dto.AppUsername;
-
-            if (dto.Password != null)
-                p.EncryptedPassword = CryptographyService.Encrypt(dto.Password, key);
-
-            p.LastUpdateAt = DateTime.UtcNow;
-
-            await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true, StatusCode.NoContent);
-        }
-
+        /// <summary>
+        /// Deletes the specified password for the given user
+        /// </summary>
+        /// <param name="id">The ID of the password to delete </param>
+        /// <param name="userId">The ID of the user performing the deletion </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a boolean value indicating whether the deletion was successful,
+        /// or an error result if the password does not exist or does not belong to the user
+        /// </returns>
         public async Task<Result<bool>> DeletePasswordByIdAsync(int id, int userId)
         {
             var p = await _context.Passwords.FindAsync(id);
@@ -216,19 +198,7 @@ namespace GestioneDb.Services.Implementations
 
             _context.Passwords.Remove(p);
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true, StatusCode.NoContent);
-        }
 
-        public async Task<Result<bool>> DeletePasswordByAppAsync(string app, int userId)
-        {
-            var p = await _context.Passwords
-                .FirstOrDefaultAsync(x => x.AppName == app && x.UserID == userId);
-
-            if (p == null)
-                return Result<bool>.Fail(StatusCode.NotFound);
-
-            _context.Passwords.Remove(p);
-            await _context.SaveChangesAsync();
             return Result<bool>.Ok(true, StatusCode.NoContent);
         }
     }

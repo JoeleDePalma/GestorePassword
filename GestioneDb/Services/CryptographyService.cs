@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
+﻿using System.Text;
 using System.Security.Cryptography;
 using Konscious.Security.Cryptography;
 
@@ -8,6 +6,17 @@ namespace Security
 {
     public class CryptographyService
     {
+        /// <summary>
+        /// Derives a cryptographic encryption key from the specified password using the
+        /// Argon2id key derivation function. Generates a new salt if none is provided
+        /// </summary>
+        /// <param name="password">The plaintext password used to derive the key </param>
+        /// <param name="salt">
+        /// The Base64‑encoded salt used for key derivation. If null, a new salt is generated
+        /// </param>
+        /// <returns>
+        /// A byte array containing the derived encryption key
+        /// </returns>
         public static byte[] DeriveKey(string password, string salt = null)
         {
             if (salt == null)
@@ -28,7 +37,16 @@ namespace Security
             return Key;
         }
 
-        public static string Encrypt(string Text, byte[] key)
+        /// <summary>
+        /// Encrypts the specified plaintext using AES‑CBC with PKCS7 padding and the
+        /// provided encryption key. A new IV is generated for each encryption
+        /// </summary>
+        /// <param name="text">The plaintext string to encrypt </param>
+        /// <param name="key">The encryption key as a byte array </param>
+        /// <returns>
+        /// A Base64‑encoded string containing the IV followed by the encrypted ciphertext
+        /// </returns>
+        public static string Encrypt(string text, byte[] key)
         {
             var aes = Aes.Create();
             aes.Key = key;
@@ -38,14 +56,14 @@ namespace Security
             aes.GenerateIV();
             var IV = aes.IV;
 
-            var TextBytes = Encoding.UTF8.GetBytes(Text);
+            var textBytes = Encoding.UTF8.GetBytes(text);
 
             var Encryptor = aes.CreateEncryptor(key, IV);
 
             using var ms = new MemoryStream();
             using (var cs = new CryptoStream(ms, Encryptor, CryptoStreamMode.Write))
             {
-                cs.Write(TextBytes, 0, TextBytes.Length);
+                cs.Write(textBytes, 0, textBytes.Length);
                 cs.FlushFinalBlock();
             }
 
@@ -59,22 +77,33 @@ namespace Security
             return Convert.ToBase64String(Result);
         }
 
-        public static string Decrypt(string CipherTextBase64, byte[] key)
+        /// <summary>
+        /// Decrypts a ciphertext previously encrypted with AES‑CBC and PKCS7 padding,
+        /// extracting the IV from the beginning of the provided Base64‑encoded input.
+        /// </summary>
+        /// <param name="cipherTextBase64">
+        /// A Base64‑encoded string containing the IV followed by the encrypted ciphertext.
+        /// </param>
+        /// <param name="key">The encryption key as a byte array.</param>
+        /// <returns>
+        /// The decrypted plaintext string.
+        /// </returns>
+        public static string Decrypt(string cipherTextBase64, byte[] key)
         {
             var aes = Aes.Create();
             aes.Key = key;
             aes.Mode = CipherMode.CBC;
             aes.Padding = PaddingMode.PKCS7;
 
-            var FullCipher = Convert.FromBase64String(CipherTextBase64);
+            var fullCipher = Convert.FromBase64String(cipherTextBase64);
 
             var IVSize = aes.BlockSize / 8;
 
             var IV = new byte[IVSize];
-            var CipherBytes = new byte[FullCipher.Length - IVSize];
+            var cipherBytes = new byte[fullCipher.Length - IVSize];
 
-            Buffer.BlockCopy(FullCipher, 0, IV, 0, IVSize);
-            Buffer.BlockCopy(FullCipher, IVSize, CipherBytes, 0, CipherBytes.Length);
+            Buffer.BlockCopy(fullCipher, 0, IV, 0, IVSize);
+            Buffer.BlockCopy(fullCipher, IVSize, cipherBytes, 0, cipherBytes.Length);
 
             aes.IV = IV;
 
@@ -83,13 +112,13 @@ namespace Security
             using var ms = new MemoryStream();
             using (var cs = new CryptoStream(ms, Decryptor, CryptoStreamMode.Write))
             {
-                cs.Write(CipherBytes, 0, CipherBytes.Length);
+                cs.Write(cipherBytes, 0, cipherBytes.Length);
                 cs.FlushFinalBlock();
             }
 
-            var TextBytes = ms.ToArray();
+            var textBytes = ms.ToArray();
 
-            return Encoding.UTF8.GetString(TextBytes);
+            return Encoding.UTF8.GetString(textBytes);
         }
     }
 }

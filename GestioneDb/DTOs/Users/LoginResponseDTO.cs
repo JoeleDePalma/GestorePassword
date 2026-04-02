@@ -1,6 +1,10 @@
-﻿using GestioneDb.DTOs.Users;
-
-public class LoginResponseDTO : UserResponseDTO
+﻿namespace GestioneDb.DTOs.Users
 {
-    public string Token { get; set; }
+    /// <summary>
+    /// Represents the data returned to the client after a successful login
+    /// </summary>
+    public class LoginResponseDTO : UserResponseDTO
+    {
+        public string Token { get; set; }
+    }
 }

@@ -4,6 +4,10 @@ using System.Net.Http.Headers;
 
 namespace HTTPRequestsLibrary
 {
+    /// <summary>
+    /// Simple HTTP client used to send requests to an API.
+    /// Supports setting a JWT token for authenticated requests.
+    /// </summary>
     public class ApiClient : IDisposable
     {
         private readonly HttpClient _http;
@@ -17,17 +21,28 @@ namespace HTTPRequestsLibrary
             };
         }
 
+        /// <summary>
+        /// Sets the JWT token in the Authorization header for all requests.
+        /// </summary>
+        /// <param name="token">The JWT token as a string.</param>
         public void SetToken(string token)
         {
             _http.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         }
 
+        /// <summary>
+        /// Releases the HTTP client and closes all connections.
+        /// </summary>
         public void Dispose()
         {
             if (_disposed) return;
             _http.Dispose();
             _disposed = true;
         }
+
+        /// <summary>
+        /// Gets the internal HttpClient used to send requests.
+        /// </summary>
         public HttpClient Http => _http;
     }
 }

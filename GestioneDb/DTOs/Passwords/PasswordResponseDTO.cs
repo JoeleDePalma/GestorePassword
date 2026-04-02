@@ -1,5 +1,8 @@
 ﻿namespace GestioneDb.DTOs.Passwords
 {
+    /// <summary>
+    /// Represents the password data returned to the client
+    /// </summary>
     public class PasswordResponseDTO
     {
         public int? Id { get; set; }

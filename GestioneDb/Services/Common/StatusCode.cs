@@ -1,5 +1,9 @@
 ﻿namespace GestioneDb.Services.Common
 {
+    /// <summary>
+    /// Represents the set of HTTP status codes used throughout the application
+    /// to standardize controller responses.
+    /// </summary>
     public enum StatusCode
     {
         Ok,
@@ -12,6 +16,7 @@
         InvalidInput,
         Forbidden,
         BadRequest,
+
         InternalServerError
     }
 }

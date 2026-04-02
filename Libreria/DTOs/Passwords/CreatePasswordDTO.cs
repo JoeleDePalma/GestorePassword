@@ -1,5 +1,8 @@
 ﻿namespace Libreria.DTOs.Passwords
 {
+    /// <summary>
+    /// Represents the data required to create a new password entry
+    /// </summary>
     public class CreatePasswordDTO
     {
         public string AppName { get; set; }

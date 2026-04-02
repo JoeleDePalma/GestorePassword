@@ -14,6 +14,11 @@ namespace GestioneDb.Middlewares
             _next = next;
         }
 
+        /// <summary>
+        /// Intercepts the HTTP response, extracts the custom <see cref="StatusCode"/> returned by the application,
+        /// maps it to a real HTTP status code, and rewrites the response in a standardized API format
+        /// </summary>
+        /// <param name="context">The HTTP context of the current request </param>
         public async Task InvokeAsync(HttpContext context)
         {
             var originalBody = context.Response.Body;

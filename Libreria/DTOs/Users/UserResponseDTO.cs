@@ -1,5 +1,8 @@
 ﻿namespace Libreria.DTOs.Users
 {
+    /// <summary>
+    /// Represents the user data returned to the client
+    /// </summary>
     public class UserResponseDTO
     {
         public int UserID { get; set; }

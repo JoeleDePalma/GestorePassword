@@ -2,10 +2,7 @@
 using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http.HttpResults;
 using Microsoft.AspNetCore.Mvc;
-using System.IdentityModel.Tokens.Jwt;
-using System.Security.Claims;
 
 namespace GestioneDb.Controllers
 {
@@ -21,6 +18,13 @@ namespace GestioneDb.Controllers
             _passwordService = passwordService;
         }
 
+        /// <summary>
+        /// Returns all passwords saved by the user
+        /// </summary>
+        /// <param name="masterPassword">
+        /// The master password used to decrypt the saved passwords
+        /// </param>
+        /// <returns>A list of decrypted passwords</returns>
         [HttpGet("get/all")]
         public async Task<Result<List<PasswordResponseDTO>>> GetAllPasswords(string masterPassword)
         {
@@ -30,6 +34,12 @@ namespace GestioneDb.Controllers
             return result;
         }
 
+        /// <summary>
+        /// Returns the password with the specified ID for the authenticated user.
+        /// </summary>
+        /// <param name="id">The ID of the requested password.</param>
+        /// <param name="masterPassword">The master password used to decrypt the saved password.</param>
+        /// <returns>The decrypted password</returns>
         [HttpGet("get/ById/{id}")]
         public async Task<Result<PasswordResponseDTO>> GetPasswordById(int id, string masterPassword)
         {
@@ -39,24 +49,26 @@ namespace GestioneDb.Controllers
             return result;
         }
 
-        [HttpGet("get/ByApp/{app}")]
-        public async Task<Result<PasswordResponseDTO>> GetPasswordByApp(string app, string masterPassword)
-        {
-            int userId = (int) HttpContext.Items["UserId"];
-            var result = await _passwordService.GetPasswordByAppAsync(app, userId, masterPassword);
-
-            return result;
-        }
-
+        /// <summary>
+        /// Creates a new password entry with the provided details and returns the data needed by the client
+        /// </summary>
+        /// <param name="newPassword">DTO containing the details of the password to be saved</param>
+        /// <returns>The details of the saved password for the client</returns>
         [HttpPost("create")]
-        public async Task<Result<CreatedPasswordDTO>> CreatePassword(CreatePasswordDTO NewPassword)
+        public async Task<Result<CreatedPasswordDTO>> CreatePassword(CreatePasswordDTO newPassword)
         {
             int userId = (int) HttpContext.Items["UserId"];
-            var result = await _passwordService.CreatePasswordAsync(NewPassword, userId);
+            var result = await _passwordService.CreatePasswordAsync(newPassword, userId);
 
             return result;
         }
 
+        /// <summary>
+        /// Updates a saved password with the specified ID and returns a boolean indicating whether the operation was successful
+        /// </summary>
+        /// <param name="id">The ID of the password to update</param>
+        /// <param name="dto">DTO containing the updated data</param>
+        /// <returns>A boolean result.</returns>
         [HttpPut("update/ById/{id}")]
         public async Task<Result<bool>> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
@@ -66,29 +78,16 @@ namespace GestioneDb.Controllers
             return result;
         }
 
-        [HttpPut("update/ByApp/{app}")]
-        public async Task<Result<bool>> UpdatePasswordByApp(string app, UpdatePasswordDTO dto)
-        {
-            int userId = (int) HttpContext.Items["UserId"];
-            var result = await _passwordService.UpdatePasswordByAppAsync(app, dto, userId);
-
-            return result;
-        }
-
+        /// <summary>
+        /// Deletes a saved password with the specified ID and returns a boolean indicating the operation was successful
+        /// </summary>
+        /// <param name="id">The ID of the password to delete</param>
+        /// <returns>A boolean indicating the operation was successful</returns>
         [HttpDelete("delete/ById/{id}")]
         public async Task<Result<bool>> DeletePasswordById(int id)
         {
             int userId = (int) HttpContext.Items["UserId"];
             var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
-
-            return result;
-        }
-
-        [HttpDelete("delete/ByApp/{app}")]
-        public async Task<Result<bool>> DeletePasswordByApp(string app)
-        {
-            int userId = (int) HttpContext.Items["UserId"];
-            var result = await _passwordService.DeletePasswordByAppAsync(app, userId);
 
             return result;
         }

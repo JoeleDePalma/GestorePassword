@@ -14,6 +14,12 @@ public class JwtService
         _config = config;
     }
 
+    /// <summary>
+    /// Generates a signed JWT token for the specified user using the secret key
+    /// and configuration values defined in <c>appsettings.Development.json</c> or <c>appsettings.Production.json</c>
+    /// </summary>
+    /// <param name="user">The user whose data will be embedded in the token claims </param>
+    /// <returns>A signed JWT token as a string </returns>
     public string GenerateToken(User user)
     {
         var key = new SymmetricSecurityKey(

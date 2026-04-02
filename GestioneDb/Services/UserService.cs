@@ -1,12 +1,9 @@
 ﻿using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
-using GestioneDb.Models;
 using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
-using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using Security;
-using static Microsoft.ApplicationInsights.MetricDimensionNames.TelemetryContext;
 
 namespace GestioneDb.Services
 {
@@ -21,6 +18,14 @@ namespace GestioneDb.Services
             _services = services;
         }
 
+        /// <summary>
+        /// Retrieves the data of the user with the specified ID.
+        /// </summary>
+        /// <param name="id">The ID of the user.</param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a <see cref="UserResponseDTO"/> object
+        /// if the operation succeeds, or an error result if the user does not exist.
+        /// </returns>
         public async Task<Result<UserResponseDTO>> GetUserByIdAsync(int id)
         {
             var Response = await _context.Users.FindAsync(id);
@@ -38,13 +43,23 @@ namespace GestioneDb.Services
             return Result<UserResponseDTO>.Ok(user, StatusCode.Ok);
         }
 
-        public async Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO Credentials, JwtService jwt)
+        /// <summary>
+        /// Registers a new user and generates a JWT token for authentication
+        /// </summary>
+        /// <param name="credentials">The registration data provided by the user </param>
+        /// <param name="jwt">The JWT service used to generate the authentication token </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing the created <see cref="RegisterResponseDTO"/> object
+        /// if the registration succeeds, or an error result if the username is already taken
+        /// or if the password hashing process fails
+        /// </returns>
+        public async Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO credentials, JwtService jwt)
         {
-            if (Credentials == null)
+            if (credentials == null)
                 return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Credentials aren't valid");
 
             var existing = await _context.Users
-                .FirstOrDefaultAsync(u => u.Username.ToLower() == Credentials.Username.ToLower());
+                .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
             if (existing != null)
                 return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "This username already exists");
@@ -53,7 +68,7 @@ namespace GestioneDb.Services
 
             try
             {
-                (HashedPassword, Salt) = HashingService.HashPassword(Credentials.Password);
+                (HashedPassword, Salt) = HashingService.HashPassword(credentials.Password);
             }
             catch (Exception)
             {
@@ -62,7 +77,7 @@ namespace GestioneDb.Services
 
             var NewUser = new Models.User
             {
-                Username = Credentials.Username,
+                Username = credentials.Username,
                 HashedPassword = HashedPassword,
                 PasswordSalt = Salt,
                 CreatedAt = DateTime.UtcNow
@@ -74,17 +89,17 @@ namespace GestioneDb.Services
             var tokenUser = new Models.User
             {
                 UserID = NewUser.UserID,
-                Username = Credentials.Username,
+                Username = credentials.Username,
                 HashedPassword = HashedPassword,
                 PasswordSalt = Salt,
-                CreatedAt = DateTime.UtcNow
+                CreatedAt = NewUser.CreatedAt
             };
 
             var token = jwt.GenerateToken(tokenUser);
 
             var response = new RegisterResponseDTO
             {
-                UserID = (int)NewUser.UserID,
+                UserID = (int) NewUser.UserID,
                 Username = NewUser.Username,
                 CreatedAt = NewUser.CreatedAt,
                 Token = token
@@ -93,6 +108,16 @@ namespace GestioneDb.Services
             return Result<RegisterResponseDTO>.Ok(response, StatusCode.Created);
         }
 
+        /// <summary>
+        /// Updates the specified user's data, hashing the new password if provided
+        /// </summary>
+        /// <param name="id">The ID of the user to update </param>
+        /// <param name="ModifiedUser">The data to update for the user </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a boolean value indicating whether the update was successful,
+        /// or an error result if the user does not exist, the username is already taken,
+        /// or the password hashing process fails
+        /// </returns>
         public async Task<Result<bool>> UpdateUserByIdAsync(int id, UpdateUserDTO ModifiedUser)
         {
             if (ModifiedUser == null)
@@ -122,7 +147,7 @@ namespace GestioneDb.Services
                 {
                     (user.HashedPassword, user.PasswordSalt) = HashingService.HashPassword(ModifiedUser.Password);
                 }
-                catch
+                catch (Exception)
                 {
                     return Result<bool>.Fail(StatusCode.InternalServerError, "Internal server error during the password hashing");
                 }
@@ -133,12 +158,20 @@ namespace GestioneDb.Services
             return Result<bool>.Ok(true, StatusCode.Ok);
         }
 
+        /// <summary>
+        /// Deletes the specified user
+        /// </summary>
+        /// <param name="id">The ID of the user to delete </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing a boolean value indicating whether the deletion was successful,
+        /// or an error result if the user does not exist
+        /// </returns>
         public async Task<Result<bool>> DeleteUserByIdAsync(int id)
         {
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                return Result<bool>.Fail(StatusCode.BadRequest, "User not found");
+                return Result<bool>.Fail(StatusCode.NotFound, "User not found");
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -146,6 +179,16 @@ namespace GestioneDb.Services
             return Result<bool>.Ok(true, StatusCode.NoContent);
         }
 
+        /// <summary>
+        /// Validates the provided credentials and generates a JWT token for the authenticated user
+        /// </summary>
+        /// <param name="credentials">The login data provided by the user </param>
+        /// <param name="jwt">The JWT service used to generate the authentication token </param>
+        /// <returns>
+        /// A <see cref="Result{T}"/> containing the <see cref="LoginResponseDTO"/> object
+        /// if the authentication succeeds, or an error result if the user does not exist
+        /// or the provided password is incorrect
+        /// </returns>
         public async Task<Result<LoginResponseDTO>> LoginAsync(LoginDTO credentials, JwtService jwt)
         {
             if (credentials == null)
