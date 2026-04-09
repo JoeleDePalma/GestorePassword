@@ -14,11 +14,11 @@
         /// <summary>
         /// A message returned by the server, usually used for errors or status information
         /// </summary>
-        public string Message { get; set; }
+        public string? Message { get; set; }
 
         /// <summary>
         /// The data returned by the server, if any
         /// </summary>
-        public T Data { get; set; }
+        public T? Data { get; set; }
     }
 }

@@ -5,9 +5,9 @@
     /// </summary>
     public class CreatePasswordDTO
     {
-        public string AppName { get; set; }
+        public required string AppName { get; set; }
         public string? AppUsername { get; set; }
-        public string Password { get; set; }
-        public string MasterPassword { get; set; }
+        public required string Password { get; set; }
+        public required string MasterPassword { get; set; }
     }
 }

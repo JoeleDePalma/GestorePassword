@@ -22,23 +22,23 @@ namespace GestioneDb.Models
         /// <summary>
         /// The name of the application or service associated with the credential.
         /// </summary>
-        public string AppName { get; set; }
+        public required string AppName { get; set; }
 
         /// <summary>
         /// The username used for the application or service.
         /// </summary>
-        public string AppUsername { get; set; }
+        public string? AppUsername { get; set; }
 
 
         /// <summary>
         /// The encrypted version of the stored password.
         /// </summary>
-        public string EncryptedPassword { get; set; }
+        public required string EncryptedPassword { get; set; }
 
         /// <summary>
         /// The salt used to derive the encryption key for this password.
         /// </summary>
-        public string KeySalt { get; set; }
+        public required string KeySalt { get; set; }
 
 
         /// <summary>

@@ -1,6 +1,8 @@
 ﻿using GestioneDb.Data;
 using GestioneDb.DTOs.Users;
 using GestioneDb.Services.Common;
+using GestioneDb.Services.Common.ControllerServices;
+using GestioneDb.Services.Common.Exceptions;
 using GestioneDb.Services.Interfaces;
 using Microsoft.EntityFrameworkCore;
 using Security;
@@ -35,7 +37,7 @@ namespace GestioneDb.Services
 
             var user = new UserResponseDTO()
             {
-                UserID = (int) Response.UserID,
+                UserID = (int) Response.UserID!,
                 Username = Response.Username,
                 CreatedAt = Response.CreatedAt
             };
@@ -99,7 +101,7 @@ namespace GestioneDb.Services
 
             var response = new RegisterResponseDTO
             {
-                UserID = (int) NewUser.UserID,
+                UserID = (int) NewUser.UserID!,
                 Username = NewUser.Username,
                 CreatedAt = NewUser.CreatedAt,
                 Token = token
@@ -141,11 +143,30 @@ namespace GestioneDb.Services
                 user.Username = ModifiedUser.Username;
             }
 
-            if (!string.IsNullOrEmpty(ModifiedUser.Password))
+            if (!string.IsNullOrEmpty(ModifiedUser.NewPassword))
             {
                 try
                 {
-                    (user.HashedPassword, user.PasswordSalt) = HashingService.HashPassword(ModifiedUser.Password);
+                    var response = await CommonFunctions.GetAllPasswords(_context, _services, id, ModifiedUser.CurrentPassword);
+
+                    if (!response.Success)
+                    {
+                        throw new PasswordRetrievalException("Errore durante il recupero delle password");
+                    }
+
+                    if (response.Data != null)
+                    {
+                        if (response.Data.Any(p => p.KeySalt == null))
+                            throw new ArgumentNullException("Mancato salt per la chiave di decrittazione");
+
+                        foreach (var p in response.Data)
+                        {
+                            var (key, _) = await _services.KeyFromPassword(ModifiedUser.NewPassword, id, p.KeySalt!);
+                            p.Password = CryptographyService.Encrypt(p.Password, key);
+                        }
+                    }
+
+                    (user.HashedPassword, user.PasswordSalt) = HashingService.HashPassword(ModifiedUser.NewPassword);
                 }
                 catch (Exception)
                 {
@@ -154,7 +175,6 @@ namespace GestioneDb.Services
             }
 
             await _context.SaveChangesAsync();
-
             return Result<bool>.Ok(true, StatusCode.Ok);
         }
 
@@ -222,7 +242,7 @@ namespace GestioneDb.Services
 
             var obj = new LoginResponseDTO()
             {
-                UserID = (int) user.UserID,
+                UserID = (int) user.UserID!,
                 Username = user.Username,
                 CreatedAt = user.CreatedAt,
                 Token = token

@@ -42,7 +42,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/ByToken")]
         public async Task<Result<UserResponseDTO>> GetUserByToken()
         {
-            int id = (int) HttpContext.Items["UserId"];
+            int id = (int) HttpContext.Items["UserId"]!;
             var result = await _userService.GetUserByIdAsync(id);
 
             return result;
@@ -72,7 +72,7 @@ namespace GestioneDb.Controllers
         [HttpPut("update")]
         public async Task<Result<bool>> UpdateUser([FromBody] UpdateUserDTO modifiedUser)
         {
-            int id = (int) HttpContext.Items["UserId"];
+            int id = (int) HttpContext.Items["UserId"]!;
             var result = await _userService.UpdateUserByIdAsync(id, modifiedUser);
 
             return result;
@@ -85,7 +85,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("delete")]
         public async Task<Result<bool>> DeleteUserByToken()
         {
-            int id = (int) HttpContext.Items["UserId"];
+            int id = (int) HttpContext.Items["UserId"]!;
             var result = await _userService.DeleteUserByIdAsync(id);
 
             return result;

@@ -63,7 +63,7 @@ namespace GestioneDb.Services
 
                 return Result<UpdatePackageDTO>.Ok(dto, StatusCode.Ok);
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return Result<UpdatePackageDTO>.Fail(StatusCode.InternalServerError, "Errore durante il recupero del pacchetto di aggiornamento.");
             }

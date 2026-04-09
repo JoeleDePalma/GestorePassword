@@ -5,7 +5,7 @@
     /// </summary>
     public class UpdatePackageDTO
     {
-        public string FileName { get; set; }
-        public byte[] Content { get; set; }
+        public required string FileName { get; set; }
+        public required byte[] Content { get; set; }
     }
 }

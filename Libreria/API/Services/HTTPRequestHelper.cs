@@ -36,7 +36,7 @@ namespace Libreria.HTTPRequestsLibrary.Services
             {
                 apiResponse.Success = true;
                 apiResponse.Message = "No content";
-                apiResponse.Data = default;
+                apiResponse.Data = default!;
                 return apiResponse;
             }
 
@@ -47,7 +47,7 @@ namespace Libreria.HTTPRequestsLibrary.Services
                 apiResponse.Message = response.IsSuccessStatusCode
                     ? "No content"
                     : "Empty response body";
-                apiResponse.Data = default;
+                apiResponse.Data = default!;
                 return apiResponse;
             }
 
@@ -72,8 +72,8 @@ namespace Libreria.HTTPRequestsLibrary.Services
                 var dto = JsonSerializer.Deserialize<T>(raw, options);
 
                 apiResponse.Success = true;
-                apiResponse.Data = dto;
-                apiResponse.Message = null;
+                apiResponse.Data = dto!;
+                apiResponse.Message = null!;
 
                 return apiResponse;
             }
@@ -84,7 +84,7 @@ namespace Libreria.HTTPRequestsLibrary.Services
                 {
                     Success = false,
                     Message = $"Deserialization error: {ex.Message}",
-                    Data = default
+                    Data = default!
                 };
             }
         }

@@ -16,7 +16,7 @@ namespace Security
         /// <returns>
         /// A tuple containing the Base64-encoded hash and the salt used during hashing
         /// </returns>
-        public static (string hash, string salt) HashPassword(string password, string salt = null)
+        public static (string hash, string salt) HashPassword(string password, string salt = null!)
         {
             if (string.IsNullOrWhiteSpace(password))
                 throw new ArgumentException("Password cannot be null or empty.", nameof(password));
@@ -61,7 +61,7 @@ namespace Security
                 Convert.FromBase64String(Hash)
                 );
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 return false;
             }

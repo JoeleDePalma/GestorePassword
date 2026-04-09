@@ -3,7 +3,7 @@ using GestioneDb.DTOs.Passwords;
 using GestioneDb.Models;
 using GestioneDb.Services.Common;
 using GestioneDb.Services.Interfaces;
-using Microsoft.EntityFrameworkCore;
+using GestioneDb.Services.Common.ControllerServices;
 using Security;
 
 namespace GestioneDb.Services.Implementations
@@ -30,31 +30,8 @@ namespace GestioneDb.Services.Implementations
         /// </returns>
         public async Task<Result<List<PasswordResponseDTO>>> GetAllPasswordsAsync(int userId, string masterPassword)
         {
-            var passwords = await _context.Passwords
-                .Where(p => p.UserID == userId)
-                .ToListAsync();
-
-            var result = new List<PasswordResponseDTO>();
-
-            foreach (var p in passwords)
-            {
-                var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
-
-                if (key == null)
-                    return Result<List<PasswordResponseDTO>>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida"); 
-
-                result.Add(new PasswordResponseDTO
-                {
-                    Id = p.CredentialID,
-                    AppName = p.AppName,
-                    AppUsername = p.AppUsername,
-                    Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
-                    CreatedAt = p.CreatedAt,
-                    LastUpdateAt = p.LastUpdateAt
-                });
-            }
-
-            return Result<List<PasswordResponseDTO>>.Ok(result, StatusCode.Ok);
+            var response = await CommonFunctions.GetAllPasswords(_context, _services, userId, masterPassword);
+            return response;
         }
 
         /// <summary>
@@ -87,7 +64,7 @@ namespace GestioneDb.Services.Implementations
             {
                 Id = p.CredentialID,
                 AppName = p.AppName,
-                AppUsername = p.AppUsername,
+                AppUsername = p.AppUsername!,
                 Password = CryptographyService.Decrypt(p.EncryptedPassword, key),
                 CreatedAt = p.CreatedAt,
                 LastUpdateAt = p.LastUpdateAt
@@ -113,7 +90,7 @@ namespace GestioneDb.Services.Implementations
             {
                 UserID = userId,
                 AppName = dto.AppName,
-                AppUsername = dto.AppUsername,
+                AppUsername = dto.AppUsername!,
                 EncryptedPassword = CryptographyService.Encrypt(dto.Password, key),
                 KeySalt = salt,
                 CreatedAt = DateTime.UtcNow,
@@ -127,7 +104,7 @@ namespace GestioneDb.Services.Implementations
             {
                 CredentialID = newPassword.CredentialID,
                 AppName = newPassword.AppName,
-                AppUsername = newPassword.AppUsername,
+                AppUsername = newPassword.AppUsername!,
                 Password = dto.Password,
                 CreatedAt = newPassword.CreatedAt,
                 LastUpdateAt = newPassword.LastUpdateAt

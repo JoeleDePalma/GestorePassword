@@ -17,7 +17,7 @@ namespace Security
         /// <returns>
         /// A byte array containing the derived encryption key
         /// </returns>
-        public static byte[] DeriveKey(string password, string salt = null)
+        public static byte[] DeriveKey(string password, string salt = null!)
         {
             if (salt == null)
                 salt = SecurityServices.GenerateSalt();

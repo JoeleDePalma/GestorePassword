@@ -14,18 +14,18 @@
         /// <summary>
         /// The username chosen by the user.
         /// </summary>
-        public string Username { get; set; }
+        public required string Username { get; set; }
 
         /// <summary>
         /// The hashed version of the user's password.
         /// </summary>
-        public string HashedPassword { get; set; }
+        public required string HashedPassword { get; set; }
 
 
         /// <summary>
         /// The salt used during the password hashing process.
         /// </summary>
-        public string PasswordSalt { get; set; }
+        public required string PasswordSalt { get; set; }
 
 
         /// <summary>

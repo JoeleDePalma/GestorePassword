@@ -25,12 +25,12 @@ namespace ControllersServices
         /// A tuple containing the derived encryption key and the salt used.
         /// Returns <c>(null, null)</c> if the password validation fails
         /// </returns>
-        public async Task<(byte[], string)> KeyFromPassword(string password, int id, string PasswordSalt = null)
+        public async Task<(byte[], string)> KeyFromPassword(string password, int id, string PasswordSalt = null!)
         {
             var User = await _context.Users.FindAsync(id);
 
             if (User == null)
-                return (null, null);
+                return (null, null)!;
 
             var Hash = User.HashedPassword;
             var MasterPasswordSalt = User.PasswordSalt;
@@ -38,7 +38,7 @@ namespace ControllersServices
             var Verified = HashingService.VerifyPassword(password, Hash, MasterPasswordSalt);
 
             if (!Verified)
-                return (null, null);
+                return (null, null)!;
 
             if (PasswordSalt == null)
                 PasswordSalt = SecurityServices.GenerateSalt();

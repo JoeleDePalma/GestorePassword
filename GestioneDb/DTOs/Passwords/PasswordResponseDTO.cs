@@ -5,10 +5,11 @@
     /// </summary>
     public class PasswordResponseDTO
     {
-        public int? Id { get; set; }
-        public string AppName { get; set; }
-        public string AppUsername { get; set; }
-        public string Password { get; set; }
+        public int Id { get; set; }
+        public required string AppName { get; set; }
+        public required string AppUsername { get; set; }
+        public required string Password { get; set; }
+        public string? KeySalt { get; set; }
         public DateTime CreatedAt { get; set; }
         public DateTime LastUpdateAt { get; set; }
     }

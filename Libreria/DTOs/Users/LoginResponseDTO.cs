@@ -5,6 +5,6 @@
     /// </summary>
     public class LoginResponseDTO : UserResponseDTO
     {
-        public string Token { get; set; }
+        public string? Token { get; set; }
     }
 }

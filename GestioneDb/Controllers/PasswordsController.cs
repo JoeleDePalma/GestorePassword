@@ -28,7 +28,7 @@ namespace GestioneDb.Controllers
         [HttpGet("get/all")]
         public async Task<Result<List<PasswordResponseDTO>>> GetAllPasswords(string masterPassword)
         {
-            int userId = (int) HttpContext.Items["UserId"];
+            int userId = (int) HttpContext.Items["UserId"]!;
             var result = await _passwordService.GetAllPasswordsAsync(userId, masterPassword);
 
             return result;
@@ -43,10 +43,10 @@ namespace GestioneDb.Controllers
         [HttpGet("get/ById/{id}")]
         public async Task<Result<PasswordResponseDTO>> GetPasswordById(int id, string masterPassword)
         {
-            int userId = (int) HttpContext.Items["UserId"];
+            int userId = (int) HttpContext.Items["UserId"]!;
             var result = await _passwordService.GetPasswordByIdAsync(id, userId, masterPassword);
 
-            return result;
+            return result!;
         }
 
         /// <summary>
@@ -57,7 +57,7 @@ namespace GestioneDb.Controllers
         [HttpPost("create")]
         public async Task<Result<CreatedPasswordDTO>> CreatePassword(CreatePasswordDTO newPassword)
         {
-            int userId = (int) HttpContext.Items["UserId"];
+            int userId = (int) HttpContext.Items["UserId"]!;
             var result = await _passwordService.CreatePasswordAsync(newPassword, userId);
 
             return result;
@@ -72,7 +72,7 @@ namespace GestioneDb.Controllers
         [HttpPut("update/ById/{id}")]
         public async Task<Result<bool>> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
-            int userId = (int) HttpContext.Items["UserId"];
+            int userId = (int) HttpContext.Items["UserId"]!;
             var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
             return result;
@@ -86,7 +86,7 @@ namespace GestioneDb.Controllers
         [HttpDelete("delete/ById/{id}")]
         public async Task<Result<bool>> DeletePasswordById(int id)
         {
-            int userId = (int) HttpContext.Items["UserId"];
+            int userId = (int) HttpContext.Items["UserId"]!;
             var result = await _passwordService.DeletePasswordByIdAsync(id, userId);
 
             return result;

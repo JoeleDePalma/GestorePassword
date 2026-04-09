@@ -10,7 +10,7 @@
     {
         public bool Success { get; set; }
         public StatusCode responseStatusCode { get; set; }
-        public T Data { get; set; }
+        public T? Data { get; set; }
         public string? ErrorString { get; set; }
 
         public static Result<T> Ok(T data, StatusCode statusCode) =>
