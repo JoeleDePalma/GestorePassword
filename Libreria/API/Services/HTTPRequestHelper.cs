@@ -1,7 +1,6 @@
-﻿using System.Net.Http.Json;
-using System.Text.Json;
+﻿using System.Text.Json;
 
-namespace HTTPRequestsLibrary.Services
+namespace Libreria.HTTPRequestsLibrary.Services
 {
     /// <summary>
     /// Helper class used to send HTTP requests and read the response

@@ -1,19 +1,23 @@
-app = 'gestorepassword-site'
-primary_region = 'fra'
+app = "gestorepassword-site"
+primary_region = "fra"
 
 [http_service]
   internal_port = 8043
   force_https = true
-  auto_stop_machines = 'stop'
+  auto_stop_machines = "stop"
   auto_start_machines = true
   min_machines_running = 0
-  processes = ['app']
-
-  [[http_service.routes]]
-    path = "/api"
-    destination = "https://gestorepassword.internal"
+  processes = ["app"]
 
 [[vm]]
-  memory = '1gb'
-  cpu_kind = 'shared'
+  memory = "1gb"
+  cpu_kind = "shared"
   cpus = 1
+
+[[statics]]
+  guest_path = "/public"
+  url_prefix = "/"
+
+[[statics]]
+  guest_path = "/public/download"
+  url_prefix = "/download"

@@ -1,4 +1,4 @@
-﻿namespace HTTPRequestsLibrary.Services
+﻿namespace Libreria.HTTPRequestsLibrary.Services
 {
     /// <summary>
     /// Represents the standard structure returned by the server in HTTP responses

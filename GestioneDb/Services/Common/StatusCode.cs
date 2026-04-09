@@ -17,6 +17,8 @@
         Forbidden,
         BadRequest,
 
-        InternalServerError
+        InternalServerError,
+
+        UpgradeRequired
     }
 }

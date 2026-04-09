@@ -97,6 +97,7 @@ namespace GestioneDb.Middlewares
                 StatusCode.NotFound => StatusCodes.Status404NotFound,
                 StatusCode.Conflict => StatusCodes.Status409Conflict,
                 StatusCode.InternalServerError => StatusCodes.Status500InternalServerError,
+                StatusCode.UpgradeRequired => StatusCodes.Status426UpgradeRequired,
                 _ => StatusCodes.Status500InternalServerError
             };
         }

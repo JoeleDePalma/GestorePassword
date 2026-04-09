@@ -1,6 +1,6 @@
-﻿using HTTPRequestsLibrary;
-using HTTPRequestsLibrary.Interfaces;
-using HTTPRequestsLibrary.Services;
+﻿using Libreria.HTTPRequestsLibrary;
+using Libreria.HTTPRequestsLibrary.Interfaces;
+using Libreria.HTTPRequestsLibrary.Services;
 using Libreria.DTOs.Users;
 using System.Net.Http.Json;
 

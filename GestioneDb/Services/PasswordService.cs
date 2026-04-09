@@ -41,7 +41,7 @@ namespace GestioneDb.Services.Implementations
                 var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
 
                 if (key == null)
-                    return Result<List<PasswordResponseDTO>>.Fail(StatusCode.Unauthorized); 
+                    return Result<List<PasswordResponseDTO>>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida"); 
 
                 result.Add(new PasswordResponseDTO
                 {
@@ -73,15 +73,15 @@ namespace GestioneDb.Services.Implementations
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<PasswordResponseDTO?>.Fail(StatusCode.NotFound);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.NotFound, "Password non trovata");
 
             if (p.UserID != userId)
-                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized, "Password appartenente ad un altro account");
 
             var (key, _) = await _services.KeyFromPassword(masterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized);
+                return Result<PasswordResponseDTO?>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida");
 
             var PasswordInfo = new PasswordResponseDTO()
             {
@@ -152,15 +152,15 @@ namespace GestioneDb.Services.Implementations
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<bool>.Fail(StatusCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound, "Password non trovata");
 
             if (p.UserID != userId)
-                return Result<bool>.Fail(StatusCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized, "Password appartenente ad un altro account");
 
             var (key, _) = await _services.KeyFromPassword(dto.MasterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<bool>.Fail(StatusCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida");
 
             if (dto.AppName != null)
                 p.AppName = dto.AppName;
@@ -191,10 +191,10 @@ namespace GestioneDb.Services.Implementations
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<bool>.Fail(StatusCode.NotFound);
+                return Result<bool>.Fail(StatusCode.NotFound, "Password non trovata");
 
             if (p.UserID != userId)
-                return Result<bool>.Fail(StatusCode.Unauthorized);
+                return Result<bool>.Fail(StatusCode.Unauthorized, "Password appartenente ad un altro utente");
 
             _context.Passwords.Remove(p);
             await _context.SaveChangesAsync();

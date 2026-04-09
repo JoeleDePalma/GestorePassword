@@ -1,5 +1,6 @@
 using ControllersServices;
 using GestioneDb.Data;
+using GestioneDb.Interfaces;
 using GestioneDb.Middlewares;
 using GestioneDb.Services;
 using GestioneDb.Services.Implementations;
@@ -51,6 +52,7 @@ builder.Services.AddScoped<JwtService>();
 builder.Services.AddScoped<ControllersServices.ControllersServices>();
 builder.Services.AddScoped<IPasswordService, PasswordService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IVersionService, VersionService>();
 
 var app = builder.Build();
 
@@ -67,7 +69,9 @@ if (!app.Environment.IsDevelopment())
 
 app.UseRouting();
 
-app.UseMiddleware<CatchStatusCodeMiddleware>(); 
+app.UseMiddleware<CatchStatusCodeMiddleware>();
+
+app.UseMiddleware<VersionMiddleware>();
 
 app.UseAuthentication();
 app.UseAuthorization();

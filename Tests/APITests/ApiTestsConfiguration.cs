@@ -1,5 +1,5 @@
-﻿using HTTPRequestsLibrary;
-using HTTPRequestsLibrary.Services;
+﻿using Libreria.HTTPRequestsLibrary;
+using Libreria.HTTPRequestsLibrary.Services;
 using System;
 using System.Collections.Generic;
 using System.Text;

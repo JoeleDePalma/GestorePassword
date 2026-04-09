@@ -1,0 +1,13 @@
+{
+  "name": "gestorepassword-website",
+  "version": "1.0.0",
+  "description": "Sito ufficiale di GestorePassword",
+  "scripts": {
+    "build": "tsc",
+    "watch": "tsc --watch"
+  },
+  "type": "module",
+  "devDependencies": {
+    "typescript": "^6.0.2"
+  }
+}

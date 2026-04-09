@@ -1,7 +1,7 @@
-﻿using HTTPRequestsLibrary.Services;
+﻿using Libreria.HTTPRequestsLibrary.Services;
 using Libreria.DTOs.Users;
 
-namespace HTTPRequestsLibrary.Interfaces
+namespace Libreria.HTTPRequestsLibrary.Interfaces
 {
     public interface IUserApi
     {

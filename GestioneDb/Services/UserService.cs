@@ -31,7 +31,7 @@ namespace GestioneDb.Services
             var Response = await _context.Users.FindAsync(id);
 
             if (Response == null)
-                return Result<UserResponseDTO>.Fail(StatusCode.NotFound, "User not found");
+                return Result<UserResponseDTO>.Fail(StatusCode.NotFound, "Utente non trovato");
 
             var user = new UserResponseDTO()
             {
@@ -56,13 +56,13 @@ namespace GestioneDb.Services
         public async Task<Result<RegisterResponseDTO>> CreateUserAsync(RegisterDTO credentials, JwtService jwt)
         {
             if (credentials == null)
-                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Credentials aren't valid");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Dati di registrazione non validi");
 
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
             if (existing != null)
-                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "This username already exists");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Nome utente già in uso");
 
             string HashedPassword, Salt;
 
@@ -72,7 +72,7 @@ namespace GestioneDb.Services
             }
             catch (Exception)
             {
-                return Result<RegisterResponseDTO>.Fail(StatusCode.InternalServerError, "Internal server error during the password hashing");
+                return Result<RegisterResponseDTO>.Fail(StatusCode.InternalServerError, "Si è verificato un errore durante la creazione dell’account");
             }
 
             var NewUser = new Models.User
@@ -121,12 +121,12 @@ namespace GestioneDb.Services
         public async Task<Result<bool>> UpdateUserByIdAsync(int id, UpdateUserDTO ModifiedUser)
         {
             if (ModifiedUser == null)
-                return Result<bool>.Fail(StatusCode.BadRequest, "The informations are null");
+                return Result<bool>.Fail(StatusCode.BadRequest, "Dati non validi");
 
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                return Result<bool>.Fail(StatusCode.NotFound, "User not found");
+                return Result<bool>.Fail(StatusCode.NotFound, "Utente non trovato");
 
             if (!string.IsNullOrEmpty(ModifiedUser.Username))
             {
@@ -135,7 +135,7 @@ namespace GestioneDb.Services
 
                 if (conflict != null)
                 {
-                    return Result<bool>.Fail(StatusCode.BadRequest, "This username already exists");
+                    return Result<bool>.Fail(StatusCode.BadRequest, "Nome utente già in uso");
                 }
 
                 user.Username = ModifiedUser.Username;
@@ -149,7 +149,7 @@ namespace GestioneDb.Services
                 }
                 catch (Exception)
                 {
-                    return Result<bool>.Fail(StatusCode.InternalServerError, "Internal server error during the password hashing");
+                    return Result<bool>.Fail(StatusCode.InternalServerError, "Si è verificato un errore durante l’aggiornamento della password");
                 }
             }
 
@@ -171,7 +171,7 @@ namespace GestioneDb.Services
             var user = await _context.Users.FindAsync(id);
 
             if (user == null)
-                return Result<bool>.Fail(StatusCode.NotFound, "User not found");
+                return Result<bool>.Fail(StatusCode.NotFound, "Utente non trovato");
 
             _context.Users.Remove(user);
             await _context.SaveChangesAsync();
@@ -192,13 +192,13 @@ namespace GestioneDb.Services
         public async Task<Result<LoginResponseDTO>> LoginAsync(LoginDTO credentials, JwtService jwt)
         {
             if (credentials == null)
-                return Result<LoginResponseDTO>.Fail(StatusCode.BadRequest, "Credential are null");
+                return Result<LoginResponseDTO>.Fail(StatusCode.BadRequest, "Dati di accesso non validi");
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
             if (user == null)
-                return Result<LoginResponseDTO>.Fail(StatusCode.NotFound, "User not found");
+                return Result<LoginResponseDTO>.Fail(StatusCode.NotFound, "Utente non trovato");
 
             bool ok = HashingService.VerifyPassword(
                 credentials.Password,
@@ -207,7 +207,7 @@ namespace GestioneDb.Services
             );
 
             if (!ok)
-                return Result<LoginResponseDTO>.Fail(StatusCode.Unauthorized, "Wrong password");
+                return Result<LoginResponseDTO>.Fail(StatusCode.Unauthorized, "Password errata");
 
             var tokenUser = new Models.User
             {

@@ -2,11 +2,11 @@
 using System.Net.Http;
 using System.Net.Http.Headers;
 
-namespace HTTPRequestsLibrary
+namespace Libreria.HTTPRequestsLibrary
 {
     /// <summary>
     /// Simple HTTP client used to send requests to an API.
-    /// Supports setting a JWT token for authenticated requests.
+    /// Supports setting a JWT token for authenticated requests
     /// </summary>
     public class ApiClient : IDisposable
     {
@@ -22,7 +22,7 @@ namespace HTTPRequestsLibrary
         }
 
         /// <summary>
-        /// Sets the JWT token in the Authorization header for all requests.
+        /// Sets the JWT token in the Authorization header for all requests
         /// </summary>
         /// <param name="token">The JWT token as a string.</param>
         public void SetToken(string token)
@@ -31,7 +31,17 @@ namespace HTTPRequestsLibrary
         }
 
         /// <summary>
-        /// Releases the HTTP client and closes all connections.
+        /// Sets the current app version in the header for all requests
+        /// </summary>
+        /// <param name="version">The current app version </param>
+        public void SetVersion(Version version)
+        {
+            _http.DefaultRequestHeaders.Remove("GestorePassword-version");
+            _http.DefaultRequestHeaders.Add("GestorePassword-version", version.ToString());
+        }
+
+        /// <summary>
+        /// Releases the HTTP client and closes all connections
         /// </summary>
         public void Dispose()
         {
@@ -41,7 +51,7 @@ namespace HTTPRequestsLibrary
         }
 
         /// <summary>
-        /// Gets the internal HttpClient used to send requests.
+        /// Gets the internal HttpClient used to send requests
         /// </summary>
         public HttpClient Http => _http;
     }
