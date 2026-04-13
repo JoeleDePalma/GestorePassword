@@ -1,0 +1,114 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+    <UserControl
+      Width="800"
+      Height="400"
+      >
+    </UserControl>
+  </Design.PreviewWith>
+
+  <!-- Textboxes of the username and the password -->
+  <Style Selector="TextBox.DataInput">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="Foreground" Value="#000000"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="FontFamily" Value="Arial"/>
+    <Setter Property="PlaceholderForeground" Value="#4A4A4A"/>
+    <Setter Property="CaretBrush" Value="Black"/>
+  </Style> 
+
+  <Style Selector="TextBox.DataInput:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <Style Selector="TextBox.DataInput:pointerover /template/ Border#PART_BorderElement">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+      <Setter Property="BorderThickness" Value="0"/>
+      <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <!-- Border of the grid that contains the textboxes of the username and the password -->
+  <Style Selector="Border.DataInputBackground">
+    <Setter Property="Background" Value="#40FFFFFF"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <Style Selector="Border.DataInputBackground:focus /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#50FFFFFF"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <Style Selector="Border.DataInputBackground:pointerover /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#50FFFFFF"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <!-- Buttons that show and hide the password -->
+  <Style Selector="Button.ShowHidePassword /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderBrush" Value="Transparent"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+
+  <Style Selector="Button.ShowHidePassword:pointerover">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+  </Style>
+
+  <Style Selector="Button.ShowHidePassword:pressed">
+      <Setter Property="Background" Value="Transparent"/>
+      <Setter Property="BorderBrush" Value="Transparent"/>
+  </Style>
+
+  <!-- Login button -->
+  <Style Selector="Button.RegisterLogin /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#232fd1"/>
+    <Setter Property="Foreground" Value="#FFFFFF"/>
+    <Setter Property="CornerRadius" Value="25"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="HorizontalContentAlignment" Value="Center"/>
+    <Setter Property="FontFamily" Value="Arial"/>
+    <Setter Property="FontWeight" Value="Bold"/>
+  </Style>
+
+  <Style Selector="Button.RegisterLogin:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#1D27B5"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+
+  <Style Selector="Button.RegisterLogin:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="#2C38D6"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+
+  <!-- Button that redirects to sign in and sign up pages -->
+  <Style Selector="Button.SwapViewButton /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="#232ED1"/>
+  </Style>
+
+  <Style Selector="Button.SwapViewButton:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Foreground" Value="#2C38D6"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+
+  <Style Selector="Button.SwapViewButton /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Foreground" Value="#1D27B5"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+</Styles>

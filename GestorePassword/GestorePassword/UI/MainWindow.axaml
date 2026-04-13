@@ -1,0 +1,7 @@
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:views="clr-namespace:GestorePassword.UI.Desktop.Views.User.Access"
+        x:Class="GestorePassword.MainWindow"
+        Title="Gestore Password"
+        Width="800" Height="450">
+</Window>

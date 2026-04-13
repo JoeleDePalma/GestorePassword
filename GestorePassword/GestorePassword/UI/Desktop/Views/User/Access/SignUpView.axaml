@@ -1,0 +1,187 @@
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
+             x:Class="GestorePassword.SignUpView">
+  <Grid
+        ColumnDefinitions="5*, 4*, 5*"
+        RowDefinitions="2*, 8*, 2*"
+        >
+        <Grid.Background>
+            <LinearGradientBrush StartPoint="0%,100%" EndPoint="100%,0%">
+                <GradientStop Color="#08B2E3" Offset="0"/>
+                <GradientStop Color="#3D53D5" Offset="1"/>
+            </LinearGradientBrush>
+        </Grid.Background>
+
+        <Grid
+            Grid.Column="1"
+            Grid.Row="1"
+
+            ColumnDefinitions="2*, 8*, 2*"
+            RowDefinitions="1*, 1.5*, 1*, 1.5*, 1*, 1*, 0.4*, 0.8*, 0.5*, 0.2*, 1.5*"
+            >
+ 
+            <Border
+                Background="#25FFFFFF"
+                CornerRadius="25"
+                BorderBrush="#40FFFFFF"
+                BorderThickness="2"
+                Grid.Column="0"
+                Grid.ColumnSpan="3"
+                Grid.Row="0"
+                Grid.RowSpan="12"
+                />
+
+            <Viewbox
+                Grid.Column="1"
+                Grid.Row="1"
+                >
+                <TextBlock
+                    Text="Benvenuto!"
+                    FontFamily="Cambria"
+                    FontWeight="SemiBold"
+                    VerticalAlignment="Top"
+                    HorizontalAlignment="Center"
+                    Foreground="#241623"
+                    />
+            </Viewbox>
+            
+            <Viewbox
+                Grid.Column="1"
+                Grid.Row="2"
+                >
+                <TextBlock
+                    TextAlignment="Center"
+                    Margin="0, 0, 0, 0"
+                    Foreground="Black"
+                    Background="Transparent"
+                    >
+                    Inizia a gestire le tue password
+                    <LineBreak/>
+                    in sicurezza!
+                </TextBlock>
+            </Viewbox>
+
+            <Viewbox Grid.Column="1" Grid.Row="4">
+                <Grid Width="350" Height="50">
+                    <Border Classes="DataInputBackground"/>
+
+                    <TextBox 
+                        Classes="DataInput" 
+                        PlaceholderText="Username"
+                        Width="350" 
+                        Height="50"
+                        FontSize="18"
+                        />
+                </Grid>
+            </Viewbox>
+
+            <Viewbox Grid.Column="1" Grid.Row="5">
+
+                <Grid Width="350" Height="50">
+
+                    <Border Classes="DataInputBackground"/>
+
+                    <TextBox 
+                        x:Name="ShownPasswordInput"
+                        Classes="DataInput" 
+                        PlaceholderText="Password"
+                        Width="300" 
+                        Height="50"
+                        FontSize="18"
+                        HorizontalAlignment="Left"
+                        IsVisible="False"
+                        />
+
+                    <TextBox 
+                        x:Name="HiddenPasswordInput"
+                        Classes="DataInput" 
+                        PlaceholderText="Password"
+                        Width="300" 
+                        Height="50"
+                        FontSize="18"
+                        HorizontalAlignment="Left"
+                        PasswordChar="●"
+                        />
+
+                    <Button
+                        x:Name="ShowPasswordButton"
+                        Height="50"
+                        Width="50"
+                        HorizontalAlignment="Right"
+                        Classes="ShowHidePassword"
+                        >
+                        <Image
+                            Height="40"
+                            Width="40"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="avares://GestorePassword/UI/Desktop/Images/closed_eye.png"
+                            />
+                    </Button>
+
+                    <Button
+                        x:Name="HidePasswordButton"
+                        Height="50"
+                        Width="50"
+                        HorizontalAlignment="Right"
+                        Classes="ShowHidePassword"
+                        IsVisible="False"
+                        >
+                        <Image
+                            Height="40"
+                            Width="40"
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            Source="avares://GestorePassword/UI/Desktop/Images/opened_eye.png"
+                            />
+                    </Button>
+                </Grid>
+            </Viewbox>
+
+            <Viewbox Grid.Column="1" Grid.Row="6">
+                <TextBlock
+                    x:Name="ErrorTextBlock"
+                    Width="350"
+                    Background="Transparent"
+                    Foreground="Red"
+                    TextAlignment="Center"
+                    IsVisible="False"
+                    />
+            </Viewbox>
+
+            <Viewbox Grid.Column="1" Grid.Row="7">
+                <Button
+                    Width="350"
+                    Height="50"
+                    Content="Registrati"
+                    Classes="RegisterLogin"
+                    />
+            </Viewbox>
+
+            <Viewbox Grid.Column="1" Grid.Row="8">
+                <StackPanel
+                    Orientation="Horizontal"
+                    Spacing="-5"
+                    >
+                    <TextBlock
+                        VerticalAlignment="Center"
+                        Text="Hai già un account?"
+                        Background="Transparent"
+                        Foreground="Black"
+                        FontSize="12"
+                        /> 
+                    <Button
+                        x:Name="GoToSignInViewButton"
+                        VerticalAlignment="Center"  
+                        Content="Accedi"
+                        Classes="SwapViewButton"
+                        FontSize="12"
+                        />
+                </StackPanel>
+            </Viewbox>
+        </Grid> 
+    </Grid>
+</UserControl>
