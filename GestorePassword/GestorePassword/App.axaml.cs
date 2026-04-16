@@ -2,6 +2,9 @@ using Avalonia;
 using Avalonia.Controls.ApplicationLifetimes;
 using Avalonia.Markup.Xaml;
 using GestorePassword.Core.ViewModels.User.Access;
+using GestorePassword.Core.ViewModels.Menu;
+using GestorePassword.UI.Desktop.Views.Menu;
+
 
 #if ANDROID
 using GestorePassword.UI.Android.Views.User.Access;
@@ -20,7 +23,7 @@ public partial class App : Application
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var vm = new SignInViewModel();
+        var vm = new MenuViewModel();
 
 #if ANDROID
         if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
@@ -35,7 +38,7 @@ public partial class App : Application
         {
             desktop.MainWindow = new MainWindow
             {
-                Content = new SignInView { DataContext = vm },
+                Content = new MenuView { DataContext = vm },
                 Width = 1600,
                 Height = 900
             };

@@ -67,7 +67,6 @@
             <Viewbox Grid.Column="1" Grid.Row="4">
                 <Grid Width="350" Height="50">
                     <Border Classes="DataInputBackground"/>
-
                     <TextBox 
                         Classes="DataInput" 
                         PlaceholderText="Username"
@@ -81,7 +80,6 @@
             <Viewbox Grid.Column="1" Grid.Row="5">
 
                 <Grid Width="350" Height="50">
-
                     <Border Classes="DataInputBackground"/>
 
                     <TextBox 
