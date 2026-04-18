@@ -247,7 +247,8 @@
             </Border>   
 
             <Grid
-                x:Name="ContentGrid"
+                x:Name="PasswordsGrid"
+                IsVisible="False"
                 Grid.Column="2"
                 RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
                 >
@@ -344,16 +345,19 @@
 
                 <Grid 
                     Grid.Row="4"
+                    Grid.Column="1"
                     RowDefinitions="1*, 15*"
+                    ColumnDefinitions="1*, 18*, 1*"
                     >
                     <Viewbox
                         Grid.Row="0"
+                        Grid.Column="1"
                         VerticalAlignment="Stretch"
                         HorizontalAlignment="Stretch"
                         Stretch="Uniform"
                         >
                         <Border
-                            Width="900"
+                            Width="1000"
                             Background="#70FFFFFF"
                             CornerRadius="25"
                             BorderBrush="#20FFFFFF"
@@ -373,6 +377,7 @@
                                     />
                                 <TextBox
                                     x:Name="SearchPasswordTextBox"
+                                    MinWidth="200"
                                     PlaceholderForeground="#90000000"
                                     PlaceholderText="Cerca per app o nome utente..."
                                     Foreground="Black"
@@ -381,10 +386,11 @@
                                         <Style Selector="TextBox">
                                             <Setter Property="VerticalAlignment" Value="Center"/>
                                             <Setter Property="HorizontalAlignment" Value="Stretch"/>
-                                            <Setter Property="Margin" Value="0, 5, 5, 0"></Setter>
+                                            <Setter Property="Margin" Value="0, 5, 5, 0"/>
                                             <Setter Property="Background" Value="Transparent"/>
                                             <Setter Property="BorderBrush" Value="Transparent"/>
                                             <Setter Property="BorderThickness" Value="0"/>
+                                            <Setter Property="SelectionBrush" Value="LightBlue"/>
                                         </Style>  
                                         
                                         <Style Selector="TextBox:pointerover /template/ Border#PART_BorderElement">
@@ -401,133 +407,72 @@
                             </StackPanel>
                         </Border>
                     </Viewbox>
-                
-                    
-                        <ScrollViewer
-                            Grid.Row="1"
-                            HorizontalScrollBarVisibility="Disabled"
-                            VerticalScrollBarVisibility="Auto"
-                            Margin="0, 10, 0, 0"
-                            >
-                        <StackPanel
-                            x:Name="PasswordStackpanel"
+
+                    <ScrollViewer
+                        Grid.Row="1"
+                        Grid.Column="1"
+                        VerticalAlignment="Top"
+                        HorizontalScrollBarVisibility="Disabled"
+                        VerticalScrollBarVisibility="Hidden"
+                        AllowAutoHide="True"
+                        Margin="0, 10, 0, 0"
+                        >
+                        <Viewbox>
+                            <StackPanel
+                                x:Name="PasswordStackpanel"
+                                Orientation="Vertical"
+                                Spacing="2"
+                                MinHeight="50"
+                                >
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                                <controls:PasswordGrid Height="40"/>
+                            </StackPanel>
+                        </Viewbox>
+                    </ScrollViewer>
+                </Grid>
+            </Grid>
+
+            <Grid 
+                x:Name="StatisticsGrid"
+                Grid.Column="2"
+                RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
+                IsVisible="True"
+                >
+
+                <Grid
+                    Grid.Row="0"
+                    ColumnDefinitions="1*, 3*"
+                    >
+                    <Viewbox
+                        HorizontalAlignment="Left"
+                        Grid.Column="0"
+                        >                    
+                        <StackPanel 
                             Orientation="Vertical"
+                            Margin="5, 0, 0, 0"
                             >
-                            <Viewbox Stretch="Uniform" Height="40" Width="700">
-                                <Border CornerRadius="10"
-                                        Background="#273375"
-                                        BorderBrush="#40000000"
-                                        BorderThickness="2">
-                                    <Grid
-                                        ColumnDefinitions="Auto, Auto, *, Auto"
-                                        >
-                                        <Border
-                                            HorizontalAlignment="Left"
-                                            VerticalAlignment="Center"
-                                            Grid.Column="0"
-                                            CornerRadius="5"
-                                            Margin="5, 2, 0, 2"
-                                            >
-                                            <Border.Background>
-                                                <LinearGradientBrush StartPoint="0%, 100%" EndPoint="100%, 0%">
-                                                        <GradientStop Color="#6264f8" Offset="0"/>
-                                                        <GradientStop Color="#494cf8" Offset="0.5"/>
-                                                        <GradientStop Color="#3538f7" Offset="1"/>
-                                                    </LinearGradientBrush>    
-                                            </Border.Background>
-
-                                            <TextBlock 
-                                                x:Name="InitialAppTexBlock"
-                                                Text="I" 
-                                                HorizontalAlignment="Center"
-                                                VerticalAlignment="Center"
-                                                TextAlignment="Center"
-                                                Foreground="Black"
-                                                FontWeight="SemiBold"
-                                                FontSize="16"
-                                                Width="20"
-                                                Height="20"
-                                                >                                                    
-                                            </TextBlock>
-                                        </Border>
-
-                                        <StackPanel 
-                                            Orientation="Vertical"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Left"
-                                            Grid.Column="1"
-                                            >
-                                            <TextBlock
-                                                x:Name="PasswordAppNameTextBlock"
-                                                Text="Instagram"
-                                                Margin="5, 0, 0, 0"
-                                                VerticalAlignment="Center"
-                                                Foreground="Black"
-                                                FontWeight="SemiBold"
-                                                FontSize="8"
-                                                />
-
-                                            <TextBlock
-                                                x:Name="PasswordUsernameTextBlock"
-                                                Text="Joele"
-                                                Margin="5, 0, 0, 0"
-                                                VerticalAlignment="Center"
-                                                Foreground="Black"
-                                                FontSize="7"
-                                                />
-                                        </StackPanel>
-
-                                        <StackPanel
-                                            Grid.Column="3"
-                                            Orientation="Horizontal"
-                                            VerticalAlignment="Center"
-                                            HorizontalAlignment="Right"
-                                            >
-                                        
-                                            <TextBlock
-                                                x:Name="PasswordInfoTextBlock"
-                                                Text="PasswordO123."
-                                                Margin="5, 0, 0, 0"
-                                                VerticalAlignment="Center"
-                                                Foreground="Black"
-                                                FontFamily="Consolas"
-                                                FontWeight="SemiBold"
-                                                FontSize="8"
-                                                />
-
-                                            <Button
-                                                x:Name="ShowPasswordButton"
-                                                Background="Transparent"
-                                                >
-                                                <Image
-                                                    Source="avares://GestorePassword/UI/Desktop/Images/closed_eye.png"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Left"
-                                                    Height="15"
-                                                    Width="15"
-                                                    />    
-                                            </Button>
-
-                                            <Button
-                                                x:Name="HidePasswordButton"
-                                                Background="Transparent"
-                                                IsVisible= "False"
-                                                >
-                                                <Image
-                                                    Source="avares://GestorePassword/UI/Desktop/Images/opened_eye.png"
-                                                    VerticalAlignment="Center"
-                                                    HorizontalAlignment="Left"
-                                                    Height="15"
-                                                    Width="15"
-                                                    />    
-                                            </Button>
-                                        </StackPanel>
-                                    </Grid>
-                                </Border>
-                            </Viewbox>
+                            <TextBlock
+                                Text="Statistiche"
+                                Margin="0, 5, 0, 0"
+                                FontFamily="Fantasy"
+                                FontSize="18"
+                                FontWeight="Bold"
+                                Foreground="#000000"
+                                /> 
+                            <TextBlock
+                                Text="Panoramica delle tue password"
+                                FontFamily="Fantasy"
+                                FontSize="12"
+                                Foreground="#000000"
+                                />
                         </StackPanel>
-                        </ScrollViewer>
-                    
+                    </Viewbox>
                 </Grid>
             </Grid>         
         </Grid>
