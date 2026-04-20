@@ -7,6 +7,7 @@
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/PasswordGrid.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/StatisticsGrid.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Application.Resources>

@@ -79,6 +79,7 @@
                     >
                     <Button
                         Grid.Row="0"
+                        x:Name="ShowPasswordsButton"
                         Classes="ChangeContent"
                         >
                         <Viewbox>
@@ -109,6 +110,7 @@
 
                     <Button
                         Grid.Row="1"
+                        x:Name="ShowStatisticsButton"
                         Classes="ChangeContent"
                         >
                         <Viewbox>
@@ -135,6 +137,7 @@
 
                     <Button
                         Grid.Row="2"
+                        x:Name="ShowProfileButton"
                         Classes="ChangeContent" 
                         >
                         <Viewbox>
@@ -248,7 +251,7 @@
 
             <Grid
                 x:Name="PasswordsGrid"
-                IsVisible="False"
+                IsVisible="True"
                 Grid.Column="2"
                 RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
                 >
@@ -331,17 +334,7 @@
                     </Viewbox>
                 </Grid>
 
-                <Separator Grid.Row="2" VerticalAlignment="Bottom">
-                    <Separator.Background>
-                        <LinearGradientBrush StartPoint="0%, 50%" EndPoint="100%, 50%">
-                            <GradientStop Color="Transparent" Offset="0"/>
-                            <GradientStop Color="#20FFFFFF" Offset="0.25"/>
-                            <GradientStop Color="#30FFFFFF" Offset="0.5"/>
-                            <GradientStop Color="#20FFFFFF" Offset="0.75"/>
-                            <GradientStop Color="Transparent" Offset="1"/>
-                        </LinearGradientBrush>
-                    </Separator.Background>    
-                </Separator>
+                <Separator Grid.Row="2" VerticalAlignment="Bottom" Classes="ContentSeparator"/>  
 
                 <Grid 
                     Grid.Row="4"
@@ -424,14 +417,6 @@
                                 Spacing="2"
                                 MinHeight="50"
                                 >
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
-                                <controls:PasswordGrid Height="40"/>
                             </StackPanel>
                         </Viewbox>
                     </ScrollViewer>
@@ -441,8 +426,8 @@
             <Grid 
                 x:Name="StatisticsGrid"
                 Grid.Column="2"
-                RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
-                IsVisible="True"
+                RowDefinitions="1*, 0.1*, 0.1*, 10*"
+                IsVisible="False"
                 >
 
                 <Grid
@@ -474,7 +459,72 @@
                         </StackPanel>
                     </Viewbox>
                 </Grid>
+
+                <Separator Grid.Row="2" Classes="ContentSeparator"/>
+
+                <Grid
+                    Grid.Row="3"
+                    ColumnDefinitions="0.1*, 1*, 0.05*, 1*, 0.05*, 1*, 0.1*"
+                    RowDefinitions="0.3*, 1*, 0.1*, 1*, 1*, 4*"
+                    >
+                    
+                    <controls:StatisticsGrid 
+                        x:Name="SavedPasswordsStatisticGrid"
+                        Grid.Column="1" 
+                        Grid.Row="1"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/KeyIcon.png"
+                        InfoDescriptionText="Totale password"
+                        ImageRotationAngle="45"
+                        />
+                    
+                    <controls:StatisticsGrid
+                        x:Name="SavedAppUsernameStatisticGrid"
+                        Grid.Column="3"
+                        Grid.Row="1"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/RegisteredInfoIcon.png"
+                        InfoDescriptionText="Username registrati"
+                        />
+
+                    <controls:StatisticsGrid
+                        x:Name="StrongPasswordsGrid"
+                        Grid.Column="5"
+                        Grid.Row="1"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/SecurePasswordShield.png"
+                        InfoDescriptionText="Password forti"
+                        />
+
+                    <controls:StatisticsGrid
+                        x:Name="WeakPasswordsGrid"
+                        Grid.Column="1"
+                        Grid.Row="3"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/UnverifiedShield.png"
+                        InfoDescriptionText="Password deboli"
+                        />
+
+                    <controls:StatisticsGrid
+                        x:Name="AveragePasswordsStrengthGrid"
+                        Grid.Column="3"
+                        Grid.Row="3"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/StatisticArrow.png"
+                        InfoDescriptionText="Sicurezza media"
+                        />
+
+                    <controls:StatisticsGrid
+                        x:Name="LastPasswordAddedTimeGrid"
+                        Grid.Column="5"
+                        Grid.Row="3"
+                        InfoImageSource="avares://GestorePassword/UI/Desktop/Images/CalendarIcon.png"
+                        InfoDescriptionText="Ultima aggiunta"
+                        />
+                </Grid>
             </Grid>         
+
+            <Grid
+                x:Name="ProfileGrid"
+                IsVisible="False"
+                >
+                
+            </Grid>
         </Grid>
     </Grid>
 </UserControl>

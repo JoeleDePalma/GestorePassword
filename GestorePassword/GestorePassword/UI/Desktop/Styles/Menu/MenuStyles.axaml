@@ -33,4 +33,16 @@
     <Setter Property="Background" Value="#20FFFFFF"/>
     <Setter Property="Cursor" Value="Hand"/>
   </Style>
+
+  <Style Selector="Separator.ContentSeparator">
+    <Setter Property="Background">
+      <LinearGradientBrush StartPoint="0%, 50%" EndPoint="100%, 50%">
+          <GradientStop Color="Transparent" Offset="0"/>
+          <GradientStop Color="#20FFFFFF" Offset="0.25"/>
+          <GradientStop Color="#30FFFFFF" Offset="0.5"/>
+          <GradientStop Color="#20FFFFFF" Offset="0.75"/>
+          <GradientStop Color="Transparent" Offset="1"/>
+      </LinearGradientBrush>    
+    </Setter>  
+  </Style>
 </Styles>
