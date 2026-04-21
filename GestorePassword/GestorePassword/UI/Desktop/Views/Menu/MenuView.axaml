@@ -251,7 +251,7 @@
 
             <Grid
                 x:Name="PasswordsGrid"
-                IsVisible="True"
+                IsVisible="False"
                 Grid.Column="2"
                 RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
                 >
@@ -474,7 +474,6 @@
                         Grid.Row="1"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/KeyIcon.png"
                         InfoDescriptionText="Totale password"
-                        ImageRotationAngle="45"
                         />
                     
                     <controls:StatisticsGrid
@@ -517,13 +516,102 @@
                         InfoDescriptionText="Ultima aggiunta"
                         />
                 </Grid>
-            </Grid>         
+            </Grid>    
 
             <Grid
                 x:Name="ProfileGrid"
-                IsVisible="False"
+                Grid.Column="2"
+                IsVisible="True"
+                ColumnDefinitions="0.01*, 1*, 0.5*, 2*, 2*, 0.5*, 1*, 0.01*"
+                RowDefinitions="1*, 0.1*, 0.1*, 0.2*, 9*, 1*"
                 >
-                
+
+                <Viewbox
+                    Grid.Row="0"
+                    Grid.Column="1"
+                    Grid.ColumnSpan="2"
+                    HorizontalAlignment="Left"
+                    >                    
+                    <StackPanel 
+                        Orientation="Vertical"
+                        Margin="5, 0, 0, 0"
+                        >
+                        <TextBlock
+                            Text="Profilo"
+                            Margin="0, 5, 0, 0"
+                            FontFamily="Fantasy"
+                            FontSize="18"
+                            FontWeight="Bold"
+                            Foreground="#000000"
+                            /> 
+                        <TextBlock
+                            Text="Informazioni del tuo account"
+                            FontFamily="Fantasy"
+                            FontSize="12"
+                            Foreground="#000000"
+                            />
+                    </StackPanel>
+                </Viewbox>
+
+                <Separator Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Classes="ContentSeparator"/>
+
+                <Grid 
+                    Grid.Column="3" 
+                    Grid.ColumnSpan="2" 
+                    Grid.Row="4"
+                    ColumnDefinitions="0.1*, 1*, 1*, 1*, 1*, 1*, 0.1*"
+                    RowDefinitions="0,1*, 1*, 1*, 8*, 2*, 0.1*"
+                    >
+                    <Border
+                        CornerRadius="20"
+                        Grid.Column="0"
+                        Grid.ColumnSpan="6"
+                        Grid.Row="0"
+                        Grid.RowSpan="6"
+                        >
+                        <Border.Background>
+                            <LinearGradientBrush StartPoint="100%, 0%" EndPoint="0%, 100%">
+                                <GradientStop Color="#901e2be7" Offset="0"/>
+                                <GradientStop Color="#90442e43" Offset="1"/>
+                            </LinearGradientBrush>    
+                        </Border.Background>    
+                    </Border>
+
+                    <Viewbox 
+                        Grid.Column="1"
+                        Grid.ColumnSpan="2"
+                        Grid.RowSpan="2"
+                        Grid.Row="1"
+                        HorizontalAlignment="Left"
+                        Margin="10, 10, 0, 0"
+                        >
+
+                        <StackPanel Orientation="Horizontal" Spacing="5">
+                            <Image
+                                Source="avares://GestorePassword/UI/Desktop/Images/ProfileIcon.png"
+                                VerticalAlignment="Center"
+                                />
+                            <TextBlock
+                                x:Name="ProfileUsernameTextBlock"
+                                Background="Transparent"
+                                Foreground="Black"
+                                FontFamily="Default"
+                                FontWeight="Bold"
+                                VerticalAlignment="Center"
+                                />
+                        </StackPanel>
+                    </Viewbox>
+
+                    <Viewbox
+                        Grid.Column="1"
+                        Grid.ColumnSpan="4"
+                        Grid.Row="4"
+                        Margin="15, 0, 0, 0"
+                        VerticalAlignment="Top"
+                        >
+                        <controls:UserInfoGrid x:Name="UserInfoContentGrid"/>
+                    </Viewbox>
+                </Grid>
             </Grid>
         </Grid>
     </Grid>

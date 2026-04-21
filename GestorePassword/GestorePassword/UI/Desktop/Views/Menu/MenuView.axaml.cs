@@ -9,6 +9,7 @@ using Libreria.DTOs.Passwords;
 using Libreria.HTTPRequestsLibrary;
 using System.Linq;
 using GestorePassword.Core.Models;
+using GestorePassword.UI.Desktop.Templates.Menu;
 
 namespace GestorePassword.UI.Desktop.Views.Menu
 {
@@ -89,7 +90,59 @@ namespace GestorePassword.UI.Desktop.Views.Menu
         }
 
         public void ShowProfileContent(object sender, RoutedEventArgs e)
-            => ShowOnly(ProfileGrid);
+        {
+            ShowOnly(ProfileGrid);
+
+            try
+            {
+                if (AppServices.userInfo != null)
+                    UserInfoContentGrid.CreatedAtUser = AppServices.userInfo.CreatedAt.ToString("dd/MM/yyyy");
+                    ProfileUsernameTextBlock.Text = AppServices.userInfo!.Username;
+            
+                if (passwordsList != null && passwordsList.Count > 0)
+                {
+                    UserInfoContentGrid.SavedUsernameCount = passwordsList
+                    .Where(p =>
+                        !string.IsNullOrWhiteSpace(p.Username))
+                            .Count().ToString();
+
+                    UserInfoContentGrid.LastPasswordCreatedAt = passwordsList
+                        .Max(p =>
+                            p.CreatedAt)
+                                .ToString("dd/MM/yyyy");
+
+                    int strongPasswords = passwordsList
+                        .Where(p =>
+                            p.Password.Length > 12 &&
+                            p.Password.Any(char.IsDigit) &&
+                            p.Password.Any(char.IsLetter) &&
+                            p.Password.Any(char.IsLower) &&
+                            p.Password.Any(char.IsUpper) &&
+                            p.Password.Any(char.IsPunctuation)
+                            ).Count();
+
+                    int weakPasswords = passwordsList
+                        .Where(p =>
+                            !(
+                            p.Password.Length > 12 &&
+                            p.Password.Any(char.IsDigit) &&
+                            p.Password.Any(char.IsLetter) &&
+                            p.Password.Any(char.IsLower) &&
+                            p.Password.Any(char.IsUpper) &&
+                            p.Password.Any(char.IsPunctuation))
+                            ).Count();
+
+                    UserInfoContentGrid.AveragePasswordStrength =
+                        strongPasswords > weakPasswords ? "Forte" :
+                        strongPasswords < weakPasswords ? "Debole" :
+                        "Media";
+                }   
+            }
+            catch(Exception ex)
+            {
+                
+            }
+        }
 
         public void ShowOnly(Grid gridToShow)
         {

@@ -5,7 +5,6 @@ using GestorePassword.Core.ViewModels.User.Access;
 using GestorePassword.Core.ViewModels.Menu;
 using GestorePassword.UI.Desktop.Views.Menu;
 
-
 #if ANDROID
 using GestorePassword.UI.Android.Views.User.Access;
 #else

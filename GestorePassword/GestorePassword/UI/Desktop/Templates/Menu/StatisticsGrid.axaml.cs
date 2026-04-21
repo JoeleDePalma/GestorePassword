@@ -34,14 +34,5 @@ namespace GestorePassword.UI.Desktop.Templates.Menu
             get => GetValue(InfoValueTextProperty);
             set => SetValue(InfoValueTextProperty, value);
         }
-
-        public static StyledProperty<double> ImageRotationAngleProperty =
-            AvaloniaProperty.Register<StatisticsGrid, double>(nameof(ImageRotationAngle));
-
-        public double ImageRotationAngle
-        {
-            get => GetValue(ImageRotationAngleProperty);
-            set => SetValue(ImageRotationAngleProperty, value);
-        }
     }
 }

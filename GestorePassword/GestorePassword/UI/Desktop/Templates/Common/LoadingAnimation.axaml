@@ -1,0 +1,69 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:GestorePassword.UI.Desktop.Templates.Common">
+ 
+  <ControlTheme x:Key="{x:Type controls:LoadingAnimation}" TargetType="controls:LoadingAnimation">
+    <Setter Property="Template">
+      <ControlTemplate>
+        <Border
+          Background="Transparent"
+          BorderThickness="4"
+          CornerRadius="{TemplateBinding CornerRadius}"
+          >
+          <Border.Styles>
+            <Style Selector="Border">
+              <Style.Animations>
+                <Animation Duration="0:0:2" IterationCount="Infinite" PlaybackDirection="Normal">
+                  <KeyFrame Cue="0%">
+                    <Setter Property="BorderBrush">
+                      <LinearGradientBrush StartPoint="0%, 50%" EndPoint="100%, 50%">
+                        <GradientStop Color="#55E9FF" Offset="0"/>
+                        <GradientStop Color="AliceBlue" Offset="1"/>
+                      </LinearGradientBrush>  
+                    </Setter>
+                  </KeyFrame>
+
+                  <KeyFrame Cue="15%">
+                    <Setter Property="BorderBrush">
+                      <LinearGradientBrush StartPoint="50%, 0%" EndPoint="50%, 100%">
+                        <GradientStop Color="#55E9FF" Offset="0"/>
+                        <GradientStop Color="AliceBlue" Offset="1"/>
+                      </LinearGradientBrush>  
+                    </Setter>
+                  </KeyFrame>
+
+                  <KeyFrame Cue="30%">
+                    <Setter Property="BorderBrush">
+                      <LinearGradientBrush StartPoint="100%, 50%" EndPoint="0%, 50%">
+                        <GradientStop Color="#55E9FF" Offset="0"/>
+                        <GradientStop Color="AliceBlue" Offset="1"/>
+                      </LinearGradientBrush>  
+                    </Setter>
+                  </KeyFrame>
+
+                  <KeyFrame Cue="75%">
+                    <Setter Property="BorderBrush">
+                      <LinearGradientBrush StartPoint="50%, 100%" EndPoint="50%, 0%">
+                        <GradientStop Color="#55E9FF" Offset="0"/>
+                        <GradientStop Color="AliceBlue" Offset="1"/>
+                      </LinearGradientBrush>  
+                    </Setter>
+                  </KeyFrame>
+
+                  <KeyFrame Cue="100%">
+                      <Setter Property="BorderBrush">
+                        <LinearGradientBrush StartPoint="0%, 50%" EndPoint="100%, 50%">
+                          <GradientStop Color="#55E9FF" Offset="0"/>
+                          <GradientStop Color="AliceBlue" Offset="1"/>
+                        </LinearGradientBrush>  
+                      </Setter>
+                  </KeyFrame>
+                </Animation>
+              </Style.Animations>
+            </Style>
+          </Border.Styles>
+        </Border>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

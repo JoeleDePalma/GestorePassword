@@ -1,12 +1,16 @@
+using System;
 using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Interactivity;
 using Avalonia.Markup.Xaml;
+using Avalonia.Media;
+using Avalonia.Threading;
 
 namespace GestorePassword.UI.Desktop.Views.User.Access
 {
     public partial class SignInView : UserControl
     {
+
         public SignInView()
         {
             InitializeComponent();

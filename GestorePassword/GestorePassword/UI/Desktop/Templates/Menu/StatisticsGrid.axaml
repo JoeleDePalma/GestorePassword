@@ -27,8 +27,7 @@
                         Source="{TemplateBinding InfoImageSource}"
                         Height="15"
                         Width="15"
-                        >
-                    </Image>
+                        />
                     <TextBlock 
                         x:Name="InfoDescription"
                         Text="{TemplateBinding InfoDescriptionText}"
