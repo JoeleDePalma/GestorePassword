@@ -18,7 +18,8 @@
         <FluentTheme/>
         <StyleInclude Source="avares://GestorePassword/UI/Desktop/Styles/User/Access/SignInUpStyles.axaml"/>
         <StyleInclude Source="avares://GestorePassword/UI/Desktop/Styles/Menu/MenuStyles.axaml"/>
-        <StyleInclude Source="avares://GestorePassword/UI/Desktop/Styles/Templates/PasswordGridStyles.axaml"/>
+        <StyleInclude Source="avares://GestorePassword/UI/Desktop/Styles/Templates/PasswordGridTemplate/PasswordGridStyles.axaml"/>
+        <StyleInclude Source="avares://GestorePassword/UI/Desktop/Styles/Templates/UserInfoGridTemplate/UserInfoGridStyles.axaml"/>
     </Application.Styles>
 
 </Application>

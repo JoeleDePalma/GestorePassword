@@ -2,8 +2,9 @@
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:loading="using:GestorePassword.UI.Desktop.Templates.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
-             x:Class="GestorePassword.SignUpView">
+             x:Class="GestorePassword.UI.Desktop.Views.User.Access.SignUpView">
   <Grid
         ColumnDefinitions="5*, 4*, 5*"
         RowDefinitions="2*, 8*, 2*"
@@ -20,7 +21,7 @@
             Grid.Row="1"
 
             ColumnDefinitions="2*, 8*, 2*"
-            RowDefinitions="1*, 1.5*, 1*, 1.5*, 1*, 1*, 0.4*, 0.8*, 0.5*, 0.2*, 1.5*"
+            RowDefinitions="1*, 1.5*, 1*, 1.5*, 1*, 1*, 0.6*, 0.8*, 0.5*, 0.2*, 1.5*"
             >
  
             <Border
@@ -68,6 +69,7 @@
                 <Grid Width="350" Height="50">
                     <Border Classes="DataInputBackground"/>
                     <TextBox 
+                        x:Name="UsernameInputTextBox"
                         Classes="DataInput" 
                         PlaceholderText="Username"
                         Width="350" 
@@ -112,8 +114,8 @@
                         Classes="ShowHidePassword"
                         >
                         <Image
-                            Height="40"
-                            Width="40"
+                            Height="30"
+                            Width="30"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Source="avares://GestorePassword/UI/Desktop/Images/closed_eye.png"
@@ -129,8 +131,8 @@
                         IsVisible="False"
                         >
                         <Image
-                            Height="40"
-                            Width="40"
+                            Height="30"
+                            Width="30"
                             HorizontalAlignment="Center"
                             VerticalAlignment="Center"
                             Source="avares://GestorePassword/UI/Desktop/Images/opened_eye.png"
@@ -145,13 +147,16 @@
                     Width="350"
                     Background="Transparent"
                     Foreground="Red"
-                    TextAlignment="Center"
+                    TextAlignment="Left"
+                    Margin="15, 0, 0, 0"
                     IsVisible="False"
                     />
             </Viewbox>
 
             <Viewbox Grid.Column="1" Grid.Row="7">
                 <Button
+                    x:Name="SignUpButton"
+                    IsEnabled="False"
                     Width="350"
                     Height="50"
                     Content="Registrati"
@@ -181,5 +186,23 @@
                 </StackPanel>
             </Viewbox>
         </Grid> 
+
+        <Grid
+            x:Name="LoadingGrid"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Background="#30000000"
+            IsVisible="False"
+            >
+            <loading:LoadingAnimation 
+                Height="50"
+                Width="50"
+                CornerRadius="25"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                />
+        </Grid>
     </Grid>
 </UserControl>

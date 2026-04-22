@@ -1,0 +1,25 @@
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml">
+  <Design.PreviewWith>
+  </Design.PreviewWith>
+
+  <!-- TextBlock that shows user info-->
+  <Style Selector="TextBlock.UserInfoTextBlockStyle">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="Foreground" Value="#90000000"/>
+    <Setter Property="FontStyle" Value="Italic"/>  
+  </Style>
+
+  <!-- Separator that separe the different T extBlock containing user info-->
+  <Style Selector="Separator.UserInfoSeparator">
+      <Setter Property="Margin" Value="0, 5, 0, 10"/>
+      <Setter Property="Background">
+        <LinearGradientBrush StartPoint="0%, 50%" EndPoint="100%, 50%">
+          <GradientStop Color="#000000" Offset="0"/>
+          <GradientStop Color="#FF4A4949" Offset="0.5"/>
+          <GradientStop Color="#FF6E6E6E" Offset="0.75"/>
+          <GradientStop Color="Transparent" Offset="1"/>
+        </LinearGradientBrush>  
+      </Setter>
+  </Style>
+</Styles>

@@ -60,6 +60,9 @@ namespace GestioneDb.Services
             if (credentials == null)
                 return Result<RegisterResponseDTO>.Fail(StatusCode.BadRequest, "Dati di registrazione non validi");
 
+            credentials.Username = credentials.Username.Trim();
+            credentials.Password = credentials.Password.Trim();
+
             var existing = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());
 
@@ -132,6 +135,8 @@ namespace GestioneDb.Services
 
             if (!string.IsNullOrEmpty(ModifiedUser.Username))
             {
+                ModifiedUser.Username = ModifiedUser.Username.Trim();
+
                 var conflict = await _context.Users
                     .FirstOrDefaultAsync(u => u.Username.ToLower() == ModifiedUser.Username.ToLower() && u.UserID != id);
 
@@ -147,6 +152,9 @@ namespace GestioneDb.Services
             {
                 try
                 {
+                    ModifiedUser.CurrentPassword = ModifiedUser.CurrentPassword.Trim();
+                    ModifiedUser.NewPassword = ModifiedUser.NewPassword.Trim();
+
                     var response = await CommonFunctions.GetAllPasswords(_context, _services, id, ModifiedUser.CurrentPassword);
 
                     if (!response.Success)
@@ -213,6 +221,9 @@ namespace GestioneDb.Services
         {
             if (credentials == null)
                 return Result<LoginResponseDTO>.Fail(StatusCode.BadRequest, "Dati di accesso non validi");
+
+            credentials.Username = credentials.Username.Trim();
+            credentials.Password = credentials.Password.Trim();
 
             var user = await _context.Users
                 .FirstOrDefaultAsync(u => u.Username.ToLower() == credentials.Username.ToLower());

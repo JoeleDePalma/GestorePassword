@@ -8,25 +8,21 @@ using Libreria.API;
 using Libreria.DTOs.Passwords;
 using Libreria.HTTPRequestsLibrary;
 using System.Linq;
-using GestorePassword.Core.Models;
 using GestorePassword.UI.Desktop.Templates.Menu;
+using GestorePassword.Core.ViewModels.Menu;
+using System.Threading.Tasks;
 
 namespace GestorePassword.UI.Desktop.Views.Menu
 {
     public partial class MenuView : UserControl
     {
         private List<Grid> contentGrids {get; set;}
-        private UserApi userApi { get; set; }
-        private PasswordApi passwordApi { get; set; }
-        private ApiClient apiClient { get; set; }
-        private VersionApi versionApi { get; set; }
-        private List<PasswordInfo> passwordsList { get; set; }
-        private UserInfo currentUser { get; set; }
-        private Version appVersion { get; set; }
-
+        private MenuViewModel _vm {get; set;}
         public MenuView()
         {
             InitializeComponent();
+            DataContext = new MenuViewModel();
+            _vm = (MenuViewModel)DataContext;
 
             contentGrids = new()
             {
@@ -34,121 +30,112 @@ namespace GestorePassword.UI.Desktop.Views.Menu
                 StatisticsGrid,
                 ProfileGrid    
             };
-
+            
+            UserInitialTextBlock.Text = AppServices.currentUser.Username[0].ToString();
+            UserUsernameTextBlock.Text = AppServices.currentUser.Username;
             ShowPasswordsButton.Click += ShowPasswordsContent!;
             ShowStatisticsButton.Click += ShowStatisticsContent!;
             ShowProfileButton.Click += ShowProfileContent!;
+            Loaded += LoadUI!;
         }
-
         public void ShowPasswordsContent(object sender, RoutedEventArgs e)
             => ShowOnly(PasswordsGrid);
-
         public void ShowStatisticsContent(object sender, RoutedEventArgs e)
         {
             ShowOnly(StatisticsGrid);
-
-            if (passwordsList == null) return;
-
-            SavedPasswordsStatisticGrid.InfoValueText = passwordsList.Count().ToString();
-
-            SavedAppUsernameStatisticGrid.InfoValueText = passwordsList
-                .Where(p => 
-                    !string.IsNullOrWhiteSpace(p.Username))
-                        .Count().ToString();
-
-            int strongPasswords = passwordsList
-                .Where(p =>
-                    p.Password.Length > 12 &&
-                    p.Password.Any(char.IsDigit) &&
-                    p.Password.Any(char.IsLetter) &&
-                    p.Password.Any(char.IsLower) &&
-                    p.Password.Any(char.IsUpper) &&
-                    p.Password.Any(char.IsPunctuation)
-                    ).Count();
-
-            int weakPasswords = passwordsList
-                .Where(p =>
-                    !(
-                    p.Password.Length > 12 &&
-                    p.Password.Any(char.IsDigit) &&
-                    p.Password.Any(char.IsLetter) &&
-                    p.Password.Any(char.IsLower) &&
-                    p.Password.Any(char.IsUpper) &&
-                    p.Password.Any(char.IsPunctuation))
-                    ).Count();
-
-            StrongPasswordsGrid.InfoValueText = strongPasswords.ToString();
-
-            WeakPasswordsGrid.InfoValueText = weakPasswords.ToString();
-
-            AveragePasswordsStrengthGrid.InfoValueText = 
-                strongPasswords > weakPasswords ? "Forte" : 
-                strongPasswords < weakPasswords ? "Debole" : 
-                "Media";
-
-            LastPasswordAddedTimeGrid.InfoValueText = passwordsList.Max(p => p.CreatedAt).ToString("dd/MM/yyyy HH:mm");
+            if (AppServices.passwordList == null)
+            {
+                SavedPasswordsStatisticsGrid.InfoValueText = "0";
+                SavedAppUsernameStatisticsGrid.InfoValueText = "0";
+                StrongPasswordsStatisticsGrid.InfoValueText = "0";
+                WeakPasswordsStatisticsGrid.InfoValueText = "0";
+                AveragePasswordStrengthStatisticsGrid.InfoValueText = "";
+                LastPasswordCreatedAtStatisticsGrid.InfoValueText = "Nessuna";
+                return;
+            }
+            SavedPasswordsStatisticsGrid.InfoValueText = AppServices.passwordList.Count().ToString();
+            (
+                int strongPasswords,
+                int weakPasswords,
+                string averagePasswordStrength,
+                int savedUsernameCount,
+                DateTime lastPasswordCreatedAt
+            ) = _vm.GetPasswordsStatistics();
+            SavedAppUsernameStatisticsGrid.InfoValueText = savedUsernameCount.ToString();
+            StrongPasswordsStatisticsGrid.InfoValueText = strongPasswords.ToString();
+            WeakPasswordsStatisticsGrid.InfoValueText = weakPasswords.ToString();
+            AveragePasswordStrengthStatisticsGrid.InfoValueText = averagePasswordStrength;
+            LastPasswordCreatedAtStatisticsGrid.InfoValueText = lastPasswordCreatedAt.ToString("dd/MM/yyyy");
+            
         }
-
         public void ShowProfileContent(object sender, RoutedEventArgs e)
         {
             ShowOnly(ProfileGrid);
-
-            try
+            if (AppServices.currentUser != null)
             {
-                if (AppServices.userInfo != null)
-                    UserInfoContentGrid.CreatedAtUser = AppServices.userInfo.CreatedAt.ToString("dd/MM/yyyy");
-                    ProfileUsernameTextBlock.Text = AppServices.userInfo!.Username;
-            
-                if (passwordsList != null && passwordsList.Count > 0)
-                {
-                    UserInfoContentGrid.SavedUsernameCount = passwordsList
-                    .Where(p =>
-                        !string.IsNullOrWhiteSpace(p.Username))
-                            .Count().ToString();
-
-                    UserInfoContentGrid.LastPasswordCreatedAt = passwordsList
-                        .Max(p =>
-                            p.CreatedAt)
-                                .ToString("dd/MM/yyyy");
-
-                    int strongPasswords = passwordsList
-                        .Where(p =>
-                            p.Password.Length > 12 &&
-                            p.Password.Any(char.IsDigit) &&
-                            p.Password.Any(char.IsLetter) &&
-                            p.Password.Any(char.IsLower) &&
-                            p.Password.Any(char.IsUpper) &&
-                            p.Password.Any(char.IsPunctuation)
-                            ).Count();
-
-                    int weakPasswords = passwordsList
-                        .Where(p =>
-                            !(
-                            p.Password.Length > 12 &&
-                            p.Password.Any(char.IsDigit) &&
-                            p.Password.Any(char.IsLetter) &&
-                            p.Password.Any(char.IsLower) &&
-                            p.Password.Any(char.IsUpper) &&
-                            p.Password.Any(char.IsPunctuation))
-                            ).Count();
-
-                    UserInfoContentGrid.AveragePasswordStrength =
-                        strongPasswords > weakPasswords ? "Forte" :
-                        strongPasswords < weakPasswords ? "Debole" :
-                        "Media";
-                }   
+                ProfileUsernameTextBlock.Text = AppServices.currentUser.Username;
+                UserInfoContentGrid.CreatedAtUser = $"Data di creazione: {AppServices.currentUser.CreatedAt.ToString("dd/MM/yyyy")}";
             }
-            catch(Exception ex)
+            if (AppServices.passwordList == null)
             {
-                
+                UserInfoContentGrid.SavedUsernameCount = "Nomi utenti salvati: 0";
+                UserInfoContentGrid.LastPasswordCreatedAt = "Ultima aggiunta: nessuna";
+                UserInfoContentGrid.AveragePasswordStrength = "Sicurezza media password:";
+                return;
             }
+            (
+                _, _, 
+                string averagePasswordStrength, 
+                int savedUsernameCount, 
+                DateTime lastPasswordCreatedAt
+            ) = _vm.GetPasswordsStatistics();
+            UserInfoContentGrid.SavedUsernameCount = $"Nomi utenti salvati: {savedUsernameCount.ToString()}";
+            UserInfoContentGrid.LastPasswordCreatedAt = $"Ultima aggiunta: {lastPasswordCreatedAt.ToString("dd/MM/yyyy")}";
+            UserInfoContentGrid.AveragePasswordStrength = $"Sicurezza media password: {averagePasswordStrength}";
+        }
+
+        public async void LoadUI(object sender, RoutedEventArgs e)
+        {
+            LoadingGrid.IsVisible = true;
+            await SetAllPassword();
+
+            if (AppServices.passwordList == null)
+            {
+                LoadingGrid.IsVisible = false;
+                return;
+            }
+
+            foreach (var p in AppServices.passwordList)
+            {
+                PasswordStackpanel.Children.Add
+                (
+                    new PasswordGrid()
+                    {
+                        InitialAppName = p.App[0].ToString(),
+                        AppName = p.App,
+                        Username = p.Username,
+                        ShownPassword = p.Password,
+                        shownPasswordText = p.Password,
+                        hiddenPasswordText = p.Password,
+                        passwordId = p.Id,
+                        createdAt = p.CreatedAt,
+                        lastUpdateAt = p.LastUpdateAt
+                    }
+                );
+            }
+
+            LoadingGrid.IsVisible = false;
+        }
+
+        public async Task SetAllPassword()
+        {
+            await _vm.SetAllPassword();
         }
 
         public void ShowOnly(Grid gridToShow)
         {
             foreach(var g in contentGrids)
                 g.IsVisible = false;
-
             gridToShow.IsVisible = true;
         }
     }

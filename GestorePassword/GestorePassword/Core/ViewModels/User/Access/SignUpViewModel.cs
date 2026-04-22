@@ -1,18 +1,19 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using GestorePassword.Core.Services;
 using Libreria.API;
+using Libreria.DTOs.Users;
 using Libreria.HTTPRequestsLibrary;
+using System.Threading.Tasks;
 
 namespace GestorePassword.Core.ViewModels.User.Access
 {
     public partial class SignUpViewModel : ObservableObject
     {
-        private readonly ApiClient _apiClient;
-        private readonly UserApi _userApi;
-
         public SignUpViewModel()
         {
-            _apiClient = AppServices.apiClient;
-            _userApi = AppServices.userApi;
         }
+
+        public async Task<(bool, string?)> Register(string username, string password)
+            => await UserRequest.RegisterAsync(username, password);
     }
 }

@@ -103,7 +103,7 @@ namespace GestioneDb.Controllers
         public async Task<Result<LoginResponseDTO>> Login(LoginDTO credentials, [FromServices] JwtService jwt)
         {
             var result = await _userService.LoginAsync(credentials, jwt);
-
+            
             return result;
         }
     } 

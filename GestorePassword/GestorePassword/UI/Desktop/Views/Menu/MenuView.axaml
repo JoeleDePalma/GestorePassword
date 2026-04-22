@@ -3,6 +3,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:GestorePassword.UI.Desktop.Templates.Menu"
+             xmlns:loading="using:GestorePassword.UI.Desktop.Templates.Common"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GestorePassword.UI.Desktop.Views.Menu.MenuView">
 
@@ -187,6 +188,7 @@
                                 <StackPanel.RenderTransform>
                                     <ScaleTransform ScaleX="0.7" ScaleY="0.7"/>
                                 </StackPanel.RenderTransform>
+
                                 <Border
                                     Background="#5ab3fc"
                                     Width="20"
@@ -198,7 +200,6 @@
                                         >
                                         <TextBlock
                                             x:Name="UserInitialTextBlock"
-                                            Text="J"
                                             Foreground="Black"
                                             Background="Transparent"
                                             FontSize="16"
@@ -214,7 +215,6 @@
                                     >
                                     <TextBlock
                                         x:Name="UserUsernameTextBlock"
-                                        Text="Jonwen"
                                         Foreground="Black"
                                         Background="Transparent"
                                         FontSize="12"
@@ -237,7 +237,6 @@
                 HorizontalAlignment="Left"
                 Margin="2, 0, 0, 0"
                 >
-
                 <Border.Background>
                     <LinearGradientBrush StartPoint="50%, 0%" EndPoint="50%, 100%">
                         <GradientStop Color="Transparent" Offset="0"/>
@@ -251,16 +250,14 @@
 
             <Grid
                 x:Name="PasswordsGrid"
-                IsVisible="False"
+                IsVisible="True"
                 Grid.Column="2"
                 RowDefinitions="1*, 0.1*, 0.1*, 0.15*, 10*"
                 >
-
                 <Grid
                     Grid.Row="0"
                     ColumnDefinitions="Auto, *, 0.30*"
                     >
-
                     <Viewbox
                         HorizontalAlignment="Left"
                         Grid.Column="0"
@@ -429,7 +426,6 @@
                 RowDefinitions="1*, 0.1*, 0.1*, 10*"
                 IsVisible="False"
                 >
-
                 <Grid
                     Grid.Row="0"
                     ColumnDefinitions="1*, 3*"
@@ -469,7 +465,7 @@
                     >
                     
                     <controls:StatisticsGrid 
-                        x:Name="SavedPasswordsStatisticGrid"
+                        x:Name="SavedPasswordsStatisticsGrid"
                         Grid.Column="1" 
                         Grid.Row="1"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/KeyIcon.png"
@@ -477,7 +473,7 @@
                         />
                     
                     <controls:StatisticsGrid
-                        x:Name="SavedAppUsernameStatisticGrid"
+                        x:Name="SavedAppUsernameStatisticsGrid"
                         Grid.Column="3"
                         Grid.Row="1"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/RegisteredInfoIcon.png"
@@ -485,7 +481,7 @@
                         />
 
                     <controls:StatisticsGrid
-                        x:Name="StrongPasswordsGrid"
+                        x:Name="StrongPasswordsStatisticsGrid"
                         Grid.Column="5"
                         Grid.Row="1"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/SecurePasswordShield.png"
@@ -493,7 +489,7 @@
                         />
 
                     <controls:StatisticsGrid
-                        x:Name="WeakPasswordsGrid"
+                        x:Name="WeakPasswordsStatisticsGrid"
                         Grid.Column="1"
                         Grid.Row="3"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/UnverifiedShield.png"
@@ -501,7 +497,7 @@
                         />
 
                     <controls:StatisticsGrid
-                        x:Name="AveragePasswordsStrengthGrid"
+                        x:Name="AveragePasswordStrengthStatisticsGrid"
                         Grid.Column="3"
                         Grid.Row="3"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/StatisticArrow.png"
@@ -509,7 +505,7 @@
                         />
 
                     <controls:StatisticsGrid
-                        x:Name="LastPasswordAddedTimeGrid"
+                        x:Name="LastPasswordCreatedAtStatisticsGrid"
                         Grid.Column="5"
                         Grid.Row="3"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/CalendarIcon.png"
@@ -521,9 +517,9 @@
             <Grid
                 x:Name="ProfileGrid"
                 Grid.Column="2"
-                IsVisible="True"
-                ColumnDefinitions="0.01*, 1*, 0.5*, 2*, 2*, 0.5*, 1*, 0.01*"
-                RowDefinitions="1*, 0.1*, 0.1*, 0.2*, 9*, 1*"
+                IsVisible="False"
+                ColumnDefinitions="0.01*, 1*, 0.5*, 1*, 3*, 0.5*, 1*, 0.01*"
+                RowDefinitions="1*, 0.1*, 0.1*, 0.2*, 5*, 4*, 1*"
                 >
 
                 <Viewbox
@@ -553,14 +549,14 @@
                     </StackPanel>
                 </Viewbox>
 
-                <Separator Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="4" Classes="ContentSeparator"/>
+                <Separator Grid.Row="2" Grid.Column="1" Grid.ColumnSpan="7" Classes="ContentSeparator"/>
 
                 <Grid 
-                    Grid.Column="3" 
-                    Grid.ColumnSpan="2" 
+                    Grid.Column="1" 
+                    Grid.ColumnSpan="3" 
                     Grid.Row="4"
                     ColumnDefinitions="0.1*, 1*, 1*, 1*, 1*, 1*, 0.1*"
-                    RowDefinitions="0,1*, 1*, 1*, 8*, 2*, 0.1*"
+                    RowDefinitions="0,1*, 1*, 1*, 7*, 3*, 0.1*"
                     >
                     <Border
                         CornerRadius="20"
@@ -580,8 +576,8 @@
                     <Viewbox 
                         Grid.Column="1"
                         Grid.ColumnSpan="2"
-                        Grid.RowSpan="2"
                         Grid.Row="1"
+                        Grid.RowSpan="2"
                         HorizontalAlignment="Left"
                         Margin="10, 10, 0, 0"
                         >
@@ -607,12 +603,30 @@
                         Grid.ColumnSpan="4"
                         Grid.Row="4"
                         Margin="15, 0, 0, 0"
-                        VerticalAlignment="Top"
+                        VerticalAlignment="Center"
                         >
                         <controls:UserInfoGrid x:Name="UserInfoContentGrid"/>
                     </Viewbox>
                 </Grid>
             </Grid>
+        </Grid>
+
+        <Grid
+            x:Name="LoadingGrid"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            Background="#30000000"
+            IsVisible="False"
+            >
+            <loading:LoadingAnimation 
+                Height="50"
+                Width="50"
+                CornerRadius="25"
+                HorizontalAlignment="Center" 
+                VerticalAlignment="Center"
+                />
         </Grid>
     </Grid>
 </UserControl>

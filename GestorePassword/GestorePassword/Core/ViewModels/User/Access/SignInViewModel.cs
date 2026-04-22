@@ -1,18 +1,20 @@
 using CommunityToolkit.Mvvm.ComponentModel;
 using Libreria.API;
+using Libreria.DTOs.Users;
 using Libreria.HTTPRequestsLibrary;
+using Libreria.HTTPRequestsLibrary.Services;
+using System.Threading.Tasks;
+using GestorePassword.Core.Services;
 
 namespace GestorePassword.Core.ViewModels.User.Access
 {
     public partial class SignInViewModel : ObservableObject
     {
-        private readonly ApiClient _apiClient;
-        private readonly UserApi _userApi;
-
         public SignInViewModel()
         {
-            _apiClient = AppServices.apiClient;
-            _userApi = AppServices.userApi;
         }
+
+        public async Task<(bool, string?)> Login(string username, string password)
+            => await UserRequest.LoginAsync(username, password);
     }
 }

@@ -18,26 +18,26 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
+        AppServices.apiClient = new("http://localhost:8080");
+        AppServices.userApi = new(AppServices.apiClient);
+        AppServices.passwordApi = new(AppServices.apiClient);
+        AppServices.versionApi = new(AppServices.apiClient);
+        AppServices.appVersion = new("1.3.0");
     }
 
     public override void OnFrameworkInitializationCompleted()
     {
-        var vm = new MenuViewModel();
-
 #if ANDROID
         if (ApplicationLifetime is ISingleViewApplicationLifetime singleView)
         {
-            singleView.MainView = new SignInView
-            {
-                DataContext = vm
-            };
+            singleView.MainView = new SignInView;
         }
 #else
         if (ApplicationLifetime is IClassicDesktopStyleApplicationLifetime desktop)
         {
             desktop.MainWindow = new MainWindow
             {
-                Content = new MenuView { DataContext = vm },
+                Content = new SignInView { },
                 Width = 1600,
                 Height = 900
             };
