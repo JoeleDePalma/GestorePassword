@@ -70,9 +70,9 @@ namespace GestioneDb.Controllers
         /// <param name="dto">DTO containing the updated data</param>
         /// <returns>A boolean result.</returns>
         [HttpPut("update/ById/{id}")]
-        public async Task<Result<bool>> UpdatePasswordById(int id, UpdatePasswordDTO dto)
+        public async Task<Result<UpdatedPasswordDTO>> UpdatePasswordById(int id, UpdatePasswordDTO dto)
         {
-            int userId = (int) HttpContext.Items["UserId"]!;
+            int userId = (int)HttpContext.Items["UserId"]!;
             var result = await _passwordService.UpdatePasswordByIdAsync(id, dto, userId);
 
             return result;

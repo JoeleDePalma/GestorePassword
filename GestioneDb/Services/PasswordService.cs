@@ -124,20 +124,20 @@ namespace GestioneDb.Services.Implementations
         /// or an error result if the password does not exist, does not belong to the user,
         /// or the master password is invalid
         /// </returns>
-        public async Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)
+        public async Task<Result<UpdatedPasswordDTO>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId)
         {
             var p = await _context.Passwords.FindAsync(id);
 
             if (p == null)
-                return Result<bool>.Fail(StatusCode.NotFound, "Password non trovata");
+                return Result<UpdatedPasswordDTO>.Fail(StatusCode.NotFound, "Password non trovata");
 
             if (p.UserID != userId)
-                return Result<bool>.Fail(StatusCode.Unauthorized, "Password appartenente ad un altro account");
+                return Result<UpdatedPasswordDTO>.Fail(StatusCode.Unauthorized, "Password appartenente ad un altro account");
 
             var (key, _) = await _services.KeyFromPassword(dto.MasterPassword, userId, p.KeySalt);
 
             if (key == null)
-                return Result<bool>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida");
+                return Result<UpdatedPasswordDTO>.Fail(StatusCode.Unauthorized, "Chiave crittografica invalida");
 
             if (dto.AppName != null)
                 p.AppName = dto.AppName;
@@ -151,7 +151,19 @@ namespace GestioneDb.Services.Implementations
             p.LastUpdateAt = DateTime.UtcNow;
 
             await _context.SaveChangesAsync();
-            return Result<bool>.Ok(true, StatusCode.NoContent);
+
+            var updatedPassword = new UpdatedPasswordDTO()
+            {
+                Id = id,
+                CredentialID = p.CredentialID,
+                AppName = p.AppName,
+                AppUsername = p.AppUsername!,
+                Password = dto.Password!,
+                CreatedAt = p.CreatedAt,
+                LastUpdateAt = p.LastUpdateAt
+            };
+
+            return Result<UpdatedPasswordDTO>.Ok(updatedPassword, StatusCode.Ok);
         }
 
         /// <summary>

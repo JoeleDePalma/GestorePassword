@@ -52,7 +52,7 @@ namespace GestioneDb.Services.Interfaces
         /// or an error result if the password does not exist, does not belong to the user,
         /// or the master password is invalid
         /// </returns>
-        Task<Result<bool>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId);
+        Task<Result<UpdatedPasswordDTO>> UpdatePasswordByIdAsync(int id, UpdatePasswordDTO dto, int userId);
 
 
         /// <summary>

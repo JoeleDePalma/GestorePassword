@@ -51,7 +51,7 @@ namespace Libreria.HTTPRequestsLibrary.Interfaces
         /// <returns>
         /// An <see cref="ApiResponse{T}"/> containing a boolean value that indicates whether the update was successful
         /// </returns>
-        Task<ApiResponse<bool>> UpdateByIdAsync(int id, UpdatePasswordDTO modifiedPassword);
+        Task<ApiResponse<UpdatedPasswordDTO>> UpdateByIdAsync(int id, UpdatePasswordDTO modifiedPassword);
 
 
         /// <summary>

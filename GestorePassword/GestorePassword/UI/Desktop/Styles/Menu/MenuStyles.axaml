@@ -45,4 +45,85 @@
       </LinearGradientBrush>    
     </Setter>  
   </Style>
+
+  <!--Username TextBox for adding password-->
+  <Style Selector="TextBox.AddingPasswordUsernameInput">
+    <Setter Property="Foreground" Value="Black"/>
+    <Setter Property="PlaceholderForeground" Value="#000000"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    <Setter Property="CaretBrush" Value="Black"/>
+    <Setter Property="SelectionBrush" Value="LightBlue"/>
+    <Setter Property="FontFamily" Value="Arial"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordUsernameInput /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#80101820"/>
+    <Setter Property="BorderBrush" Value="#101820"/>
+    <Setter Property="BorderThickness" Value="2"/>
+    <Setter Property="CornerRadius" Value="10"/>    
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordUsernameInput:focus-mode /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#80101820"/>
+    <Setter Property="BorderBrush" Value="#101820"/>
+    <Setter Property="BorderThickness" Value="2"/>
+    <Setter Property="CornerRadius" Value="10"/>    
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordUsernameInput:touch-mode /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="#80101820"/>
+    <Setter Property="BorderBrush" Value="#101820"/>
+    <Setter Property="BorderThickness" Value="2"/>
+    <Setter Property="CornerRadius" Value="15"/>    
+  </Style>
+
+  <!--Password TextBox for adding password-->
+  <Style Selector="TextBox.AddingPasswordInput">
+    <Setter Property="Foreground" Value="Black"/>
+    <Setter Property="PlaceholderForeground" Value="#000000"/>
+    <Setter Property="VerticalContentAlignment" Value="Center"/>
+    <Setter Property="HorizontalContentAlignment" Value="Left"/>
+    <Setter Property="CaretBrush" Value="Black"/>
+    <Setter Property="SelectionBrush" Value="LightBlue"/>
+    <Setter Property="FontFamily" Value="Arial"/>
+    <Setter Property="FontWeight" Value="SemiBold"/>
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordInput /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordInput:focus-mode /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>   
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <Style Selector="TextBox.AddingPasswordInput:touch-mode /template/ Border#PART_BorderElement">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="CornerRadius" Value="15"/>
+  </Style>
+
+  <!--Button to change visibility of the adding password-->
+  <Style Selector="Button.ChangeAddingPasswordVisibilityButtonStyle">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+  </Style>
+
+  <Style Selector="Button.ChangeAddingPasswordVisibilityButtonStyle:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
+
+  <Style Selector="Button.ChangeAddingPasswordVisibilityButtonStyle:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="Transparent"/>
+    <Setter Property="BorderThickness" Value="0"/>
+    <Setter Property="Cursor" Value="Hand"/>
+  </Style>
 </Styles>

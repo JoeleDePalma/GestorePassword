@@ -69,8 +69,8 @@ namespace Libreria.API
         /// <returns>
         /// An <see cref="ApiResponse{T}"/> containing a boolean value that indicates whether the update was successful
         /// </returns>
-        public async Task<ApiResponse<bool>> UpdateByIdAsync(int id, UpdatePasswordDTO modifiedPassword)
-            => await HTTPRequestHelper.SendAsync<bool>(
+        public async Task<ApiResponse<UpdatedPasswordDTO>> UpdateByIdAsync(int id, UpdatePasswordDTO modifiedPassword)
+            => await HTTPRequestHelper.SendAsync<UpdatedPasswordDTO>(
                 () => _client.Http.PutAsJsonAsync($"api/passwords/update/ById/{id}", modifiedPassword)
                 );
 

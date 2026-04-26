@@ -4,6 +4,7 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:controls="using:GestorePassword.UI.Desktop.Templates.Menu"
              xmlns:loading="using:GestorePassword.UI.Desktop.Templates.Common"
+             xmlns:AddingPassword="using:GestorePassword.UI.Desktop.Templates.Menu"
              mc:Ignorable="d" d:DesignWidth="800" d:DesignHeight="450"
              x:Class="GestorePassword.UI.Desktop.Views.Menu.MenuView">
 
@@ -284,7 +285,7 @@
                     </Viewbox>
                     
                     <Viewbox Grid.Column="2">
-                        <Button>
+                        <Button Click="ManageAddPasswordGridVisibility">
                             <StackPanel 
                                 Orientation="Horizontal"
                                 HorizontalAlignment="Center"
@@ -477,7 +478,7 @@
                         Grid.Column="3"
                         Grid.Row="1"
                         InfoImageSource="avares://GestorePassword/UI/Desktop/Images/RegisteredInfoIcon.png"
-                        InfoDescriptionText="Username registrati"
+                        InfoDescriptionText="Nomi utente registrati"
                         />
 
                     <controls:StatisticsGrid
@@ -608,6 +609,494 @@
                         <controls:UserInfoGrid x:Name="UserInfoContentGrid"/>
                     </Viewbox>
                 </Grid>
+            </Grid>
+        </Grid>
+
+        <Grid
+            x:Name="AddPasswordGrid"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            ColumnDefinitions="1*, 1*, 1*"
+            RowDefinitions="1*, 3*, 1*"
+            Background="#30000000"
+            IsVisible="False"
+            >
+            
+            <Grid
+                Grid.Column="1" 
+                Grid.Row="1"
+                ColumnDefinitions="1*, 6*, 1*"
+                RowDefinitions="0.5*, 1*, 1*, 5*, 2*"
+                >
+                <Border
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Grid.Row="0"
+                    Grid.RowSpan="5"
+                    CornerRadius="20"
+                    >
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="100%, 0%" EndPoint="0%, 100%">
+                            <GradientStop Color="#99241623" Offset="0"/>
+                            <GradientStop Color="#99232ED1" Offset="1"/>
+                        </LinearGradientBrush>    
+                    </Border.Background>
+                </Border>
+
+                <Viewbox
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    >
+                    <TextBlock
+                        Text="Aggiungi una nuova password"
+                        TextAlignment="Center"
+                        FontFamily="Fantasia"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="#000000"
+                        />
+                </Viewbox>
+
+                <Viewbox 
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    >
+                    <StackPanel
+                        VerticalAlignment="Bottom"
+                        Orientation="Vertical"
+                        Spacing="5"
+                        >
+
+                        <Viewbox>
+                            <TextBox
+                                x:Name="AddingPasswordAppInput"
+                                Height="70"
+                                Width="600"
+                                PlaceholderText="App"
+                                FontSize="30"
+                                Classes="AddingPasswordUsernameInput"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox>
+                            <TextBox
+                                x:Name="AddingPasswordUsernameInput"
+                                Height="70"
+                                Width="600"
+                                PlaceholderText="Username"
+                                FontSize="30"
+                                Classes="AddingPasswordUsernameInput"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox>
+                            <Grid
+                                Height="70"
+                                Width="600"
+                                >
+                                <Border>
+                                    <Border.Styles>
+                                        <Style Selector="Border">
+                                            <Setter Property="Background" Value="#80101820"/>
+                                            <Setter Property="BorderBrush" Value="#101820"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="CornerRadius" Value="10"/>    
+                                        </Style>
+                                    </Border.Styles>
+                                </Border>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox 
+                                        x:Name="ShownAddingPasswordInput"
+                                        Classes="AddingPasswordInput"
+                                        HorizontalAlignment="Left"
+                                        Height="70"
+                                        Width="530"
+                                        FontSize="30"
+                                        IsVisible="False"
+                                        PlaceholderText="Password"
+                                        />
+
+                                    <TextBox 
+                                        x:Name="HiddenAddingPasswordInput" 
+                                        Classes="AddingPasswordInput"
+                                        HorizontalAlignment="Left"
+                                        Height="70"
+                                        Width="530"
+                                        FontSize="30"
+                                        IsVisible="True"
+                                        PlaceholderText="Password"
+                                        PasswordChar="●"
+                                        />
+
+                                    <Button
+                                        x:Name="ChangeAddingPasswordVisibilityButton"
+                                        Height="70"
+                                        Width="70"
+                                        HorizontalAlignment="Right"
+                                        Click="ChangeAddingPasswordVisibility"
+                                        Classes="ChangeAddingPasswordVisibilityButtonStyle"
+                                        >
+                                        <Image 
+                                            x:Name="AddingPasswordEyeImage"
+                                            Source="avares://GestorePassword/UI/Desktop/Images/closed_eye.png"
+                                            Height="50"
+                                            Width="50"
+                                            />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Viewbox>
+
+                        <Viewbox
+                            Margin="5, 5, 0, 20"
+                            HorizontalAlignment="Center"
+                            >
+                            <TextBlock
+                                x:Name="AddingPasswordErrorTextBlock"
+                                Width="600"
+                                Background="Transparent"
+                                Foreground="#FF0000"
+                                IsVisible="False"
+                                TextAlignment="Left"
+                                FontSize="20"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox HorizontalAlignment="Center">
+                            <StackPanel 
+                                Width="600"
+                                Orientation="Horizontal" 
+                                Spacing="5"
+                                >
+                                <AddingPassword:AddingPasswordActionButton
+                                    Height="70"
+                                    Width="297.5"
+                                    StartColor="#FF0000FF"
+                                    EndColor="#FF4343D6"
+                                    Content="Aggiungi"
+                                    Click="AddPassword"
+                                    ClickMode="Release"
+                                    />
+
+                                <AddingPassword:AddingPasswordActionButton
+                                    Height="70"
+                                    Width="297.5"
+                                    Content="Annulla"
+                                    StartColor="#FF5E5E5E"
+                                    EndColor="#FF3D52D5"
+                                    Click="GoBackToMenu"
+                                    ClickMode="Release"
+                                    />
+                            </StackPanel>
+                        </Viewbox>
+
+                        <Viewbox HorizontalAlignment="Center">
+                            <AddingPassword:AddingPasswordActionButton
+                                Width="600"
+                                Height="70"
+                                StartColor="#FF241623"
+                                EndColor="#FF232ED1"
+                                Content="Genera password"
+                                Click="GeneratePassword"
+                                ClickMode="Release"
+                                />
+                        </Viewbox>
+                    </StackPanel>
+                </Viewbox>
+            </Grid>
+        </Grid>
+
+        <Grid
+            x:Name="ModifyPasswordGrid"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            ColumnDefinitions="1*, 1*, 1*"
+            RowDefinitions="1*, 3*, 1*"
+            Background="#30000000"
+            IsVisible="False"
+            >
+            <Grid
+                Grid.Column="1" 
+                Grid.Row="1"
+                ColumnDefinitions="1*, 6*, 1*"
+                RowDefinitions="0.5*, 1*, 1*, 5*, 2*"
+                >
+                <Border
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Grid.Row="0"
+                    Grid.RowSpan="5"
+                    CornerRadius="20"
+                    >
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="100%, 0%" EndPoint="0%, 100%">
+                            <GradientStop Color="#99241623" Offset="0"/>
+                            <GradientStop Color="#99232ED1" Offset="1"/>
+                        </LinearGradientBrush>    
+                    </Border.Background>
+                </Border>
+
+                <Viewbox
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    HorizontalAlignment="Center"
+                    VerticalAlignment="Center"
+                    >
+                    <TextBlock
+                        Text="Modifica una password"
+                        TextAlignment="Center"
+                        FontFamily="Fantasia"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="#000000"
+                        />
+                </Viewbox>
+
+                <Viewbox 
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    >
+                    <StackPanel
+                        VerticalAlignment="Bottom"
+                        Orientation="Vertical"
+                        Spacing="5"
+                        >
+                        <Viewbox>
+                            <TextBox
+                                x:Name="ModifingPasswordAppInput"
+                                Height="70"
+                                Width="600"
+                                PlaceholderText="App"
+                                FontSize="30"
+                                Classes="AddingPasswordUsernameInput"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox>
+                            <TextBox
+                                x:Name="ModifingPasswordUsernameInput"
+                                Height="70"
+                                Width="600"
+                                PlaceholderText="Username"
+                                FontSize="30"
+                                Classes="AddingPasswordUsernameInput"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox>
+                            <Grid
+                                Height="70"
+                                Width="600"
+                                >
+                                <Border>
+                                    <Border.Styles>
+                                        <Style Selector="Border">
+                                            <Setter Property="Background" Value="#80101820"/>
+                                            <Setter Property="BorderBrush" Value="#101820"/>
+                                            <Setter Property="BorderThickness" Value="2"/>
+                                            <Setter Property="CornerRadius" Value="10"/>    
+                                        </Style>
+                                    </Border.Styles>
+                                </Border>
+
+                                <StackPanel Orientation="Horizontal">
+                                    <TextBox 
+                                        x:Name="ShownModifingPasswordInput"
+                                        Classes="AddingPasswordInput"
+                                        HorizontalAlignment="Left"
+                                        Height="70"
+                                        Width="530"
+                                        FontSize="30"
+                                        IsVisible="False"
+                                        PlaceholderText="Password"
+                                        />
+
+                                    <TextBox 
+                                        x:Name="HiddenModifingPasswordInput" 
+                                        Classes="AddingPasswordInput"
+                                        HorizontalAlignment="Left"
+                                        Height="70"
+                                        Width="530"
+                                        FontSize="30"
+                                        IsVisible="True"
+                                        PlaceholderText="Password"
+                                        PasswordChar="●"
+                                        />
+
+                                    <Button
+                                        x:Name="ChangeModifingPasswordVisibilityButton"
+                                        Height="70"
+                                        Width="70"
+                                        HorizontalAlignment="Right"
+                                        Click="ChangeModifingPasswordVisibility"
+                                        Classes="ChangeAddingPasswordVisibilityButtonStyle"
+                                        >
+                                        <Image 
+                                            x:Name="ModifingPasswordEyeImage"
+                                            Source="avares://GestorePassword/UI/Desktop/Images/closed_eye.png"
+                                            Height="50"
+                                            Width="50"
+                                            />
+                                    </Button>
+                                </StackPanel>
+                            </Grid>
+                        </Viewbox>
+
+                        <Viewbox
+                            Margin="5, 5, 0, 20"
+                            HorizontalAlignment="Center"
+                            >
+                            <TextBlock
+                                x:Name="ModifingPasswordErrorTextBlock"
+                                Width="600"
+                                Background="Transparent"
+                                Foreground="#FF0000"
+                                IsVisible="False"
+                                TextAlignment="Left"
+                                FontSize="20"
+                                />
+                        </Viewbox>
+                        
+                        <Viewbox HorizontalAlignment="Center">
+                            <StackPanel 
+                                Width="600"
+                                Orientation="Horizontal" 
+                                Spacing="5"
+                                >
+                                <AddingPassword:AddingPasswordActionButton
+                                    Height="70"
+                                    Width="297.5"
+                                    StartColor="#FF0000FF"
+                                    EndColor="#FF4343D6"
+                                    Content="Aggiungi"
+                                    Click="AddPassword"
+                                    ClickMode="Release"
+                                    />
+
+                                <AddingPassword:AddingPasswordActionButton
+                                    Height="70"
+                                    Width="297.5"
+                                    Content="Annulla"
+                                    StartColor="#FF5E5E5E"
+                                    EndColor="#FF3D52D5"
+                                    Click="GoBackToMenu"
+                                    ClickMode="Release"
+                                    />
+                            </StackPanel>
+                        </Viewbox>
+
+                        <Viewbox HorizontalAlignment="Center">
+                            <AddingPassword:AddingPasswordActionButton
+                                Width="600"
+                                Height="70"
+                                StartColor="#FF241623"
+                                EndColor="#FF232ED1"
+                                Content="Genera password"
+                                Click="GeneratePassword"
+                                ClickMode="Release"
+                                />
+                        </Viewbox>
+                    </StackPanel>
+                </Viewbox>
+            </Grid>
+        </Grid>
+
+        <Grid
+            x:Name="DeletePasswordGrid"
+            Grid.Column="0"
+            Grid.ColumnSpan="3"
+            Grid.Row="0"
+            Grid.RowSpan="3"
+            ColumnDefinitions="1.5*, 1*, 1.5*"
+            RowDefinitions="1.5*, 1*, 1.5*"
+            Background="#30000000"
+            IsVisible="False"
+            >
+            <Grid
+                Grid.Column="1"
+                Grid.Row="1"
+                ColumnDefinitions="0.1*, 0.90* 0.1*"
+                RowDefinitions="0.1*, 1.5*, 0.5*, 0.5*, 2*, 0.5*"
+                >
+                <Border
+                    Grid.Column="0"
+                    Grid.ColumnSpan="3"
+                    Grid.Row="0"
+                    Grid.RowSpan="6"
+                    CornerRadius="15"
+                    >
+                    <Border.Background>
+                        <LinearGradientBrush StartPoint="100%, 0%" EndPoint="0%, 100%">
+                            <GradientStop Color="#99241623" Offset="0"/>
+                            <GradientStop Color="#99232ED1" Offset="1"/>
+                        </LinearGradientBrush>    
+                    </Border.Background>
+                </Border>
+
+                <Viewbox 
+                    Grid.Column="1"
+                    Grid.Row="1"
+                    VerticalAlignment="Center"
+                    HorizontalAlignment="Center"
+                    >
+                    <TextBlock
+                        Text = "Eliminare definitivamente la password?"
+                        TextAlignment="Center"
+                        FontFamily="Fantasia"
+                        FontStyle="Italic"
+                        FontWeight="SemiBold"
+                        Foreground="#000000"
+                        />                    
+                </Viewbox>
+
+                <Viewbox
+                    Grid.Column="1"
+                    Grid.Row="3"
+                    >
+                    <TextBlock
+                        x:Name="DeletingPasswordErrorTextBlock"
+                        Background="Transparent"
+                        Foreground="#FF0000"
+                        IsVisible="False"
+                        TextAlignment="Left"
+                        FontSize="20"
+                        />    
+                </Viewbox>
+
+                <Viewbox
+                    Grid.Column="1"
+                    Grid.Row="4"
+                    >
+                    <StackPanel Orientation="Vertical" Width="600" Height="150" Spacing="5">
+                        <AddingPassword:AddingPasswordActionButton
+                            Height="72.5"
+                            Width="600"
+                            StartColor="#99D44444"
+                            EndColor="#998A0B0B"
+                            Content="Elimina"
+                            Click="DeletePassword"
+                            ClickMode="Release"
+                            FontSize="20"
+                            />
+                        <AddingPassword:AddingPasswordActionButton
+                            Height="72.5"
+                            Width="600"
+                            StartColor="#FF5E5E5E"
+                            EndColor="#FF3D52D5"
+                            Content="Annulla"
+                            Click="GoBackToMenu"
+                            ClickMode="Release"
+                            FontSize="20"
+                            />    
+                    </StackPanel>
+                </Viewbox>
             </Grid>
         </Grid>
 

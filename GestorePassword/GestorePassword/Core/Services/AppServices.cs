@@ -14,5 +14,10 @@ public static class AppServices
     public static List<PasswordInfo> passwordList { get; set; }
     public static UserInfo currentUser { get; set; }
     public static Version appVersion { get; set; }
+
+    /// <summary>
+    /// The password the users is working with
+    /// </summary>
+    public static PasswordInfo currentPassword { get; set; }
 }
 

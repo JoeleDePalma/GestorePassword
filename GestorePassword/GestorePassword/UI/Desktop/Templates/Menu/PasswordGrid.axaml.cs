@@ -9,6 +9,11 @@ namespace GestorePassword.UI.Desktop.Templates.Menu
 {
     public partial class PasswordGrid : TemplatedControl
     {
+        public event Action<PasswordGrid>? ShowClicked;
+        public event Action<PasswordGrid>? HideClicked;
+        public event Action<PasswordGrid>? ModifyClicked;
+        public event Action<PasswordGrid>? DeleteClicked;
+
         private Button? _showButton;
         private Button? _hideButton;
         private Button? _modifyButton;
@@ -18,24 +23,28 @@ namespace GestorePassword.UI.Desktop.Templates.Menu
         {
             base.OnApplyTemplate(e);
 
-            _showButton = e.NameScope.Find<Button>("ShowPasswordButton");
-            _hideButton = e.NameScope.Find<Button>("HidePasswordButton");
-            _modifyButton = e.NameScope.Find<Button>("ModifyPasswordButton");
-            _deleteButton = e.NameScope.Find<Button>("DeletePasswordButton");
+            var showButton = e.NameScope.Find<Button>("ShowPasswordButton");
+            var hideButton = e.NameScope.Find<Button>("HidePasswordButton");
+            var modifyButton = e.NameScope.Find<Button>("ModifyPasswordButton");
+            var deleteButton = e.NameScope.Find<Button>("DeletePasswordButton");
 
-            if (_showButton != null)
-                _showButton.Click += ChangePasswordVisibility;
+            if (showButton != null)
+                showButton.Click += (_, __) => ShowClicked?.Invoke(this);
 
-            if (_hideButton != null)
-                _hideButton.Click += ChangePasswordVisibility;
+            if (hideButton != null)
+                hideButton.Click += (_, __) => HideClicked?.Invoke(this);
 
-            /*
-            if (_modifyButton != null)
-                _modifyButton.Click += ModifyPassword;
+            if (modifyButton != null)
+                modifyButton.Click += (_, __) => ModifyClicked?.Invoke(this);
 
-            if (_deleteButton != null)
-                _deleteButton.Click += DeletePassword;*/
+            if (deleteButton != null)
+                deleteButton.Click += (_, __) => DeleteClicked?.Invoke(this);
+
+            ShowButtonVisibility = true;
+            HideButtonVisibility = false;
+            ShownPassword = hiddenPasswordText;
         }
+
 
         public DateTime createdAt { get; set; }
         public DateTime lastUpdateAt { get; set; }
@@ -47,7 +56,7 @@ namespace GestorePassword.UI.Desktop.Templates.Menu
             get => _hiddenPasswordText;
             set
             {
-                _hiddenPasswordText = new string('*', value?.Length ?? 0);
+                _hiddenPasswordText = new string('●', value?.Length ?? 0);
             }
         }
 
@@ -95,20 +104,22 @@ namespace GestorePassword.UI.Desktop.Templates.Menu
             set => SetValue(ShownPasswordProperty, value);
         }
 
-        public void ChangePasswordVisibility(object sender, RoutedEventArgs e)
+        public static StyledProperty<bool> HideButtonVisibilityProperty =
+            AvaloniaProperty.Register<PasswordGrid, bool>(nameof(HideButtonVisibility));
+
+        public bool HideButtonVisibility
         {
-            if (ShownPassword == hiddenPasswordText)
-            {
-                _hideButton.IsVisible = true;
-                _showButton.IsVisible = false;
-                ShownPassword = shownPasswordText;
-                return;
-            }
+            get => GetValue(HideButtonVisibilityProperty);
+            set => SetValue(HideButtonVisibilityProperty, value);
+        }
 
-            _hideButton.IsVisible = false;
-            _showButton.IsVisible = true;
-            ShownPassword = hiddenPasswordText;
+        public static StyledProperty<bool> ShowButtonVisibilityProperty =
+            AvaloniaProperty.Register<PasswordGrid, bool>(nameof(ShowButtonVisibilityProperty));
 
+        public bool ShowButtonVisibility
+        {
+            get => GetValue(ShowButtonVisibilityProperty);
+            set => SetValue(ShowButtonVisibilityProperty, value);
         }
     }
 }

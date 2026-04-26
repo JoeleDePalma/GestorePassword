@@ -1,12 +1,14 @@
 ﻿using CommunityToolkit.Mvvm.ComponentModel;
+using GestorePassword.Core.Models;
+using GestorePassword.Core.Services;
+using Libreria.API;
+using Libreria.DTOs.Passwords;
 using System;
 using System.Collections.Generic;
-using System.Text;
-using Libreria.API;
 using System.Linq;
-using GestorePassword.Core.Models;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading.Tasks;
-using GestorePassword.Core.Services;
 
 namespace GestorePassword.Core.ViewModels.Menu
 {
@@ -66,5 +68,17 @@ namespace GestorePassword.Core.ViewModels.Menu
 
         public async Task SetAllPassword()
             => await PasswordRequest.SetAllPasswordsAsync();
+
+        public string GeneratePassowrd(int length = 16)
+            => PasswordGenerator.GeneratePassword(length);
+
+        public async Task<(bool Success, string? ErrorString)> SaveNewPassword(string app, string? username, string password)
+            => await PasswordRequest.CreateNewPasswordAsync(app, username, password);
+
+        public async Task<(bool Success, string? ErrorString)> ModifyPassword(int id, string app, string? username, string password)
+            => await PasswordRequest.ModifyPasswordAsync(id, app, username, password);
+
+        public async Task<(bool Success, string? ErrorString)> DeletePassword(int id)
+            => await PasswordRequest.DeletePasswordAsync(id);
     }
 }

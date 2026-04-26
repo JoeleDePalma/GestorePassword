@@ -9,6 +9,7 @@
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/PasswordGrid.axaml"/>
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/StatisticsGrid.axaml"/>
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/UserInfoGrid.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/AddingPasswordActionButton.axaml"/>
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Common/LoadingAnimation.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
