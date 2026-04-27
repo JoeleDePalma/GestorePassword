@@ -1,4 +1,5 @@
 ﻿using System.ComponentModel.DataAnnotations;
+using System.Diagnostics.CodeAnalysis;
 
 namespace GestioneDb.Models
 {
@@ -27,6 +28,7 @@ namespace GestioneDb.Models
         /// <summary>
         /// The username used for the application or service.
         /// </summary>
+        [AllowNull]
         public string? AppUsername { get; set; }
 
 

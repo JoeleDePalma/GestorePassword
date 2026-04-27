@@ -25,7 +25,7 @@ namespace GestioneDb.Services
             if (versionObj is not Version version)
                 return Result<bool>.Fail(StatusCode.BadRequest, "Aggiornamento disponibile!"); ;
 
-            bool check = version >= new Version("1.2.0");
+            bool check = version >= new Version("1.3.0");
 
             if (!check)
             {

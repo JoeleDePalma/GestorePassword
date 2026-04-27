@@ -51,6 +51,7 @@ namespace GestorePassword.UI.Desktop.Views.Menu
         public void ShowStatisticsContent(object sender, RoutedEventArgs e)
         {
             ShowOnly(StatisticsGrid);
+
             if (AppServices.passwordList == null)
             {
                 SavedPasswordsStatisticsGrid.InfoValueText = "0";
@@ -74,12 +75,13 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             WeakPasswordsStatisticsGrid.InfoValueText = weakPasswords.ToString();
             AveragePasswordStrengthStatisticsGrid.InfoValueText = averagePasswordStrength;
             LastPasswordCreatedAtStatisticsGrid.InfoValueText = lastPasswordCreatedAt.ToString("dd/MM/yyyy");
-            
+
         }
 
         public void ShowProfileContent(object sender, RoutedEventArgs e)
         {
             ShowOnly(ProfileGrid);
+
             if (AppServices.currentUser != null)
             {
                 ProfileUsernameTextBlock.Text = AppServices.currentUser.Username;

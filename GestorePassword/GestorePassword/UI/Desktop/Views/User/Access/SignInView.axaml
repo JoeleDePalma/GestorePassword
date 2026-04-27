@@ -150,7 +150,7 @@
                     Width="350"
                     Background="Transparent"
                     Foreground="Red"
-                    TextAlignment="Center"
+                    TextAlignment="Left"
                     IsVisible="False"
                     />
             </Viewbox>

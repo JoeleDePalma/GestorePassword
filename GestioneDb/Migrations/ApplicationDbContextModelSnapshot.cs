@@ -79,7 +79,6 @@ namespace GestioneDb.Migrations
                         .HasColumnType("text");
 
                     b.Property<string>("Username")
-                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("UserID");
