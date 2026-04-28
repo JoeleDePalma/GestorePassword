@@ -7,13 +7,12 @@ on:
     branches: [ master ]
 
 jobs:
-  build:
-    runs-on: ${{ matrix.os }}
 
-    strategy:
-      matrix:
-        os: [ubuntu-latest, windows-latest, macos-latest]
-        rid: [linux-x64, win-x64, osx-x64]
+  # -------------------------
+  # LINUX BUILD
+  # -------------------------
+  linux:
+    runs-on: ubuntu-latest
 
     steps:
     - uses: actions/checkout@v4
@@ -23,11 +22,88 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Publish
-      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r ${{ matrix.rid }} --self-contained true -o output
+    - name: Publish single-file
+      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o output
+
+    - name: Install AppImage tool
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y appimagetool
+
+    - name: Create AppImage
+      run: |
+        mkdir AppDir
+        cp -r output/* AppDir/
+        appimagetool AppDir GestorePassword.AppImage
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
-        name: build-${{ matrix.rid }}
-        path: output
+        name: linux-appimage
+        path: GestorePassword.AppImage
+
+
+  # -------------------------
+  # WINDOWS BUILD
+  # -------------------------
+  windows:
+    runs-on: windows-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Publish single-file
+      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o output
+
+    - name: Install Inno Setup
+      run: choco install innosetup -y
+      shell: powershell
+
+    - name: Create installer
+      run: iscc installer.iss
+      shell: powershell
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: windows-installer
+        path: Output/installer.exe
+
+
+  # -------------------------
+  # MACOS BUILD
+  # -------------------------
+  macos:
+    runs-on: macos-latest
+
+    steps:
+    - uses: actions/checkout@v4
+
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v4
+      with:
+        dotnet-version: 8.0.x
+
+    - name: Publish single-file
+      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r osx-x64 --self-contained true /p:PublishSingleFile=true -o output
+
+    - name: Create .app bundle
+      run: |
+        mkdir -p GestorePassword.app/Contents/MacOS
+        cp output/GestorePassword.Desktop GestorePassword.app/Contents/MacOS/
+        chmod +x GestorePassword.app/Contents/MacOS/GestorePassword.Desktop
+
+    - name: Create DMG
+      run: |
+        hdiutil create -volname GestorePassword -srcfolder GestorePassword.app -ov -format UDZO GestorePassword.dmg
+
+    - name: Upload artifact
+      uses: actions/upload-artifact@v4
+      with:
+        name: macos-dmg
+        path: GestorePassword.dmg
