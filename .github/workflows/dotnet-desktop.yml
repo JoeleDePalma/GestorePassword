@@ -37,7 +37,8 @@ jobs:
         chmod +x AppDir/usr/bin/GestorePassword.Desktop
 
     - name: Create AppImage
-      run: ./appimagetool AppDir GestorePassword.AppImage
+      run: ./appimagetool --appimage-extract-and-run AppDir GestorePassword.AppImage
+
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
@@ -99,13 +100,14 @@ jobs:
 
     - name: Create .app bundle
       run: |
-        mkdir -p GestorePassword.app/Contents/MacOS
-        cp output/GestorePassword.Desktop GestorePassword.app/Contents/MacOS/
-        chmod +x GestorePassword.app/Contents/MacOS/GestorePassword.Desktop
+        mkdir -p /tmp/GestorePassword.app/Contents/MacOS
+        cp output/GestorePassword.Desktop /tmp/GestorePassword.app/Contents/MacOS/
+        chmod +x /tmp/GestorePassword.app/Contents/MacOS/GestorePassword.Desktop
 
     - name: Create DMG
       run: |
-        hdiutil create -volname GestorePassword -srcfolder GestorePassword.app -ov -format UDZO GestorePassword.dmg
+        hdiutil create -volname GestorePassword -srcfolder /tmp/GestorePassword.app -ov -format UDZO GestorePassword.dmg
+
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
