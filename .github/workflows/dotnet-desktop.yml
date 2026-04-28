@@ -25,22 +25,26 @@ jobs:
     - name: Publish single-file
       run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r linux-x64 --self-contained true /p:PublishSingleFile=true -o output
 
-    - name: Install AppImage tool
+    - name: Download appimagetool
       run: |
-        sudo apt-get update
-        sudo apt-get install -y appimagetool
+        wget https://github.com/AppImage/AppImageKit/releases/download/continuous/appimagetool-x86_64.AppImage -O appimagetool
+        chmod +x appimagetool
+
+    - name: Create AppDir
+      run: |
+        mkdir -p AppDir/usr/bin
+        cp output/GestorePassword.Desktop AppDir/usr/bin/
+        chmod +x AppDir/usr/bin/GestorePassword.Desktop
 
     - name: Create AppImage
-      run: |
-        mkdir AppDir
-        cp -r output/* AppDir/
-        appimagetool AppDir GestorePassword.AppImage
+      run: ./appimagetool AppDir GestorePassword.AppImage
 
     - name: Upload artifact
       uses: actions/upload-artifact@v4
       with:
         name: linux-appimage
         path: GestorePassword.AppImage
+
 
 
   # -------------------------
@@ -64,7 +68,7 @@ jobs:
       run: choco install innosetup -y
       shell: powershell
 
-    - name: Create installer
+    - name: Build installer
       run: iscc installer.iss
       shell: powershell
 
@@ -73,6 +77,7 @@ jobs:
       with:
         name: windows-installer
         path: Output/installer.exe
+
 
 
   # -------------------------
