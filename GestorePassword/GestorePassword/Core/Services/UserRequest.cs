@@ -26,6 +26,9 @@ namespace GestorePassword.Core.Services
                     return (false, response.Message ?? null);
                 }
 
+                if (AppServices.currentUser == null)
+                    AppServices.currentUser = new();
+
                 AppServices.currentUser = new()
                 {
                     UserID = response.Data!.UserID,
