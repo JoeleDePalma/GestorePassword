@@ -49,8 +49,8 @@ jobs:
       with:
         dotnet-version: 8.0.x
 
-    - name: Publish single-file
-      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true -o output
+    - name: Publish single-file (NO COMPRESSION)
+      run: dotnet publish GestorePassword/GestorePassword.Desktop/GestorePassword.Desktop.csproj -c Release -r win-x64 --self-contained true /p:PublishSingleFile=true /p:IncludeNativeLibrariesForSelfExtract=true /p:EnableCompressionInSingleFile=false -o output
 
     - name: Install Inno Setup
       run: choco install innosetup -y
@@ -64,7 +64,7 @@ jobs:
       uses: actions/upload-artifact@v4
       with:
         name: windows-installer
-        path: Output/installer.exe
+        path: Output/GestorePassword-Setup.exe
 
 
   # -------------------------

@@ -1,23 +1,36 @@
+; ------------------------------------------------------------
+;   Installer per Gestore Password - Versione 1.3.0
+;   Compatibile con GitHub Actions
+; ------------------------------------------------------------
+
 [Setup]
-AppName=GestorePassword
+AppName=Gestore Password
 AppVersion=1.3.0
-DefaultDirName={pf}\GestorePassword
-DefaultGroupName=GestorePassword
+DefaultDirName={pf}\Gestore Password
+DefaultGroupName=Gestore Password
+DisableProgramGroupPage=no
 OutputDir=Output
-OutputBaseFilename=installer
-Compression=lzma
+OutputBaseFilename=GestorePassword-Setup
+Compression=lzma2
 SolidCompression=yes
-DisableProgramGroupPage=yes
+ArchitecturesInstallIn64BitMode=x64
+PrivilegesRequired=admin
+WizardStyle=modern
+AllowNoIcons=yes
+
+[Languages]
+Name: "italian"; MessagesFile: "compiler:Languages\Italian.isl"
 
 [Files]
-Source: "output\GestorePassword.Desktop.exe"; DestDir: "{app}"; Flags: ignoreversion
+; Copia i file generati dal publish single-file
+Source: "output\*"; DestDir: "{app}"; Flags: recursesubdirs createallsubdirs
 
 [Icons]
-Name: "{group}\GestorePassword"; Filename: "{app}\GestorePassword.Desktop.exe"
-Name: "{commondesktop}\GestorePassword"; Filename: "{app}\GestorePassword.Desktop.exe"; Tasks: desktopicon
+Name: "{group}\Gestore Password"; Filename: "{app}\GestorePassword.Desktop.exe"
+Name: "{commondesktop}\Gestore Password"; Filename: "{app}\GestorePassword.Desktop.exe"; Tasks: desktopicon
 
 [Tasks]
-Name: "desktopicon"; Description: "Create a desktop icon"; GroupDescription: "Additional icons:"; Flags: unchecked
+Name: "desktopicon"; Description: "Crea un collegamento sul Desktop"; GroupDescription: "Opzioni aggiuntive"
 
 [Run]
-Filename: "{app}\GestorePassword.Desktop.exe"; Description: "Launch GestorePassword"; Flags: nowait postinstall skipifsilent
+Filename: "{app}\GestorePassword.Desktop.exe"; Description: "Avvia Gestore Password"; Flags: nowait postinstall skipifsilent
