@@ -13,6 +13,7 @@ using GestorePassword.Core.ViewModels.Menu;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using GestorePassword.Core.Models;
+using Avalonia.Platform;
 
 namespace GestorePassword.UI.Desktop.Views.Menu
 {
@@ -239,36 +240,51 @@ namespace GestorePassword.UI.Desktop.Views.Menu
 
         public void ChangeAddingPasswordVisibility(object sender, RoutedEventArgs e)
         {
-            if (ShownAddingPasswordInput.IsVisible)
+            try
             {
-                HiddenAddingPasswordInput.Text = ShownAddingPasswordInput.Text;
-                ShownAddingPasswordInput.IsVisible = false;
-                HiddenAddingPasswordInput.IsVisible = true;
-                AddingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/closed_eye.png");
-                return;
-            }
+                if (ShownAddingPasswordInput.IsVisible)
+                {
+                    HiddenAddingPasswordInput.Text = ShownAddingPasswordInput.Text;
+                    ShownAddingPasswordInput.IsVisible = false;
+                    HiddenAddingPasswordInput.IsVisible = true;
+                    AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
+                    return;
+                }
 
-            ShownAddingPasswordInput.Text = HiddenAddingPasswordInput.Text;
-            ShownAddingPasswordInput.IsVisible = true;
-            HiddenAddingPasswordInput.IsVisible = false;
-            AddingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/opened_eye.png");
+                ShownAddingPasswordInput.Text = HiddenAddingPasswordInput.Text;
+                ShownAddingPasswordInput.IsVisible = true;
+                HiddenAddingPasswordInput.IsVisible = false;
+                AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/opened_eye.png")));
+            }
+            catch (Exception ex)
+            {
+                SetAddingPasswordErrorTextBlock(ex.Message);
+            }
         }
 
         public void ChangeModifingPasswordVisibility(object sender, RoutedEventArgs e)
         {
-            if (ShownModifingPasswordInput.IsVisible)
-            {
-                HiddenModifingPasswordInput.Text = ShownModifingPasswordInput.Text;
-                ShownModifingPasswordInput.IsVisible = false;
-                HiddenModifingPasswordInput.IsVisible = true;
-                ModifingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/closed_eye.png");
-                return;
-            }
+            try
+            { 
+                if (ShownModifingPasswordInput.IsVisible)
+                {
+                    HiddenModifingPasswordInput.Text = ShownModifingPasswordInput.Text;
+                    ShownModifingPasswordInput.IsVisible = false;
+                    HiddenModifingPasswordInput.IsVisible = true;
+                    ModifingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
+                    return;
+                }
 
-            ShownModifingPasswordInput.Text = HiddenModifingPasswordInput.Text;
-            ShownModifingPasswordInput.IsVisible = true;
-            HiddenModifingPasswordInput.IsVisible = false;
-            ModifingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/opened_eye.png");
+                ShownModifingPasswordInput.Text = HiddenModifingPasswordInput.Text;
+                ShownModifingPasswordInput.IsVisible = true;
+                HiddenModifingPasswordInput.IsVisible = false;
+                ModifingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/opened_eye.png")));
+            }
+            catch (Exception ex)
+            {
+                ModifingPasswordErrorTextBlock.Text = ex.Message;
+                ModifingPasswordErrorTextBlock.IsVisible = true;
+            }
         }
 
         public void GoBackToMenu(object sender, RoutedEventArgs e)
@@ -381,7 +397,7 @@ namespace GestorePassword.UI.Desktop.Views.Menu
                 HiddenAddingPasswordInput.Text = null;
                 ShownAddingPasswordInput.IsVisible = false;
                 HiddenAddingPasswordInput.IsVisible = true;
-                AddingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/closed_eye.png");
+                AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
             }
             else if (ShownModifingPasswordInput.IsVisible)
             {
@@ -391,7 +407,7 @@ namespace GestorePassword.UI.Desktop.Views.Menu
                 HiddenModifingPasswordInput.Text = null;
                 ShownModifingPasswordInput.IsVisible = false;
                 HiddenModifingPasswordInput.IsVisible = true;
-                ModifingPasswordEyeImage.Source = new Bitmap("GestorePassword/UI/Desktop/Images/closed_eye.png");
+                ModifingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
             }
 
             LoadUI(null!, new RoutedEventArgs());
