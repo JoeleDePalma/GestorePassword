@@ -1,0 +1,84 @@
+html, body {
+    height: 100%;
+}
+
+.pageBackground {
+    background: linear-gradient(to right, #465ada, #303ce0);
+}
+
+.sectionsDiv{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 20%;
+    background-color: transparent;
+    border: 2px solid #ffffff30;
+    border-radius: 10px;
+    height: 100%;
+}
+
+.sectionsDiv__title{
+    justify-content: center;
+    text-align: center;
+    margin-top: 10px;
+    font-size: 25px;
+    font-weight: 600;
+    font-family:'Courier New';
+    user-select: none;
+}
+
+.sectionsDiv__sectionButton{
+    display: flex;
+    align-items: center;
+    justify-content: left;
+    height: 35px;
+    width: 95%;
+    background-color: transparent;
+    border-radius: 10px;
+    border: 0px solid transparent;
+    transition-duration: 100ms;
+}
+
+.sectionsDiv__sectionButton:hover{
+    background-color: #ffffff20;
+    cursor: pointer;
+    transform: scale(1.03);
+}
+
+.sectionsDiv__sectionButton:active{
+    background-color: #ffffff10;
+    cursor: pointer;
+    transform: scale(1.02);
+}
+
+.sectionsDiv_separator{
+    border: none;
+    width: 97%;
+    height: 2px;
+    background: linear-gradient(to right, #71b0f8, #4c9df8, #71b0f8, transparent);
+    border-radius: 5px;
+    margin-top: -5px;
+    margin-bottom: 15px;
+}
+
+@media (min-width: 901px){
+    .sectionsDiv__sectionButtonText{
+        font-size: 18px;
+    }
+}
+
+@media (max-width: 1200px){
+    .sectionsDiv__sectionButtonText{
+        font-size: 14px;
+    }
+}
+
+@media (max-width: 1000px){
+    .sectionsDiv__title{
+        visibility: collapse;
+        }
+
+    .sectionsDiv__sectionButtonText{
+        font-size: 12px;
+    }
+}
