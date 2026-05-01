@@ -112,6 +112,7 @@ html, body {
     }
 
     .allDownloadsDiv{
+        padding-bottom: 100px;
         flex-direction: column;
         gap: 20px;
     }

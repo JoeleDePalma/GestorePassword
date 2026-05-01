@@ -75,9 +75,10 @@ html, body {
     user-select: none;
 }
 
-.sectionsDiv_goBack{
-    margin-right: 55%;
-    margin-top: 115%;
+.sectionsDiv__goBack{
+    display: inline-block;
+    margin-right: 30%;
+    margin-top: 190%;
     font-size: 20px;
     justify-content: left;
 }
@@ -145,5 +146,28 @@ html, body {
 
     .sectionsDiv__sectionButtonText{
         font-size: 12px;
+    }
+}
+
+@media (max-width: 600px){
+    .sectionsDiv__title{
+        font-size: 12px;
+        }
+
+    .sectionsDiv__sectionButtonText{
+        font-size: 10px;
+    }
+
+    .sectionsDiv__goBack{
+        padding-top: 160%;
+        font-size: 8px;
+    }
+
+    .contentDiv__title{
+        font-size: 25px;
+    }
+    
+    .contentDiv__text{
+        font-size: 20px;
     }
 }
