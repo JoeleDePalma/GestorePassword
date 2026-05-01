@@ -23,21 +23,20 @@ html, body {
     font-size: 30px;
 }
 
-.downloadIcon {
-    width: 28px;
-    height: 28px;
-    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
-    -webkit-user-drag: none;
+.allDownloadsDiv{
+    display: flex;
+    justify-content: center;
+    align-items: center;
 }
 
-.OSIcon{
+.allDownloadsDiv__downloadDiv__OSIcon{
     height: 170px;
     width: 170px;
     padding: 20px;
     -webkit-user-drag: none;
 }
 
-.OSname{
+.allDownloadsDiv__downloadDiv__OSname{
     display: flex;
     -ms-flex-align: center;
     justify-content: center;
@@ -47,7 +46,7 @@ html, body {
     margin-bottom: 5px;
 }
 
-.downloadDiv{
+.allDownloadsDiv__downloadDiv{
     display: flex;
     flex-direction: column;
     justify-content: center;
@@ -56,7 +55,7 @@ html, body {
     width: 220px;
 }
 
-.downloadButton {
+.allDownloadsDiv__downloadDiv__downloadButton {
     align-items: center;
     gap: 10px;
     padding: 14px 40px;
@@ -74,24 +73,25 @@ html, body {
     user-select: none;
 }
 
-.downloadButton:hover {
+.allDownloadsDiv__downloadDiv__downloadButton:hover {
     transform: scale(1.04);
     background: linear-gradient(135deg, #2a4cff, #5d8aff);
 }
 
-.downloadButton:active {
+.allDownloadsDiv__downloadDiv__downloadButton:active {
     transform: scale(1.02);
 }
 
-.allDownloadsDiv{
-    display: flex;
-    justify-content: center;
-    align-items: center;
+.allDownloadsDiv__downloadDiv__downloadButtonIcon {
+    width: 28px;
+    height: 28px;
+    filter: drop-shadow(0 0 4px rgba(255, 255, 255, 0.4));
+    -webkit-user-drag: none;
 }
 
 @media (min-width: 601px) {
 
-    .downloadButton {
+    .allDownloadsDiv__downloadDiv__downloadButton {
         display: inline-flex;
     }
 
