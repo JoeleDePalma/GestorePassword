@@ -7,7 +7,8 @@ export namespace InformativeSectionTypes {
         | "privacy"
         | "mainFunctions"
         | "compatibility"
-        | "contacts";
+        | "contacts"
+        | "donate";
 }
 
 // Provides the logic for updating the displayed content based on the selected section
@@ -44,6 +45,9 @@ export class InformativeSectionActions
                         </p>
                     </li>
                 </ul>
+
+                <p style="display: inline-block;">Visita la </p>
+                <a href="https://gestorepassword.com">pagina principale</a>
                 `
         },
         howItWorks: { 
@@ -187,15 +191,11 @@ export class InformativeSectionActions
             title: "Compatibilità", 
             text: 
                 `
-                <p>L'applicazione è progettata per seguirti ovunque: </p>
+                <p>L'applicazione è progettata per seguirti su: </p>
 
                 <ul style="list-style-type: '● '">
                     <li>
                         <p style="display: inline-block; font-weight; 600; margin-top: 0px;">Windows</p>
-                    </li>
-
-                    <li>
-                        <p style="display: inline-block; font-weight; 600; margin-top: 0px;">MacOS</p>
                     </li>
 
                     <li>
@@ -218,6 +218,20 @@ export class InformativeSectionActions
                     Mandaci una mail: 
                     <a href="mailto:officialvaultmanager@gmail.com">officialvaultmanager@gmail.com</a>
                 </p>
+                `
+        },
+        donate: {
+            title: "Supporta il progetto offrendo un caffé",
+            text:
+                `
+                <p style="display: inline-block;">
+                    Questo progetto nasce dalla passione e dall’impegno costante di un giovane sviluppatore.
+                    Mantenerlo aggiornato, stabile e in continua crescita richiede tempo e dedizione.
+                    Se apprezzi il lavoro e vuoi contribuire al suo sviluppo, una piccola donazione è un gesto
+                    molto gradito e mi aiuta a portare avanti l’applicazione con ancora più motivazione.
+                </p>
+
+                <a href="https://www.paypal.com/paypalme/bestsup">Dona ora!<a/>
                 `
         }
     };

@@ -18,7 +18,7 @@ public partial class App : Application
     public override void Initialize()
     {
         AvaloniaXamlLoader.Load(this);
-        AppServices.apiClient = new("https://gestorepassword.fly.dev");
+        AppServices.apiClient = new("https://localhost:8080");
         AppServices.userApi = new(AppServices.apiClient);
         AppServices.passwordApi = new(AppServices.apiClient);
         AppServices.versionApi = new(AppServices.apiClient);

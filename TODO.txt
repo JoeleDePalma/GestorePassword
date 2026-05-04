@@ -1,0 +1,19 @@
+- Suddividere in template le varie parti della view del menù
+- Adattare le interfacce a tutte le risoluzioni evitando deformazioni
+- Aggiungere logging 
+- Far funzionare la searchbar
+- Aggiungere bottone per copiare la password
+- Far visualizzare l'ID account nel grid in basso a sinstra e nel content dell'account
+- Aggiungere logout
+- Aggiungere anti bruteforce bloccando l'IP
+- Aggiungere la firma agli hash
+- Aggiungere refresh token
+- Segnalare password forti e deboli
+- Aggiungere la possibilità di modificare l'account
+- Aggiungere la possibilità di tenere più account collegati contemporaneamente
+- Dare la possibilità di creare più cartelle per il salvataggio password
+- Scegliere il livello di sicurezza del salvataggio di una password, con tre sicurezze, adattare i parametri alla crittografia in base al livello di sicurezza
+- Aggiungere tema chiaro, scuro e lasciare il tema celeste
+- Fare installer
+- Fare versione android
+- Fare webapp

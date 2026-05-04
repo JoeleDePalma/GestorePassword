@@ -23,6 +23,12 @@ html, body {
     font-size: 30px;
 }
 
+.mainDiv{
+    display: flex;
+    flex-direction: column;    
+    align-items: center;
+}
+
 .allDownloadsDiv{
     display: flex;
     justify-content: center;
@@ -56,6 +62,7 @@ html, body {
 }
 
 .allDownloadsDiv__downloadDiv__downloadButton {
+    display: inline-block;
     align-items: center;
     gap: 10px;
     padding: 14px 40px;
@@ -89,6 +96,76 @@ html, body {
     -webkit-user-drag: none;
 }
 
+.actionsDiv{
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+}
+
+.actionsDiv__mainActions{
+    display: flex;
+    gap: 10px;
+}
+
+.actionsDiv__actionButtonBase{
+    display: flex;
+    justify-content: center;
+    min-width: 170px;
+    text-decoration: none;
+    font-weight: 600;
+    font-family: Arial, Helvetica, sans-serif;
+    border-radius: 15px;
+    user-select: none;
+    -webkit-user-drag: none;
+    transition-duration: 0.2s;
+}
+
+.actionsDiv__goBackButton{
+    background-color: #224bfdab;
+    color: white;
+    border: 2px solid white;
+}
+
+.actionsDiv__goBackButton:hover{
+    transform: scale(1.03);
+    background-color:  #1c46ffde;
+}
+
+.actionsDiv__goBackButton:active{
+    transform: scale(1.02);
+    background-color:  #264effde;
+}
+
+.actionsDiv__goToInformativeSectionButton{
+    background-color: white;
+    color: #3a5eff;
+    border: 2px solid #0b38ff;
+}
+
+.actionsDiv__goToInformativeSectionButton:hover{
+    transform: scale(1.03);
+}
+
+.actionsDiv__goToInformativeSectionButton:active{
+    transform: scale(1.02);
+}
+
+.actionsDiv__donateButton{
+    background-color: #002fff;
+    color: white;
+    border: 2px solid white;
+}
+
+.actionsDiv__donateButton:hover{
+    background-color: #002bea;
+    transform: scale(1.03);
+}
+
+.actionsDiv__donateButton:active{
+    background-color: #0c39ff;
+    transform: scale(1.02);
+}
+
 @media (min-width: 601px) {
 
     .allDownloadsDiv__downloadDiv__downloadButton {
@@ -103,6 +180,19 @@ html, body {
         flex-direction: row;
         gap: 70px;
     }
+
+    .actionsDiv{
+        margin-top: 130px;
+    }
+
+    .actionsDiv__actionButtonBase{
+        padding: 14px 35px;
+        font-size: 18px;
+    }
+
+    .actionsDiv__mainActions{
+        flex-direction: row;
+    }
 }
 
 @media (max-width: 600px){
@@ -115,5 +205,14 @@ html, body {
         padding-bottom: 100px;
         flex-direction: column;
         gap: 20px;
+    }
+
+    .actionsDiv__actionButtonBase{
+        padding: 14px 70px;
+        font-size: 18px;
+    }
+
+    .actionsDiv__mainActions{
+        flex-direction: column;
     }
 }

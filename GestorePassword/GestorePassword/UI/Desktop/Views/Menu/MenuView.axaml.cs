@@ -8,19 +8,21 @@ using Libreria.API;
 using Libreria.DTOs.Passwords;
 using Libreria.HTTPRequestsLibrary;
 using System.Linq;
-using GestorePassword.UI.Desktop.Templates.Menu;
+using GestorePassword.UI.Desktop.Templates.Menu.Components;
 using GestorePassword.Core.ViewModels.Menu;
 using System.Threading.Tasks;
 using Avalonia.Media.Imaging;
 using GestorePassword.Core.Models;
 using Avalonia.Platform;
+using Avalonia.Controls.Primitives;
 
 namespace GestorePassword.UI.Desktop.Views.Menu
 {
     public partial class MenuView : UserControl
     {
-        private List<Grid> contentGrids { get; set; }
+        private List<TemplatedControl> contentGrids { get; set; }
         private MenuViewModel _vm { get; set; }
+        
         public MenuView()
         {
             InitializeComponent();
@@ -30,14 +32,18 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             contentGrids = new()
             {
                 PasswordsGrid,
-                StatisticsGrid,
-                ProfileGrid,
-                LoadingGrid,
-                AddPasswordGrid,
-                ModifyPasswordGrid,
-                DeletePasswordGrid
+                // StatisticsGrid,
+                // ProfileGrid,
+                // LoadingGrid,
+                // ModifyPasswordGrid,
+                // DeletePasswordGrid
             };
             
+            var _addPasswordGrid = PasswordsGrid.Find<AddPasswordGrid>("AddPasswordGrid");
+
+            if (_addPasswordGrid != null)
+                _addPasswordGrid.PasswordSaved += () => LoadUI(null!, new RoutedEventArgs());
+                
             UserInitialTextBlock.Text = AppServices.currentUser.Username[0].ToString();
             UserUsernameTextBlock.Text = AppServices.currentUser.Username;
             ShowPasswordsButton.Click += ShowPasswordsContent!;
@@ -45,6 +51,8 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             ShowProfileButton.Click += ShowProfileContent!;
             Loaded += LoadUI!;
         }
+
+
 
         public void ShowPasswordsContent(object sender, RoutedEventArgs e)
             => ShowOnly(PasswordsGrid);
@@ -168,16 +176,6 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             LoadingGrid.IsVisible = false;
         }
 
-        public void ManageAddPasswordGridVisibility(object sender, RoutedEventArgs e)
-        {
-            if (AddPasswordGrid.IsVisible)
-            {
-                AddPasswordGrid.IsVisible = false;
-                return;
-            }
-            AddPasswordGrid.IsVisible = true;
-        }
-
         public void ManageModifyPasswordGridVisibility(PasswordGrid sender)
         {
             if (ModifyPasswordGrid.IsVisible)
@@ -238,30 +236,6 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             return (false, true, hiddenPasswordText);
         }
 
-        public void ChangeAddingPasswordVisibility(object sender, RoutedEventArgs e)
-        {
-            try
-            {
-                if (ShownAddingPasswordInput.IsVisible)
-                {
-                    HiddenAddingPasswordInput.Text = ShownAddingPasswordInput.Text;
-                    ShownAddingPasswordInput.IsVisible = false;
-                    HiddenAddingPasswordInput.IsVisible = true;
-                    AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
-                    return;
-                }
-
-                ShownAddingPasswordInput.Text = HiddenAddingPasswordInput.Text;
-                ShownAddingPasswordInput.IsVisible = true;
-                HiddenAddingPasswordInput.IsVisible = false;
-                AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/opened_eye.png")));
-            }
-            catch (Exception ex)
-            {
-                SetAddingPasswordErrorTextBlock(ex.Message);
-            }
-        }
-
         public void ChangeModifingPasswordVisibility(object sender, RoutedEventArgs e)
         {
             try
@@ -294,7 +268,7 @@ namespace GestorePassword.UI.Desktop.Views.Menu
 
         public void GeneratePassword(object sender, RoutedEventArgs e)
         {
-            var generatedPassword = _vm.GeneratePassowrd();
+            var generatedPassword = _vm.GeneratePassword();
 
             if (AddPasswordGrid.IsVisible)
             {
@@ -318,101 +292,6 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             return;
         }
 
-        public async void AddPassword(object sender, RoutedEventArgs e)
-        {
-            string app = default!;
-            string username = default!;
-            string password = default!;
-
-            if (AddPasswordGrid.IsVisible)
-            {
-                app = AddingPasswordAppInput.Text!;
-                username = AddingPasswordUsernameInput.Text!;
-
-                if (ShownAddingPasswordInput.IsVisible)
-                {
-                    password = ShownAddingPasswordInput.Text!;
-                }
-                else
-                {
-                    password = HiddenAddingPasswordInput.Text!;
-                }
-            }
-            else
-            {
-                app = ModifingPasswordAppInput.Text!;
-                username = ModifingPasswordUsernameInput.Text!;
-
-                if (ShownModifingPasswordInput.IsVisible)
-                {
-                    password = ShownModifingPasswordInput.Text!;
-                }
-                else
-                {
-                    password = HiddenModifingPasswordInput.Text!;
-                }
-            }
-
-            if (string.IsNullOrWhiteSpace(app))
-            {
-                SetAddingPasswordErrorTextBlock("Inserire l'app");
-                return;
-            }
-
-            if (string.IsNullOrWhiteSpace(password))
-            {
-                SetAddingPasswordErrorTextBlock("Inserire la password");
-                return;
-            }
-
-            if (password.All(c => char.Equals(c, '*')))
-            {
-                SetAddingPasswordErrorTextBlock("La password non può contenere solo asterischi");
-                return;
-            }
-
-            LoadingGrid.IsVisible = true;
-
-            (bool Success, string? ErrorString) response;
-
-            if (AddPasswordGrid.IsVisible)
-                response = await _vm.SaveNewPassword(app, username, password);
-
-            else
-                response = await _vm.ModifyPassword(AppServices.currentPassword.Id, app, username, password);
-
-            LoadingGrid.IsVisible = false;
-
-            if (!response.Success)
-            {
-                SetAddingPasswordErrorTextBlock(response.ErrorString!);
-                return;
-            }
-
-            if (ShownAddingPasswordInput.IsVisible && AddPasswordGrid.IsVisible)
-            {
-                AddingPasswordAppInput.Text = null;
-                AddingPasswordUsernameInput.Text = null;
-                ShownAddingPasswordInput.Text = null;
-                HiddenAddingPasswordInput.Text = null;
-                ShownAddingPasswordInput.IsVisible = false;
-                HiddenAddingPasswordInput.IsVisible = true;
-                AddingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
-            }
-            else if (ShownModifingPasswordInput.IsVisible)
-            {
-                ModifingPasswordAppInput.Text = null;
-                ModifingPasswordUsernameInput.Text = null;
-                ShownModifingPasswordInput.Text = null;
-                HiddenModifingPasswordInput.Text = null;
-                ShownModifingPasswordInput.IsVisible = false;
-                HiddenModifingPasswordInput.IsVisible = true;
-                ModifingPasswordEyeImage.Source = new Bitmap(AssetLoader.Open(new Uri("avares://GestorePassword/UI/Desktop/Images/closed_eye.png")));
-            }
-
-            LoadUI(null!, new RoutedEventArgs());
-        }
-
         public async void DeletePassword(object sender, RoutedEventArgs e)
         {
             var passwordId = AppServices.currentPassword.Id;
@@ -431,13 +310,6 @@ namespace GestorePassword.UI.Desktop.Views.Menu
 
         public void SetAddingPasswordErrorTextBlock(string errorString)
         {
-            if (AddPasswordGrid.IsVisible)
-            {
-                AddingPasswordErrorTextBlock.Text = errorString;
-                AddingPasswordErrorTextBlock.IsVisible = true;
-                return;
-            }
-
             ModifingPasswordErrorTextBlock.Text = errorString;
             ModifingPasswordErrorTextBlock.IsVisible = true;
             return;
@@ -448,7 +320,7 @@ namespace GestorePassword.UI.Desktop.Views.Menu
             await _vm.SetAllPassword();
         }
 
-        public void ShowOnly(Grid gridToShow)
+        public void ShowOnly(TemplatedControl gridToShow)
         {
             foreach(var g in contentGrids)
                 g.IsVisible = false;

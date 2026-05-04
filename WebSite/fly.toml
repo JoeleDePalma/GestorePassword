@@ -21,3 +21,7 @@ primary_region = "fra"
 [[statics]]
   guest_path = "/public/download"
   url_prefix = "/download"
+
+[[statics]]
+  guest_path = "/public/informativeSection"
+  url_prefix = "/informativeSection"

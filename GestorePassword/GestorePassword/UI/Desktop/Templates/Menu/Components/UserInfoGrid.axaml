@@ -1,0 +1,47 @@
+<ResourceDictionary xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:controls="using:GestorePassword.UI.Desktop.Templates.Menu.Components">
+ 
+  <ControlTheme x:Key="{x:Type controls:UserInfoGrid}" TargetType="controls:UserInfoGrid">
+    <Setter Property="Template">
+      <ControlTemplate>
+        
+        <Grid
+          RowDefinitions="1*, 0.1*, 1*, 0.1*, 1*, 0.1*, 1*, 0.1*"
+          >
+          <TextBlock
+              Grid.Row="0"
+              Text="{TemplateBinding CreatedAtUser}"
+              Classes="UserInfoTextBlockStyle"
+              />
+
+          <Separator Grid.Row="1" Classes="UserInfoSeparator"/>
+
+          <TextBlock
+              Grid.Row="2"
+              Text="{TemplateBinding SavedUsernameCount}"
+              Classes="UserInfoTextBlockStyle"
+              />
+
+          <Separator Grid.Row="3" Classes="UserInfoSeparator"/>
+
+          <TextBlock
+              Grid.Row="4"
+              Text="{TemplateBinding LastPasswordCreatedAt}"
+              Classes="UserInfoTextBlockStyle"
+              />
+
+          <Separator Grid.Row="5" Classes="UserInfoSeparator"/>
+
+          <TextBlock
+              Grid.Row="6"
+              Text="{TemplateBinding AveragePasswordStrength}"
+              Classes="UserInfoTextBlockStyle"
+              />
+
+          <Separator Grid.Row="7" Classes="UserInfoSeparator"/>
+      </Grid>
+      </ControlTemplate>
+    </Setter>
+  </ControlTheme>
+</ResourceDictionary>

@@ -37,14 +37,14 @@ namespace GestorePassword.Core.ViewModels.Menu
             if (AppServices.passwordList != null && AppServices.passwordList.Count > 0)
             {
                 strongPasswords = AppServices.passwordList
-                .Where(p =>
-                    p.Password.Length > 12 &&
-                    p.Password.Any(char.IsDigit) &&
-                    p.Password.Any(char.IsLetter) &&
-                    p.Password.Any(char.IsLower) &&
-                    p.Password.Any(char.IsUpper) &&
-                    p.Password.Any(char.IsPunctuation)
-                    ).Count();
+                    .Where(p =>
+                        p.Password.Length > 12 &&
+                        p.Password.Any(char.IsDigit) &&
+                        p.Password.Any(char.IsLetter) &&
+                        p.Password.Any(char.IsLower) &&
+                        p.Password.Any(char.IsUpper) &&
+                        p.Password.Any(char.IsPunctuation)
+                        ).Count();
 
                 weakPasswords = AppServices.passwordList
                     .Where(p =>
@@ -86,7 +86,7 @@ namespace GestorePassword.Core.ViewModels.Menu
         public async Task SetAllPassword()
             => await PasswordRequest.SetAllPasswordsAsync();
 
-        public string GeneratePassowrd(int length = 16)
+        public string GeneratePassword(int length = 16)
             => PasswordGenerator.GeneratePassword(length);
 
         public async Task<(bool Success, string? ErrorString)> SaveNewPassword(string app, string? username, string password)

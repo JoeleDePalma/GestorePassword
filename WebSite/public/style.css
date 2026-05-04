@@ -6,10 +6,9 @@ html, body {
     background: linear-gradient(to right, #465ada, #303ce0);
 }
 
-.generalDiv__buttonsDiv__goTo_buttonBase {
+.generalDiv__buttonsDiv__buttonBase{
     display: flex;
     justify-content: center;
-    align-items: center;
     min-width: 170px;
     text-decoration: none;
     font-weight: 600;
@@ -31,6 +30,14 @@ html, body {
     display: flex;
     justify-content: center;
     align-items: center;
+    flex-direction: column;
+    padding: 30px;
+    gap: 10px;
+}
+
+.generalDiv__buttonsDiv__mainButtonsDiv{
+    display: flex;
+    gap: 10px;
 }
 
 .generalDiv__welcomeText{
@@ -75,6 +82,22 @@ html, body {
     background-color:  #264effde;
 }
 
+.generalDiv__buttonsDiv__donateButton {
+    background-color: #002fff;
+    color: white;
+    border: 2px solid white;
+}
+
+.generalDiv__buttonsDiv__donateButton:hover{
+    background-color:  #002bea;
+    transform: scale(1.03);
+}
+
+.generalDiv__buttonsDiv__donateButton:active{
+    background-color:  #0c39ff;
+    transform: scale(1.02);
+}
+
 .generalDiv__tagLine{
     color: white;
     background-color: transparent;
@@ -101,10 +124,8 @@ html, body {
         padding: 100px;
     }
 
-    .generalDiv__buttonsDiv{
+    .generalDiv_buttonsDiv_mainButtonsDiv{
         flex-direction: row;
-        padding: 20px;
-        gap: 20px;
     }
 
     .generalDiv__welcomeText{
@@ -118,6 +139,11 @@ html, body {
 
     .generalDiv__buttonsDiv__goToDownloadButton{
         padding: 14px 35px;
+        font-size: 18px;
+    }
+
+    .generalDiv__buttonsDiv__donateButton{
+        padding: 14px 160px;
         font-size: 18px;
     }
 
@@ -138,10 +164,8 @@ html, body {
         padding: 30px;
     }
 
-    .generalDiv__buttonsDiv{
+    .generalDiv__buttonsDiv__mainButtonsDiv{
         flex-direction: column;
-        padding: 30px;
-        gap: 10px;
     }
 
     .generalDiv__welcomeText{
@@ -155,6 +179,11 @@ html, body {
 
     .generalDiv__buttonsDiv__goToDownloadButton{
         padding: 10px 80px;
+        font-size: 25px;
+    }
+
+    .generalDiv__buttonsDiv__donateButton{
+        padding: 10px 50px;
         font-size: 25px;
     }
 

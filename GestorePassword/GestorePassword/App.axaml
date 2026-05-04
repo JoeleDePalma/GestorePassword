@@ -6,10 +6,13 @@
     <Application.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/PasswordGrid.axaml"/>
-                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/StatisticsGrid.axaml"/>
-                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/UserInfoGrid.axaml"/>
-                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/AddingPasswordActionButton.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Components/PasswordGrid.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Components/StatisticsGrid.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Components/UserInfoGrid.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Components/AddingPasswordActionButton.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Contents/PasswordContent.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Contents/StatisticsContent.axaml"/>
+                <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Menu/Contents/ProfileContent.axaml"/>
                 <ResourceInclude Source="avares://GestorePassword/UI/Desktop/Templates/Common/LoadingAnimation.axaml"/>
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
